@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { LeadChatForm, LeadEmailForm } from "@/components/lead/communication-forms";
+import { LeadContactForm } from "@/components/lead/lead-contact-form";
 import { LeadGradeBadge, ScoreReasonList } from "@/components/lead/lead-grade-badge";
 import {
   LeadAssignmentForm,
@@ -198,6 +199,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
       </div>
 
       <aside className="space-y-4">
+        <LeadContactForm lead={lead} />
         <LeadStatusForm currentStatus={lead.status} leadId={lead.id} />
         <LeadAssignmentForm agents={agents} currentAgentId={lead.assigned_agent_id} leadId={lead.id} />
         <LeadEmailForm leadId={lead.id} />
