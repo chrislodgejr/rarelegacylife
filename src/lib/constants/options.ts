@@ -118,7 +118,7 @@ export const PUBLIC_NAV = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/education", label: "Education" },
-  { href: "/agent-opportunity", label: "Apply as Agent" },
+  { href: "/apply-as-agent", label: "Apply as Agent" },
   { href: "/contact", label: "Contact" },
 ] as const;
 
