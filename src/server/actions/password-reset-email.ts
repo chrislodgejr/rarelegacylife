@@ -20,24 +20,32 @@ export async function sendPasswordResetEmail(
 
   const admin = createAdminClient();
   const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "";
-  const redirectTo = `${origin}/auth/callback?next=/reset-password`;
+
+  if (!origin) {
+    return { ok: false, message: "Password reset is missing the public site URL configuration." };
+  }
+
   const { data, error } = await admin.auth.admin.generateLink({
     type: "recovery",
     email,
-    options: { redirectTo },
+    options: { redirectTo: `${origin}/reset-password` },
   });
 
-  if (error || !data.properties?.action_link) {
+  const recoveryToken = data?.properties?.hashed_token;
+
+  if (error || !recoveryToken) {
     console.error("Password reset link generation failed", error);
     return { ok: false, message: "Password reset link could not be created." };
   }
+
+  const resetLink = `${origin}/auth/reset?token_hash=${encodeURIComponent(recoveryToken)}&type=recovery`;
 
   try {
     const result = await sendEmail({
       to: email,
       subject: "Reset your Rare Legacy Life password",
-      text: `Use this secure link to reset your Rare Legacy Life password: ${data.properties.action_link}`,
-      html: `<p>Use the secure link below to reset your Rare Legacy Life password.</p><p><a href="${data.properties.action_link}">Reset password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+      text: `Use this secure link to reset your Rare Legacy Life password: ${resetLink}`,
+      html: `<p>Use the secure link below to reset your Rare Legacy Life password.</p><p><a href="${resetLink}">Reset password</a></p><p>If you did not request this, you can ignore this email.</p>`,
     });
 
     if (result.skipped) {
