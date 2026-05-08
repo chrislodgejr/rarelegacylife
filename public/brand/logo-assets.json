@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-05-08T05:51:58.274Z",
+  "notes": [
+    "Transparent logo assets generated from supplied Rare Legacy Life source files.",
+    "The recruiting flyer source is preserved for reference but is not used as a site logo.",
+    "Use dark variants on black or rich-black backgrounds and light variants on white/off-white backgrounds."
+  ],
+  "originals": {
+    "stackedLight": "public/brand/originals/logo-stacked-light-source.png",
+    "recruitingFlyer": "public/brand/originals/recruiting-flyer-source.png",
+    "horizontalDark": "public/brand/originals/logo-horizontal-dark-source.jpeg",
+    "stackedDark": "public/brand/originals/logo-stacked-dark-source.png"
+  },
+  "generated": {
+    "logoLightStacked": {
+      "file": "public/brand/logo-light-stacked.png",
+      "width": 761,
+      "height": 1125,
+      "sampledBackground": [
+        255,
+        255,
+        255
+      ]
+    },
+    "logoDarkHorizontal": {
+      "file": "public/brand/logo-dark-horizontal.png",
+      "width": 2939,
+      "height": 760,
+      "sampledBackground": [
+        28,
+        32,
+        31
+      ]
+    },
+    "logoDarkStacked": {
+      "file": "public/brand/logo-dark-stacked.png",
+      "width": 700,
+      "height": 956,
+      "sampledBackground": [
+        28,
+        33,
+        32
+      ]
+    },
+    "iconLight": {
+      "file": "public/brand/icon-light.png",
+      "width": 761,
+      "height": 841
+    },
+    "iconDark": {
+      "file": "public/brand/icon-dark.png",
+      "width": 661,
+      "height": 719
+    },
+    "favicon": {
+      "file": "public/favicon.png",
+      "width": 512,
+      "height": 512
+    },
+    "appleTouchIcon": {
+      "file": "public/apple-touch-icon.png",
+      "width": 512,
+      "height": 512
+    },
+    "appIcon": {
+      "file": "src/app/icon.png",
+      "width": 512,
+      "height": 512
+    },
+    "appAppleIcon": {
+      "file": "src/app/apple-icon.png",
+      "width": 512,
+      "height": 512
+    },
+    "appFaviconIco": {
+      "file": "src/app/favicon.ico",
+      "width": 64,
+      "height": 64
+    }
+  }
+}
