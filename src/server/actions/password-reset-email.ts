@@ -20,7 +20,7 @@ export async function sendPasswordResetEmail(
 
   const admin = createAdminClient();
   const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "";
-  const redirectTo = `${origin}/auth/reset`;
+  const redirectTo = `${origin}/auth/callback?next=/reset-password`;
   const { data, error } = await admin.auth.admin.generateLink({
     type: "recovery",
     email,
