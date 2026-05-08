@@ -18,14 +18,15 @@ export default function LoginPage() {
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_440px] lg:items-center">
           <section className="hidden lg:block">
             <p className="gold-gradient-text text-xs font-semibold uppercase tracking-[0.22em]">
-              Secure access
+              Agent and admin portal
             </p>
             <h2 className="font-premium mt-4 max-w-xl text-5xl font-semibold leading-tight text-white">
-              Protect the people who count on you. Manage the work with precision.
+              Secure access for approved Rare Legacy Life team members.
             </h2>
             <p className="mt-5 max-w-xl text-base leading-8 text-white/68">
-              Google sign-in, email/password, and one-time email code access all route through
-              Supabase Auth. New users remain pending until approved by an administrator.
+              Sign in to manage leads, team communication, follow-up tasks, agent activity, and CRM
+              notifications. New account requests remain pending until an administrator approves
+              portal access.
             </p>
           </section>
           <div className="mx-auto w-full max-w-md">
