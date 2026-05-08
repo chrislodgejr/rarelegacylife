@@ -1,19 +1,40 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Agent } from "@/types/domain";
 
+type ProfileRow = {
+  id: string;
+  full_name: string | null;
+  email: string;
+  role: string;
+  status: string;
+  state: string | null;
+};
+
 export default async function AdminAgentsPage() {
   const supabase = await createClient();
-  const { data: agents } = await supabase
-    .from("agents")
-    .select("*, agent_licenses(state, license_status)")
-    .order("last_name");
+  const [{ data: agents }, { data: profiles }] = await Promise.all([
+    supabase
+      .from("agents")
+      .select("*, agent_licenses(state, license_status)")
+      .order("last_name"),
+    supabase
+      .from("profiles")
+      .select("id, full_name, email, role, status, state")
+      .in("role", ["agent", "manager", "admin", "support"])
+      .order("full_name"),
+  ]);
+
+  const agentRows = (agents ?? []) as (Agent & { agent_licenses?: { state: string; license_status: string }[] })[];
+  const profileRows = (profiles ?? []) as ProfileRow[];
 
   return (
     <div>
       <h1 className="text-3xl font-semibold text-[#050505]">Agents</h1>
-      <p className="mt-2 text-sm text-neutral-600">Licensed-state routing and assignment readiness.</p>
+      <p className="mt-2 text-sm text-neutral-600">
+        Licensed-state routing, assignment readiness, and approved CRM user visibility.
+      </p>
       <div className="mt-6 grid gap-4">
-        {((agents ?? []) as (Agent & { agent_licenses?: { state: string; license_status: string }[] })[]).map((agent) => (
+        {agentRows.map((agent) => (
           <div key={agent.id} className="rounded-lg border border-neutral-200 bg-white p-5">
             <div className="flex flex-col justify-between gap-4 md:flex-row">
               <div>
@@ -37,9 +58,27 @@ export default async function AdminAgentsPage() {
             </div>
           </div>
         ))}
-        {!agents?.length ? (
+
+        {!agentRows.length && profileRows.map((profile) => (
+          <div key={profile.id} className="rounded-lg border border-neutral-200 bg-white p-5">
+            <div className="flex flex-col justify-between gap-4 md:flex-row">
+              <div>
+                <p className="font-semibold text-[#050505]">{profile.full_name || profile.email}</p>
+                <p className="mt-1 text-sm text-neutral-600">{profile.email}</p>
+              </div>
+              <div className="text-sm text-neutral-600 capitalize">
+                {profile.role} | {profile.status}
+              </div>
+            </div>
+            <div className="mt-4 text-sm text-amber-700">
+              CRM user profile found. Add an agent routing record when this user should receive leads.
+            </div>
+          </div>
+        ))}
+
+        {!agentRows.length && !profileRows.length ? (
           <div className="rounded-lg border border-neutral-200 bg-white p-6 text-sm text-neutral-500">
-            No agents yet. Add agents directly in Supabase for the MVP, then manage them here as the CRM expands.
+            No agents or CRM users found yet.
           </div>
         ) : null}
       </div>
