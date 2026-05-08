@@ -4,6 +4,7 @@ import { useState } from "react";
 import { KeyRound, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { getAuthRedirectUrl } from "@/lib/auth/redirect-url";
 import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
@@ -29,7 +30,7 @@ export function LoginForm() {
             email,
             password,
             options: {
-              emailRedirectTo: `${window.location.origin}/auth/callback`,
+              emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
             },
           });
 
@@ -57,7 +58,7 @@ export function LoginForm() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: getAuthRedirectUrl("/auth/callback"),
       },
     });
 
@@ -77,7 +78,7 @@ export function LoginForm() {
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
         shouldCreateUser: true,
       },
     });
@@ -107,8 +108,8 @@ export function LoginForm() {
           Secure portal access
         </h1>
         <p className="mt-2 text-sm leading-6 text-white/62">
-          Continue with Google, password, or a one-time email code. Approval still controls CRM
-          access after sign-in.
+          Access is reserved for approved Rare Legacy Life agents, managers, and administrators.
+          Sign in to manage leads, communication, tasks, and team activity.
         </p>
       </div>
 
@@ -216,9 +217,8 @@ export function LoginForm() {
             </span>
           </label>
           <p className="rounded-2xl border border-white/12 bg-white/[0.04] p-4 text-xs leading-5 text-white/58">
-            We will send a one-time code if your Supabase email template uses the OTP token. If
-            your template is still magic-link based, the secure email link will route through the
-            same approval workflow.
+            We will email a one-time sign-in code. Account approval still controls dashboard access,
+            so new users may be directed to pending approval after signing in.
           </p>
           <button
             className="gold-gradient-button h-11 w-full rounded-full px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
