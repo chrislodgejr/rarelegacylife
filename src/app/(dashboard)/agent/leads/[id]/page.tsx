@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { LeadChatForm, LeadEmailForm } from "@/components/lead/communication-forms";
+import { LeadContactForm } from "@/components/lead/lead-contact-form";
 import { LeadGradeBadge, ScoreReasonList } from "@/components/lead/lead-grade-badge";
 import { LeadNoteForm, LeadStatusForm, LeadTaskForm } from "@/components/lead/lead-workflow-forms";
 import { COVERAGE_LABELS, STATUS_LABELS } from "@/lib/constants/options";
@@ -123,6 +124,7 @@ export default async function AgentLeadDetailPage({ params }: AgentLeadDetailPro
         <Timeline title="Activity" empty="No activity yet." items={activityResult.data ?? []} />
       </div>
       <aside className="space-y-4">
+        <LeadContactForm lead={lead} />
         <LeadStatusForm currentStatus={lead.status} leadId={lead.id} />
         <LeadEmailForm leadId={lead.id} />
         <LeadNoteForm leadId={lead.id} />

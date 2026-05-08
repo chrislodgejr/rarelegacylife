@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import type { Agent } from "@/types/domain";
 
@@ -35,7 +36,7 @@ export default async function AdminAgentsPage() {
       </p>
       <div className="mt-6 grid gap-4">
         {agentRows.map((agent) => (
-          <div key={agent.id} className="rounded-lg border border-neutral-200 bg-white p-5">
+          <Link key={agent.id} href={`/admin/agents/${agent.id}`} className="block rounded-lg border border-neutral-200 bg-white p-5 transition hover:border-[#C9A227] hover:shadow-sm">
             <div className="flex flex-col justify-between gap-4 md:flex-row">
               <div>
                 <p className="font-semibold text-[#050505]">
@@ -56,7 +57,8 @@ export default async function AdminAgentsPage() {
               ))}
               {!agent.agent_licenses?.length ? <span className="text-sm text-neutral-500">No licenses recorded.</span> : null}
             </div>
-          </div>
+            <p className="mt-4 text-xs font-semibold text-[#8A6A16]">Open full profile</p>
+          </Link>
         ))}
 
         {!agentRows.length && profileRows.map((profile) => (
@@ -71,7 +73,7 @@ export default async function AdminAgentsPage() {
               </div>
             </div>
             <div className="mt-4 text-sm text-amber-700">
-              CRM user profile found. Add an agent routing record when this user should receive leads.
+              CRM user profile found. Activate this user as admin, manager, or agent to create their routing profile.
             </div>
           </div>
         ))}

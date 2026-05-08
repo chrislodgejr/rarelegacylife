@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand/logo";
-import { ForgotPasswordForm } from "@/components/auth/password-reset-forms";
+import { PasswordResetEmailForm } from "@/components/auth/password-reset-email-form";
 
 export default function ForgotPasswordPage() {
   return (
@@ -12,7 +12,7 @@ export default function ForgotPasswordPage() {
         <Link className="mb-6 inline-block text-sm font-semibold text-[#050505]" href="/login">
           Back to login
         </Link>
-        <ForgotPasswordForm />
+        <PasswordResetEmailForm />
       </div>
     </main>
   );
