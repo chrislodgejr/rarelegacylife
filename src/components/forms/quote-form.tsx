@@ -1,12 +1,16 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { KeyRound, MailCheck, ShieldCheck } from "lucide-react";
 import { COVERAGE_LABELS, COVERAGE_PURPOSES, HEALTH_RATINGS, US_STATES } from "@/lib/constants/options";
-import { submitQuoteForm, type FormState } from "@/server/actions/public-forms";
+import {
+  sendQuoteOtpCode,
+  submitQuoteForm,
+  type FormState,
+  verifyQuoteOtpCode,
+} from "@/server/actions/public-forms";
 import { SubmitButton } from "@/components/forms/submit-button";
-import { createClient } from "@/lib/supabase/client";
 
 type TrackingDefaults = {
   utm_source?: string;
@@ -35,7 +39,6 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
   const [isOtpLoading, setIsOtpLoading] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
-  const supabase = useMemo(() => createClient(), []);
   const progress = ((step + 1) / steps.length) * 100;
   const normalizedQuoteEmail = normalizeEmail(quoteEmail);
   const isQuoteEmailVerified = Boolean(verifiedEmail && verifiedEmail === normalizedQuoteEmail);
@@ -71,18 +74,13 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
     }
 
     setIsOtpLoading(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email: normalizedQuoteEmail,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-        shouldCreateUser: true,
-      },
-    });
+    const result = await sendQuoteOtpCode(normalizedQuoteEmail);
 
-    if (error) {
-      setOtpError("We could not send a secure code right now. Please try again.");
+    if (!result.ok) {
+      setOtpError(result.message);
     } else {
-      setOtpMessage("Secure code sent. Check your email and enter the six-digit code below.");
+      setOtpMessage(result.message);
+      setOtpCode("");
       setResendIn(60);
     }
 
@@ -99,17 +97,13 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
     }
 
     setIsOtpLoading(true);
-    const { error } = await supabase.auth.verifyOtp({
-      email: normalizedQuoteEmail,
-      token: otpCode,
-      type: "email",
-    });
+    const result = await verifyQuoteOtpCode(normalizedQuoteEmail, otpCode);
 
-    if (error) {
-      setOtpError("That code is invalid or expired. Please try again or request a new code.");
+    if (!result.ok) {
+      setOtpError(result.message);
     } else {
       setVerifiedEmail(normalizedQuoteEmail);
-      setOtpMessage("Email verified. You can now submit your quote request securely.");
+      setOtpMessage(result.message);
     }
 
     setIsOtpLoading(false);
@@ -285,8 +279,9 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
               Verify your email before submitting.
             </h3>
             <p className="mt-2 text-sm leading-6 text-neutral-600">
-              We use Supabase Auth OTP to confirm this quote request belongs to you. This does not
-              approve portal access or expose CRM data.
+              We email a six-digit Rare Legacy Life verification code through our secure mail
+              provider. This confirms the quote request email only; it does not create portal access
+              or expose CRM data.
             </p>
           </div>
           <span
