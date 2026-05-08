@@ -13,7 +13,7 @@ import {
 } from "@/lib/notifications";
 import { createCrmNotification, notifyAdmins } from "@/lib/notifications/db";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { isQuoteVerificationApproved } from "@/server/actions/quote-verification";
 import {
   agentApplicationSchema,
   contactFormSchema,
@@ -41,12 +41,9 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
   }
 
   const input = parsed.data;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const quoteVerificationId = String(formData.get("quote_verification_id") ?? "");
 
-  if (!user?.email || user.email.toLowerCase() !== input.email) {
+  if (!(await isQuoteVerificationApproved(quoteVerificationId, input.email))) {
     return {
       ok: false,
       message: "Please verify the quote email with the one-time code before submitting.",
@@ -91,7 +88,7 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
       lead_score_breakdown: score.lead_score_breakdown,
       quote_email_otp_verified: true,
       quote_email_otp_verified_at: now,
-      quote_auth_user_id: user.id,
+      quote_auth_user_id: null,
       assigned_agent_id: assignment.agent?.id ?? null,
       assigned_at: assignment.agent ? now : null,
       last_activity_at: now,
@@ -171,6 +168,7 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
         lead_score_breakdown: score.lead_score_breakdown,
         lead_score_reasons: score.lead_score_reasons,
         quote_email_otp_verified: true,
+        quote_verification_id: quoteVerificationId,
       },
     },
     {
@@ -209,6 +207,7 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
       lead_grade: score.lead_grade,
       lead_temperature: score.lead_temperature,
       lead_score_breakdown: score.lead_score_breakdown,
+      quote_verification_id: quoteVerificationId,
     },
     ipAddress,
     userAgent,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAuthRedirectUrl } from "@/lib/auth/redirect-url";
 import { createClient } from "@/lib/supabase/client";
 
@@ -68,7 +68,48 @@ export function ResetPasswordForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSessionReady, setIsSessionReady] = useState(false);
+  const preparedRef = useRef(false);
   const supabase = createClient();
+
+  useEffect(() => {
+    if (preparedRef.current) {
+      return;
+    }
+
+    preparedRef.current = true;
+
+    async function prepareRecoverySession() {
+      setError(null);
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+
+      if (code) {
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+        if (exchangeError) {
+          setError("This reset link could not be verified. Please request a fresh password reset link.");
+          return;
+        }
+
+        window.history.replaceState(null, "", "/reset-password");
+        setIsSessionReady(true);
+        return;
+      }
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        setIsSessionReady(true);
+      } else {
+        setError("Open the password reset link from your email before choosing a new password.");
+      }
+    }
+
+    void prepareRecoverySession();
+  }, [supabase]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,10 +117,16 @@ export function ResetPasswordForm() {
     setError(null);
     setMessage(null);
 
+    if (!isSessionReady) {
+      setError("Your secure reset session is not ready. Open the reset link from your email again.");
+      setIsLoading(false);
+      return;
+    }
+
     const { error: updateError } = await supabase.auth.updateUser({ password });
 
     if (updateError) {
-      setError(updateError.message);
+      setError(updateError.message === "Auth session missing!" ? "Your reset session expired. Please request a new password reset link." : updateError.message);
     } else {
       setMessage("Your password has been updated. You can now sign in.");
     }
@@ -102,8 +149,14 @@ export function ResetPasswordForm() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
+          disabled={!isSessionReady || isLoading}
         />
       </label>
+      {!isSessionReady && !error ? (
+        <p className="mt-4 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          Verifying your secure reset link...
+        </p>
+      ) : null}
       {error ? <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
       {message ? (
         <p className="mt-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
@@ -113,7 +166,7 @@ export function ResetPasswordForm() {
       <button
         className="gold-gradient-button mt-5 h-11 w-full rounded-full px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         type="submit"
-        disabled={isLoading}
+        disabled={isLoading || !isSessionReady}
       >
         {isLoading ? "Updating..." : "Update password"}
       </button>

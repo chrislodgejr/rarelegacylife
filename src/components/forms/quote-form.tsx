@@ -1,13 +1,12 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { KeyRound, MailCheck, ShieldCheck } from "lucide-react";
-import { getAuthRedirectUrl } from "@/lib/auth/redirect-url";
 import { COVERAGE_LABELS, COVERAGE_PURPOSES, HEALTH_RATINGS, US_STATES } from "@/lib/constants/options";
 import { submitQuoteForm, type FormState } from "@/server/actions/public-forms";
+import { confirmQuoteVerification, sendQuoteVerification } from "@/server/actions/quote-verification";
 import { SubmitButton } from "@/components/forms/submit-button";
-import { createClient } from "@/lib/supabase/client";
 
 type TrackingDefaults = {
   utm_source?: string;
@@ -30,16 +29,16 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
   const [step, setStep] = useState(0);
   const [quoteEmail, setQuoteEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
+  const [quoteVerificationId, setQuoteVerificationId] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState<string | null>(null);
   const [otpMessage, setOtpMessage] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
   const [isOtpLoading, setIsOtpLoading] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
-  const supabase = useMemo(() => createClient(), []);
   const progress = ((step + 1) / steps.length) * 100;
   const normalizedQuoteEmail = normalizeEmail(quoteEmail);
-  const isQuoteEmailVerified = Boolean(verifiedEmail && verifiedEmail === normalizedQuoteEmail);
+  const isQuoteEmailVerified = Boolean(verifiedEmail && verifiedEmail === normalizedQuoteEmail && quoteVerificationId);
 
   useEffect(() => {
     if (resendIn <= 0) {
@@ -72,18 +71,15 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
     }
 
     setIsOtpLoading(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email: normalizedQuoteEmail,
-      options: {
-        emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
-        shouldCreateUser: true,
-      },
-    });
+    const result = await sendQuoteVerification(normalizedQuoteEmail);
 
-    if (error) {
-      setOtpError("We could not send a secure code right now. Please try again.");
+    if (!result.ok || !result.verificationId) {
+      setOtpError(result.message);
     } else {
-      setOtpMessage("Secure code sent. Check your email and enter the six-digit code below.");
+      setQuoteVerificationId(result.verificationId);
+      setOtpCode("");
+      setVerifiedEmail(null);
+      setOtpMessage(result.message);
       setResendIn(60);
     }
 
@@ -94,23 +90,25 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
     setOtpError(null);
     setOtpMessage(null);
 
+    if (!quoteVerificationId) {
+      setOtpError("Please request a verification code first.");
+      return;
+    }
+
     if (otpCode.length !== 6) {
       setOtpError("Enter the six-digit code from your email.");
       return;
     }
 
     setIsOtpLoading(true);
-    const { error } = await supabase.auth.verifyOtp({
-      email: normalizedQuoteEmail,
-      token: otpCode,
-      type: "email",
-    });
+    const result = await confirmQuoteVerification(quoteVerificationId, normalizedQuoteEmail, otpCode);
 
-    if (error) {
-      setOtpError("That code is invalid or expired. Please try again or request a new code.");
+    if (!result.ok) {
+      setOtpError(result.message);
     } else {
       setVerifiedEmail(normalizedQuoteEmail);
-      setOtpMessage("Email verified. You can now submit your quote request securely.");
+      setQuoteVerificationId(result.verificationId ?? quoteVerificationId);
+      setOtpMessage(result.message);
     }
 
     setIsOtpLoading(false);
@@ -118,6 +116,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
 
   return (
     <form ref={formRef} action={action} className="premium-card grid gap-6 rounded-2xl p-5 text-[#050505] md:p-8">
+      <input name="quote_verification_id" type="hidden" value={quoteVerificationId} />
       <input name="utm_source" type="hidden" value={tracking.utm_source ?? ""} />
       <input name="utm_medium" type="hidden" value={tracking.utm_medium ?? ""} />
       <input name="utm_campaign" type="hidden" value={tracking.utm_campaign ?? ""} />
@@ -174,6 +173,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
               setQuoteEmail(nextEmail);
               if (verifiedEmail && normalizeEmail(nextEmail) !== verifiedEmail) {
                 setVerifiedEmail(null);
+                setQuoteVerificationId("");
                 setOtpMessage(null);
               }
             }}
@@ -286,8 +286,8 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
               Verify your email before submitting.
             </h3>
             <p className="mt-2 text-sm leading-6 text-neutral-600">
-              We use Supabase Auth OTP to confirm this quote request belongs to you. This does not
-              approve portal access or expose CRM data.
+              We email a six-digit Rare Legacy Life verification code through our secure mail provider.
+              This confirms the quote request email only; it does not create portal access or expose CRM data.
             </p>
           </div>
           <span
