@@ -19,6 +19,7 @@ const agentNav = [
   { href: "/agent/dashboard", label: "Dashboard" },
   { href: "/agent/leads", label: "Leads" },
   { href: "/agent/profile", label: "Profile" },
+  { href: "/agent/feature-requests", label: "Feature Requests" },
   { href: "/agent/messages", label: "Messages" },
   { href: "/agent/tasks", label: "Tasks" },
   { href: "/agent/performance", label: "Performance" },
