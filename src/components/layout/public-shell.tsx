@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Menu } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
 import { EntrySplash } from "@/components/ui/entry-splash";
 import { PUBLIC_NAV } from "@/lib/constants/options";
@@ -34,11 +35,44 @@ export function PublicHeader() {
             Login
           </Link>
           <Link
-            className="gold-gradient-button inline-flex h-10 items-center rounded-full px-5 text-sm font-bold"
+            className="gold-gradient-button hidden h-10 items-center rounded-full px-5 text-sm font-bold sm:inline-flex"
             href="/quote"
           >
             Get My Free Quote
           </Link>
+          <details className="group relative md:hidden">
+            <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-white/15 bg-white/[0.055] text-white transition hover:border-[#C9A227]/70 hover:text-[#F5E7A3] [&::-webkit-details-marker]:hidden">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Open navigation menu</span>
+            </summary>
+            <div className="absolute right-0 top-12 z-50 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-white/12 bg-black/95 p-3 shadow-2xl shadow-black/40 backdrop-blur">
+              <nav className="grid gap-1 text-sm">
+                {PUBLIC_NAV.map((item) => (
+                  <Link
+                    key={item.href}
+                    className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-[#F5E7A3]"
+                    href={item.href}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="mt-3 grid gap-2 border-t border-white/10 pt-3">
+                <Link
+                  className="rounded-xl border border-white/12 px-4 py-3 text-center text-sm font-semibold text-white/76 transition hover:border-[#C9A227]/70 hover:text-[#F5E7A3]"
+                  href="/login"
+                >
+                  Agent Login
+                </Link>
+                <Link
+                  className="gold-gradient-button rounded-xl px-4 py-3 text-center text-sm font-bold"
+                  href="/quote"
+                >
+                  Get My Free Quote
+                </Link>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     </header>
