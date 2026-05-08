@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { Agent } from "@/types/domain";
 
 type AgentWithLicenses = Agent & {
@@ -31,13 +31,13 @@ type DisplayAgent = {
 };
 
 export default async function AdminAgentsPage() {
-  const supabase = await createClient();
+  const admin = createAdminClient();
   const [{ data: agents }, { data: profiles }] = await Promise.all([
-    supabase
+    admin
       .from("agents")
       .select("*, agent_licenses(state, license_status)")
       .order("last_name"),
-    supabase
+    admin
       .from("profiles")
       .select("id, full_name, email, role, status, phone, state, created_at")
       .in("role", ["agent", "manager", "admin", "support"])
