@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getAuthRedirectUrl } from "@/lib/auth/redirect-url";
 import { createClient } from "@/lib/supabase/client";
 
 export function ForgotPasswordForm() {
@@ -17,7 +18,7 @@ export function ForgotPasswordForm() {
     setMessage(null);
 
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: getAuthRedirectUrl("/reset-password"),
     });
 
     if (resetError) {

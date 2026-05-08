@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { KeyRound, MailCheck, ShieldCheck } from "lucide-react";
+import { getAuthRedirectUrl } from "@/lib/auth/redirect-url";
 import { COVERAGE_LABELS, COVERAGE_PURPOSES, HEALTH_RATINGS, US_STATES } from "@/lib/constants/options";
 import { submitQuoteForm, type FormState } from "@/server/actions/public-forms";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -74,7 +75,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
     const { error } = await supabase.auth.signInWithOtp({
       email: normalizedQuoteEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
         shouldCreateUser: true,
       },
     });

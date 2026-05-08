@@ -4,6 +4,7 @@ import { useState } from "react";
 import { KeyRound, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { getAuthRedirectUrl } from "@/lib/auth/redirect-url";
 import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
@@ -29,7 +30,7 @@ export function LoginForm() {
             email,
             password,
             options: {
-              emailRedirectTo: `${window.location.origin}/auth/callback`,
+              emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
             },
           });
 
@@ -57,7 +58,7 @@ export function LoginForm() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: getAuthRedirectUrl("/auth/callback"),
       },
     });
 
@@ -77,7 +78,7 @@ export function LoginForm() {
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
         shouldCreateUser: true,
       },
     });

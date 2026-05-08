@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { KeyRound, MailCheck } from "lucide-react";
+import { getAuthRedirectUrl } from "@/lib/auth/redirect-url";
 import { createClient } from "@/lib/supabase/client";
 
 const resendSeconds = 60;
@@ -70,7 +71,7 @@ export function OtpVerificationForm() {
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
         shouldCreateUser: true,
       },
     });
