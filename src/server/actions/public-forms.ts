@@ -1,9 +1,12 @@
 "use server";
 
-import { headers } from "next/headers";
+import { createHmac, randomInt, timingSafeEqual } from "crypto";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { createAuditLog } from "@/lib/audit";
 import { COVERAGE_LABELS } from "@/lib/constants/options";
+import { sendEmail } from "@/lib/email/provider";
 import { findAgentForLead } from "@/lib/lead-assignment";
 import { calculateLeadScore } from "@/lib/lead-scoring";
 import {
@@ -13,7 +16,6 @@ import {
 } from "@/lib/notifications";
 import { createCrmNotification, notifyAdmins } from "@/lib/notifications/db";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import {
   agentApplicationSchema,
   contactFormSchema,
@@ -30,6 +32,111 @@ const defaultError = {
   message: "Please check the form and try again.",
 };
 
+const quoteEmailSchema = z.string().trim().email("Enter a valid email").toLowerCase();
+const quoteOtpSchema = z.string().trim().regex(/^\d{6}$/, "Enter the six-digit code from your email.");
+const QUOTE_OTP_COOKIE = "rll_quote_otp";
+const QUOTE_VERIFIED_COOKIE = "rll_quote_verified";
+const QUOTE_OTP_TTL_SECONDS = 10 * 60;
+const QUOTE_VERIFIED_TTL_SECONDS = 30 * 60;
+
+type QuoteOtpPayload = {
+  email: string;
+  codeHash: string;
+  expiresAt: number;
+};
+
+type QuoteVerifiedPayload = {
+  email: string;
+  verifiedAt: number;
+  expiresAt: number;
+};
+
+export async function sendQuoteOtpCode(email: string): Promise<FormState> {
+  const parsedEmail = quoteEmailSchema.safeParse(email);
+
+  if (!parsedEmail.success) {
+    return { ok: false, message: parsedEmail.error.issues[0]?.message ?? "Enter a valid email." };
+  }
+
+  const normalizedEmail = parsedEmail.data;
+  const code = randomInt(100000, 1000000).toString();
+  const expiresAt = Date.now() + QUOTE_OTP_TTL_SECONDS * 1000;
+
+  try {
+    const result = await sendEmail({
+      to: normalizedEmail,
+      subject: "Rare Legacy Life quote verification code",
+      text: `Your Rare Legacy Life quote verification code is ${code}. This code expires in 10 minutes.`,
+      html: `<p>Your Rare Legacy Life quote verification code is:</p><p style="font-size:24px;font-weight:700;letter-spacing:4px;">${code}</p><p>This code expires in 10 minutes.</p>`,
+    });
+
+    if (result.skipped) {
+      return {
+        ok: false,
+        message: "Quote verification email is not configured. Add RESEND_API_KEY and RESEND_FROM_EMAIL before using quote verification.",
+      };
+    }
+  } catch (error) {
+    console.error("Quote OTP email failed", error);
+    return {
+      ok: false,
+      message: "We could not send the verification email right now. Please try again.",
+    };
+  }
+
+  const cookieStore = await cookies();
+  cookieStore.set(
+    QUOTE_OTP_COOKIE,
+    signCookie<QuoteOtpPayload>({
+      email: normalizedEmail,
+      codeHash: hashOtp(normalizedEmail, code),
+      expiresAt,
+    }),
+    secureCookieOptions(QUOTE_OTP_TTL_SECONDS),
+  );
+  cookieStore.delete(QUOTE_VERIFIED_COOKIE);
+
+  return { ok: true, message: "Verification code sent. Check your email and enter the six-digit code below." };
+}
+
+export async function verifyQuoteOtpCode(email: string, code: string): Promise<FormState> {
+  const parsedEmail = quoteEmailSchema.safeParse(email);
+  const parsedCode = quoteOtpSchema.safeParse(code);
+
+  if (!parsedEmail.success) {
+    return { ok: false, message: parsedEmail.error.issues[0]?.message ?? "Enter a valid email." };
+  }
+
+  if (!parsedCode.success) {
+    return { ok: false, message: parsedCode.error.issues[0]?.message ?? "Enter the six-digit code from your email." };
+  }
+
+  const normalizedEmail = parsedEmail.data;
+  const cookieStore = await cookies();
+  const payload = readSignedCookie<QuoteOtpPayload>(cookieStore.get(QUOTE_OTP_COOKIE)?.value);
+
+  if (!payload || payload.email !== normalizedEmail || payload.expiresAt < Date.now()) {
+    return { ok: false, message: "That verification code expired. Please request a new code." };
+  }
+
+  if (!safeEqual(payload.codeHash, hashOtp(normalizedEmail, parsedCode.data))) {
+    return { ok: false, message: "That verification code is incorrect. Please try again." };
+  }
+
+  cookieStore.set(
+    QUOTE_VERIFIED_COOKIE,
+    signCookie<QuoteVerifiedPayload>({
+      email: normalizedEmail,
+      verifiedAt: Date.now(),
+      expiresAt: Date.now() + QUOTE_VERIFIED_TTL_SECONDS * 1000,
+    }),
+    secureCookieOptions(QUOTE_VERIFIED_TTL_SECONDS),
+  );
+  cookieStore.delete(QUOTE_OTP_COOKIE);
+
+  return { ok: true, message: "Email verified. You can now submit your quote request securely." };
+}
+
 export async function submitQuoteForm(_previousState: FormState, formData: FormData) {
   const parsed = quoteFormSchema.safeParse(Object.fromEntries(formData.entries()));
 
@@ -41,12 +148,9 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
   }
 
   const input = parsed.data;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const verifiedEmail = await getVerifiedQuoteEmail();
 
-  if (!user?.email || user.email.toLowerCase() !== input.email) {
+  if (verifiedEmail !== input.email) {
     return {
       ok: false,
       message: "Please verify the quote email with the one-time code before submitting.",
@@ -91,7 +195,7 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
       lead_score_breakdown: score.lead_score_breakdown,
       quote_email_otp_verified: true,
       quote_email_otp_verified_at: now,
-      quote_auth_user_id: user.id,
+      quote_auth_user_id: null,
       assigned_agent_id: assignment.agent?.id ?? null,
       assigned_at: assignment.agent ? now : null,
       last_activity_at: now,
@@ -124,6 +228,9 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
       message: "We could not submit your request. Please try again.",
     };
   }
+
+  const cookieStore = await cookies();
+  cookieStore.delete(QUOTE_VERIFIED_COOKIE);
 
   await admin.from("consent_records").insert([
     buildConsentRecord(lead.id, "tcpa", input.consent_tcpa, now, ipAddress, userAgent, sourceUrl),
@@ -360,6 +467,75 @@ function buildConsentRecord(
     ip_address: ipAddress,
     user_agent: userAgent,
     source_url: sourceUrl ?? null,
+  };
+}
+
+async function getVerifiedQuoteEmail() {
+  const cookieStore = await cookies();
+  const payload = readSignedCookie<QuoteVerifiedPayload>(cookieStore.get(QUOTE_VERIFIED_COOKIE)?.value);
+
+  if (!payload || payload.expiresAt < Date.now()) {
+    return null;
+  }
+
+  return payload.email;
+}
+
+function hashOtp(email: string, code: string) {
+  return hmac(`quote-otp:${email}:${code}`);
+}
+
+function signCookie<T>(payload: T) {
+  const encoded = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+  return `${encoded}.${hmac(encoded)}`;
+}
+
+function readSignedCookie<T>(value?: string) {
+  if (!value) {
+    return null;
+  }
+
+  const [encoded, signature] = value.split(".");
+
+  if (!encoded || !signature || !safeEqual(signature, hmac(encoded))) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(Buffer.from(encoded, "base64url").toString("utf8")) as T;
+  } catch {
+    return null;
+  }
+}
+
+function hmac(value: string) {
+  const secret =
+    process.env.QUOTE_OTP_SECRET ??
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.RESEND_API_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!secret) {
+    throw new Error("Quote OTP secret is not configured.");
+  }
+
+  return createHmac("sha256", secret).update(value).digest("hex");
+}
+
+function safeEqual(left: string, right: string) {
+  const leftBuffer = Buffer.from(left);
+  const rightBuffer = Buffer.from(right);
+
+  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function secureCookieOptions(maxAge: number) {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge,
   };
 }
 
