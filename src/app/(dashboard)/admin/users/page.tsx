@@ -1,4 +1,5 @@
 import { UserApprovalForm } from "@/components/dashboard/user-approval-form";
+import { UserPasswordResetForm } from "@/components/dashboard/user-password-reset-form";
 import { requireRole } from "@/lib/auth/session";
 import { ROLE_LABELS } from "@/lib/constants/options";
 import { createClient } from "@/lib/supabase/server";
@@ -16,7 +17,9 @@ export default async function AdminUsersPage() {
   return (
     <div>
       <h1 className="text-3xl font-semibold text-[#050505]">Users</h1>
-      <p className="mt-2 text-sm text-neutral-600">Approve pending users and assign portal roles.</p>
+      <p className="mt-2 text-sm text-neutral-600">
+        Approve users, assign portal roles, and send password reset emails.
+      </p>
 
       <div className="mt-6 grid gap-4">
         {((profiles ?? []) as Profile[]).map((profile) => (
@@ -35,6 +38,7 @@ export default async function AdminUsersPage() {
               currentStatus={profile.status}
               profileId={profile.id}
             />
+            <UserPasswordResetForm email={profile.email} />
           </div>
         ))}
         {!profiles?.length ? (
