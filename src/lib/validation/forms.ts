@@ -35,6 +35,14 @@ const phoneSchema = z
   .min(7, "Enter a valid phone number")
   .max(32, "Phone number is too long");
 
+const optionalAttribution = z
+  .string()
+  .trim()
+  .max(500)
+  .transform((value) => (value.length > 0 ? value : null))
+  .optional()
+  .nullable();
+
 export const quoteFormSchema = z.object({
   first_name: requiredText.max(80),
   last_name: requiredText.max(80),
@@ -107,6 +115,42 @@ export const agentApplicationSchema = z.object({
   interest_reason: requiredText.min(10).max(2500),
 });
 
+export const retirementBlueprintSchema = z.object({
+  full_name: requiredText
+    .min(3, "Enter your first and last name")
+    .max(161, "Name is too long")
+    .refine((value) => value.split(/\s+/).length >= 2, "Enter your first and last name"),
+  phone: phoneSchema,
+  email: emailSchema,
+  zip_code: requiredText.regex(/^\d{5}(-\d{4})?$/, "Enter a valid ZIP code"),
+  meeting_style: z.enum(["virtual", "home", "office", "phone"], {
+    error: "Choose how you would like to meet",
+  }),
+  best_time_to_contact: requiredText
+    .min(2, "Tell us a good day or time")
+    .max(160, "Please keep this under 160 characters"),
+  question: z
+    .string()
+    .trim()
+    .max(2500, "Please keep this under 2,500 characters")
+    .transform((value) => (value.length > 0 ? value : null))
+    .optional(),
+  consent_tcpa: checkbox.refine((value) => value, "Please review and accept the contact consent"),
+  website: z.string().trim().max(200).optional().default(""),
+  started_at: z.string().trim().max(32).optional().default(""),
+  utm_source: optionalAttribution,
+  utm_medium: optionalAttribution,
+  utm_campaign: optionalAttribution,
+  utm_content: optionalAttribution,
+  utm_term: optionalAttribution,
+  gclid: optionalAttribution,
+  fbclid: optionalAttribution,
+  msclkid: optionalAttribution,
+  qr_source: optionalAttribution,
+  landing_page: optionalAttribution,
+  referrer: optionalAttribution,
+});
+
 export const leadStatusSchema = z.object({
   lead_id: z.string().uuid(),
   status: z.enum(LEAD_STATUSES),
@@ -165,3 +209,4 @@ export const internalChatMessageSchema = z.object({
 export type QuoteFormInput = z.infer<typeof quoteFormSchema>;
 export type ContactFormInput = z.infer<typeof contactFormSchema>;
 export type AgentApplicationInput = z.infer<typeof agentApplicationSchema>;
+export type RetirementBlueprintInput = z.infer<typeof retirementBlueprintSchema>;
