@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { PublicFooter, PublicHeader } from "@/components/layout/public-shell";
 import { RetirementLanding } from "./retirement-landing";
 
 const title = "Complimentary Retirement Income Blueprint | Rare Legacy Life Group";
@@ -43,5 +44,11 @@ export const viewport: Viewport = {
 };
 
 export default function RetirementPage() {
-  return <RetirementLanding />;
+  return (
+    <>
+      <PublicHeader />
+      <RetirementLanding />
+      <PublicFooter />
+    </>
+  );
 }

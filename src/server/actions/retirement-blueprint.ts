@@ -223,7 +223,7 @@ async function sendRetirementNotification(input: {
   specialistEmail: string | null;
 }) {
   const configuredEmails = (
-    process.env.RETIREMENT_LEAD_NOTIFICATION_EMAIL ?? process.env.ADMIN_NOTIFICATION_EMAIL ?? ""
+    process.env.RETIREMENT_LEAD_NOTIFICATION_EMAIL?.trim() || "christian@rarelegacylife.com"
   )
     .split(",")
     .map((email) => email.trim())

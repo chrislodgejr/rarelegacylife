@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Rare Legacy Life",
   description:
-    "Life insurance guidance, quote requests, CRM, and agent workflows for Rare Legacy Life.",
+    "Personal life insurance guidance, retirement income reviews, and annuity education from Rare Legacy Life Group.",
   icons: {
     icon: "/favicon.png",
     apple: "/apple-touch-icon.png",

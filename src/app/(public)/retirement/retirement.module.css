@@ -683,6 +683,35 @@
   font-size: 13px;
 }
 
+.schedulerEmbed {
+  margin-top: 24px;
+  text-align: left;
+}
+
+.schedulerEmbed iframe {
+  background: #fff;
+  border: 1px solid #d9ddd7;
+  border-radius: 8px;
+  display: block;
+  height: min(720px, 78vh);
+  min-height: 560px;
+  width: 100%;
+}
+
+.schedulerEmbed p {
+  color: var(--ink-muted);
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 12px 0 0;
+  text-align: center;
+}
+
+.schedulerEmbed a {
+  color: #4d3b19;
+  font-weight: 750;
+  text-underline-offset: 2px;
+}
+
 .faqSection {
   background: var(--ivory);
   padding: 72px 18px;

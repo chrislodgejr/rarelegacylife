@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { BrandLogo } from "@/components/brand/logo";
 import {
   RetirementBlueprintState,
   submitRetirementBlueprint,
@@ -49,6 +48,8 @@ const emptyAttribution: Attribution = {
   msclkid: "",
   qr_source: "",
 };
+
+const schedulerUrl = "https://scheduler.zoom.us/christian-pennachiett";
 
 const meetingOptions: Array<{
   value: MeetingStyle;
@@ -121,7 +122,7 @@ const faqs = [
   {
     question: "Can Rare Legacy work with clients outside Pennsylvania?",
     answer:
-      "Services are available only where the appropriate professional is properly licensed. We will confirm availability for your state before moving forward.",
+      "Insurance services are available in 49 states, excluding California, only where the appropriate professional is properly licensed and appointed and the product is available. We will confirm availability before moving forward.",
   },
 ];
 
@@ -262,28 +263,6 @@ export function RetirementLanding() {
         Skip to main content
       </a>
 
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <Link aria-label="Rare Legacy Life Group home" className={styles.logoLink} href="/">
-            <BrandLogo
-              className={styles.logo}
-              lockup="horizontal"
-              priority
-              treatment="original"
-              variant="dark"
-            />
-          </Link>
-          <button
-            className={styles.callLink}
-            onClick={() => chooseMeeting("phone", true)}
-            type="button"
-          >
-            <Phone aria-hidden="true" size={16} strokeWidth={1.8} />
-            Request a Call
-          </button>
-        </div>
-      </header>
-
       <main id="main-content">
         <section aria-labelledby="hero-title" className={styles.hero}>
           <div className={styles.heroInner}>
@@ -411,7 +390,9 @@ export function RetirementLanding() {
               <p className={styles.sectionEyebrow}>Your next step</p>
               <h2 id="form-title">Request your complimentary blueprint.</h2>
               <p>
-                Share a few details and a Rare Legacy team member will reach out to confirm a time.
+                Share a few details first so Christian receives your request. Virtual and phone
+                visitors can then choose a time without leaving this page; for home and office
+                meetings, Christian will reach out to confirm the details.
               </p>
               <div className={styles.assuranceCard}>
                 <CalendarDays aria-hidden="true" size={24} strokeWidth={1.6} />
@@ -424,20 +405,49 @@ export function RetirementLanding() {
 
             <div className={styles.formCard}>
               {state.ok ? (
-                <div aria-live="polite" className={styles.successState} role="status">
-                  <span className={styles.successIcon}>
-                    <CheckCircle2 aria-hidden="true" size={32} strokeWidth={1.7} />
-                  </span>
-                  <p className={styles.successEyebrow}>Request received</p>
-                  <h3>Thank you. We&apos;ll be in touch.</h3>
-                  <p>{state.message}</p>
-                  <div className={styles.successNext}>
-                    <strong>What happens next</strong>
-                    <span>
-                      We&apos;ll confirm your preferred meeting style and find a time that works for
-                      you.
+                <div className={styles.successState}>
+                  <div aria-live="polite" role="status">
+                    <span className={styles.successIcon}>
+                      <CheckCircle2 aria-hidden="true" size={32} strokeWidth={1.7} />
                     </span>
+                    <p className={styles.successEyebrow}>Request received</p>
+                    <h3>
+                      {meetingStyle === "virtual" || meetingStyle === "phone"
+                        ? "Now choose a time with Christian."
+                        : "Thank you. We'll be in touch."}
+                    </h3>
+                    <p>{state.message}</p>
                   </div>
+                  {meetingStyle === "virtual" || meetingStyle === "phone" ? (
+                    <div className={styles.schedulerEmbed}>
+                      <iframe
+                        allow="clipboard-write"
+                        loading="lazy"
+                        onLoad={() =>
+                          trackEvent("meeting_option_click", {
+                            option: meetingStyle,
+                            action: "embedded_zoom_scheduler_loaded",
+                          }, state.requestId)
+                        }
+                        src={schedulerUrl}
+                        title="Choose a meeting time with Christian using Zoom Scheduler"
+                      />
+                      <p>
+                        If the scheduler does not display, use the secure fallback link to{" "}
+                        <a href={schedulerUrl} rel="noopener noreferrer" target="_blank">
+                          open Zoom Scheduler
+                        </a>.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className={styles.successNext}>
+                      <strong>What happens next</strong>
+                      <span>
+                        Christian will contact you to confirm the home or office meeting details and
+                        find a time that works for you.
+                      </span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <form
@@ -633,7 +643,7 @@ export function RetirementLanding() {
                 onClick={() => chooseMeeting("phone", true)}
                 type="button"
               >
-                Request a call <ArrowRight aria-hidden="true" size={17} />
+                Start by phone <ArrowRight aria-hidden="true" size={17} />
               </button>
             </div>
             <div className={styles.faqList}>
@@ -650,38 +660,6 @@ export function RetirementLanding() {
           </div>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerTop}>
-            <BrandLogo
-              className={styles.footerLogo}
-              lockup="horizontal"
-              treatment="original"
-              variant="dark"
-            />
-            <address>59 W. Germantown Pike, East Norriton, PA 19403</address>
-          </div>
-          <div className={styles.disclosure}>
-            <strong>Compliance draft—must be reviewed before launch.</strong>
-            <p>
-              Insurance products are offered through properly licensed insurance producers.
-              Securities, if offered, are offered through appropriately registered representatives
-              and their affiliated broker-dealer. Annuities are long-term insurance contracts and
-              may involve surrender charges, limitations and tax consequences. Guarantees depend on
-              the issuing insurer&apos;s claims-paying ability. This page is for educational purposes
-              and does not provide investment, tax or legal advice.
-            </p>
-          </div>
-          <div className={styles.footerBottom}>
-            <span>© {new Date().getFullYear()} Rare Legacy Life Group</span>
-            <span>
-              <Link href="/privacy">Privacy</Link>
-              <Link href="/terms">Terms</Link>
-            </span>
-          </div>
-        </div>
-      </footer>
 
       <button
         className={styles.stickyCta}

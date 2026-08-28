@@ -55,6 +55,25 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (orientation: landscape) and (max-height: 600px) and (min-width: 640px) and (max-width: 1023px) {
+  .home-hero-grid {
+    min-height: auto;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .home-hero-title {
+    font-size: clamp(2.35rem, 6.4vw, 3.55rem);
+    line-height: 0.98;
+  }
+
+  .home-hero-stats {
+    display: none;
+  }
+}
+
 a,
 button,
 input,

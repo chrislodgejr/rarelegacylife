@@ -18,7 +18,7 @@ The existing Supabase and Resend variables continue to power the integration. Co
 
 | Environment variable | Purpose | Required |
 | --- | --- | --- |
-| `RETIREMENT_LEAD_NOTIFICATION_EMAIL` | Mailbox for new-request notifications. Multiple addresses may be comma-separated. Falls back to `ADMIN_NOTIFICATION_EMAIL`. | Yes for email routing |
+| `RETIREMENT_LEAD_NOTIFICATION_EMAIL` | Mailbox for new-request notifications. Multiple addresses may be comma-separated. Defaults to `christian@rarelegacylife.com`. | Recommended; Christian remains the server-side fallback |
 | `RETIREMENT_SPECIALIST_AGENT_ID` | UUID of the active specialist in `public.agents`; assigns the request and adds the agent email to notifications. | Optional |
 | `RETIREMENT_CRM_WEBHOOK_URL` | HTTPS endpoint that receives a `retirement_blueprint.requested` JSON payload. | Optional |
 | `RETIREMENT_CRM_WEBHOOK_BEARER_TOKEN` | Bearer token attached only to the outbound CRM webhook. | Recommended with webhook |
@@ -97,7 +97,7 @@ Content-Type: application/json
 }
 ```
 
-The endpoint marks the request `scheduled` and records `successful_appointment`. A hosted scheduler may also redirect to `/retirement?appointment=confirmed&appointment_id=...` for client-side analytics, but the authenticated webhook is the authoritative signal.
+The endpoint marks the request `scheduled` and records `successful_appointment`. After the Rare Legacy lead form is submitted, virtual and phone visitors see `https://scheduler.zoom.us/christian-pennachiett` embedded in the branded success state, with a secure fallback link if their browser blocks the frame. Configure Zoom Scheduler to call this endpoint or redirect to `/retirement?appointment=confirmed&appointment_id=...` after booking. The authenticated webhook is the authoritative signal.
 
 ## Form behavior and spam controls
 
