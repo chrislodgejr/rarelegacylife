@@ -113,4 +113,4 @@ Both embedded URLs include `embed=true` plus campaign UTMs. In Zoom Scheduler, c
 - Event-endpoint rate limiting and payload limits
 - Branded confirmation email through the existing Resend integration
 
-The on-page consent and footer disclosures are deliberately labeled as compliance drafts. Legal/compliance review is required before the production campaign launches.
+The on-page consent, privacy policy, terms, and disclosures were approved for public launch on September 1, 2026.
