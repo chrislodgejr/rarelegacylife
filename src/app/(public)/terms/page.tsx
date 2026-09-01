@@ -52,7 +52,7 @@ export default function TermsPage() {
             title="Terms and Conditions"
             copy="These terms explain how visitors, clients, agents, and portal users may use the Rare Legacy Life website and platform."
           />
-          <p className="mt-8 text-sm text-white/58">Effective date: May 8, 2026</p>
+          <p className="mt-8 text-sm text-white/58">Effective date: September 1, 2026</p>
         </Section>
         <Section className="bg-[#F7F5EF]">
           <div className="grid gap-4">
@@ -63,10 +63,6 @@ export default function TermsPage() {
               </article>
             ))}
           </div>
-          <p className="mt-8 text-sm leading-7 text-neutral-600">
-            These terms are a practical starting point and should be reviewed by qualified legal
-            counsel before production launch.
-          </p>
         </Section>
       </main>
     </PublicShell>
