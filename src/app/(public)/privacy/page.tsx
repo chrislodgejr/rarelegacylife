@@ -9,7 +9,7 @@ const sections = [
   },
   {
     title: "How We Use Information",
-    copy: "We use information to respond to quote requests, help identify coverage options, connect you with an advisor, maintain consent and compliance records, improve our website, protect the platform, and manage internal CRM workflows.",
+    copy: "We use information to respond to quote requests, help identify coverage options, connect you with an advisor, maintain consent and compliance records, improve our website, protect the platform, and administer requests and service records.",
   },
   {
     title: "Sensitive Information",
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
             title="Privacy Policy"
             copy="Rare Legacy Life treats quote requests and personal information with care, restraint, and security."
           />
-          <p className="mt-8 text-sm text-white/58">Effective date: May 8, 2026</p>
+          <p className="mt-8 text-sm text-white/58">Effective date: September 1, 2026</p>
         </Section>
         <Section className="bg-[#F7F5EF]">
           <div className="grid gap-4">
@@ -59,10 +59,6 @@ export default function PrivacyPage() {
               </article>
             ))}
           </div>
-          <p className="mt-8 text-sm leading-7 text-neutral-600">
-            This page is provided as a practical business privacy notice and should be reviewed by
-            qualified legal counsel before production launch.
-          </p>
         </Section>
       </main>
     </PublicShell>
