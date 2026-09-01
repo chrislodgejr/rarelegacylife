@@ -117,6 +117,7 @@ export const US_STATES = [
 export const PUBLIC_NAV = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
+  { href: "/retirement", label: "Retirement" },
   { href: "/education", label: "Education" },
   { href: "/apply-as-agent", label: "Apply as Agent" },
   { href: "/contact", label: "Contact" },

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, Shield, Sparkles, Users } from "lucide-react";
+import { CalendarDays, CheckCircle2, Shield, Sparkles, Users } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
 import { Section } from "@/components/ui/section";
 import {
@@ -20,7 +20,7 @@ export default function HomePage() {
           <div className="signal-grid absolute inset-0 opacity-25" aria-hidden="true" />
           <div className="absolute right-[-12rem] top-12 h-[34rem] w-[34rem] rounded-full border border-[#C9A227]/[0.18]" aria-hidden="true" />
           <div className="absolute right-[-5rem] top-32 h-[21rem] w-[21rem] rounded-full border border-[#FFF2B8]/10" aria-hidden="true" />
-          <div className="relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_0.88fr] lg:px-8">
+          <div className="home-hero-grid relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_0.88fr] lg:px-8">
             <div className="flex flex-col justify-center">
               <HeroReveal>
                 <p className="gold-gradient-text text-sm font-semibold uppercase tracking-[0.28em]">
@@ -31,14 +31,14 @@ export default function HomePage() {
                 <GoldDivider className="mt-4 w-24" />
               </HeroReveal>
               <HeroReveal delay={0.16}>
-                <h1 className="font-premium mt-5 max-w-3xl text-5xl font-semibold leading-[0.94] sm:text-7xl lg:text-8xl">
-                  Protect the life you&apos;re building.
+                <h1 className="home-hero-title font-premium mt-5 max-w-3xl text-5xl font-semibold leading-[0.94] sm:text-7xl lg:text-8xl">
+                  Protect today. Plan what comes next.
                 </h1>
               </HeroReveal>
               <HeroReveal delay={0.24}>
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-                  Life insurance guidance for families, entrepreneurs, and everyday earners who want
-                  to protect the people, plans, and future that matter most.
+                  Personal guidance for life insurance, retirement income reviews, and annuity
+                  decisions—built around the people, plans, and legacy that matter most.
                 </p>
               </HeroReveal>
               <HeroReveal delay={0.32}>
@@ -46,9 +46,9 @@ export default function HomePage() {
                   <GoldButton href="/quote">Get My Free Quote</GoldButton>
                   <Link
                     className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:border-[#F5E7A3] hover:text-[#F5E7A3]"
-                    href="/education"
+                    href="/retirement"
                   >
-                    See How It Works
+                    Explore Retirement Planning
                   </Link>
                 </div>
               </HeroReveal>
@@ -58,7 +58,7 @@ export default function HomePage() {
                 </div>
               </HeroReveal>
               <HeroReveal delay={0.48}>
-                <div className="mt-8 grid max-w-lg grid-cols-3 gap-3">
+                <div className="home-hero-stats mt-8 grid max-w-lg grid-cols-3 gap-3">
                   {[
                     ["100%", "Private"],
                     ["4", "Steps"],
@@ -79,6 +79,27 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <Section className="bg-white">
+          <MotionReveal>
+            <PremiumSectionHeader
+              align="center"
+              eyebrow="Retirement planning"
+              title="Turn retirement questions into a clearer income plan."
+              copy="A complimentary review can help organize income sources, timing, market risk, liquidity, family goals, and the trade-offs surrounding annuities—without promising outcomes or pressuring you to purchase."
+            />
+            <div className="mt-9 grid gap-5 md:grid-cols-3">
+              <DarkValueLight icon={<CalendarDays />} title="Retirement income review" copy="See how Social Security, pensions, savings, and other income sources may work together." />
+              <DarkValueLight icon={<Shield />} title="Annuity education" copy="Understand contract features, surrender periods, liquidity limits, costs, and insurer-backed guarantees." />
+              <DarkValueLight icon={<Users />} title="Family and legacy goals" copy="Connect retirement decisions with the people, priorities, and legacy your plan is meant to support." />
+            </div>
+            <div className="mt-8 text-center">
+              <Link className="gold-gradient-button inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold" href="/retirement">
+                Request a Retirement Income Blueprint
+              </Link>
+            </div>
+          </MotionReveal>
+        </Section>
 
         <Section className="bg-[#F7F5EF]">
           <MotionReveal>
@@ -229,6 +250,16 @@ export default function HomePage() {
         </Section>
       </main>
     </PublicShell>
+  );
+}
+
+function DarkValueLight({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
+  return (
+    <div className="premium-card rounded-2xl p-6">
+      <div className="gold-gradient-subtle flex h-11 w-11 items-center justify-center rounded-full text-black">{icon}</div>
+      <h2 className="font-premium mt-5 text-2xl font-semibold text-black">{title}</h2>
+      <p className="mt-3 text-sm leading-6 text-[#737373]">{copy}</p>
+    </div>
   );
 }
 

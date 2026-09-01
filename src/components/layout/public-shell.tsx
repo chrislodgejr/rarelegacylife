@@ -15,7 +15,7 @@ export function PublicHeader() {
         >
           <BrandLogo className="h-10 w-auto sm:h-12" lockup="horizontal" priority variant="dark" />
         </Link>
-        <nav className="hidden items-center rounded-full border border-white/10 bg-white/[0.045] p-1 text-sm text-white/72 shadow-2xl shadow-black/20 backdrop-blur md:flex">
+        <nav className="hidden items-center rounded-full border border-white/10 bg-white/[0.045] p-1 text-sm text-white/72 shadow-2xl shadow-black/20 backdrop-blur lg:flex">
           {PUBLIC_NAV.map((item) => (
             <Link
               key={item.href}
@@ -29,18 +29,18 @@ export function PublicHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <Link
-            className="hidden h-10 items-center rounded-full border border-white/12 bg-white/[0.035] px-4 text-sm font-semibold text-white/72 transition hover:border-[#C9A227]/70 hover:bg-white/[0.075] hover:text-[#F5E7A3] sm:inline-flex"
+            className="hidden h-10 items-center rounded-full border border-white/12 bg-white/[0.035] px-4 text-sm font-semibold text-white/72 transition hover:border-[#C9A227]/70 hover:bg-white/[0.075] hover:text-[#F5E7A3] lg:inline-flex"
             href="/login"
           >
             Login
           </Link>
           <Link
-            className="gold-gradient-button hidden h-10 items-center rounded-full px-5 text-sm font-bold sm:inline-flex"
+            className="gold-gradient-button hidden h-10 items-center rounded-full px-5 text-sm font-bold md:inline-flex"
             href="/quote"
           >
             Get My Free Quote
           </Link>
-          <details className="group relative md:hidden">
+          <details className="group relative lg:hidden">
             <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-white/15 bg-white/[0.055] text-white transition hover:border-[#C9A227]/70 hover:text-[#F5E7A3] [&::-webkit-details-marker]:hidden">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Open navigation menu</span>
@@ -87,8 +87,8 @@ export function PublicFooter() {
         <div>
           <BrandLogo className="h-24 w-auto" lockup="stacked" variant="dark" />
           <p className="mt-3 max-w-md leading-6">
-            Life insurance made personal for families, entrepreneurs, and working people building a
-            legacy worth protecting.
+            Personal life insurance guidance, retirement income reviews, and annuity education for
+            people protecting today while planning what comes next.
           </p>
         </div>
         <div>
@@ -116,7 +116,27 @@ export function PublicFooter() {
             <Link className="hover:text-[#F5E7A3]" href="/terms">
               Terms and Conditions
             </Link>
+            <Link className="hover:text-[#F5E7A3]" href="/disclosures">
+              Disclosures
+            </Link>
           </div>
+        </div>
+      </div>
+      <div className="border-t border-white/10 px-4 py-7 text-xs leading-5 text-white/45 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <p className="max-w-6xl">
+            Insurance products are offered through properly licensed insurance producers. Insurance
+            services are available in 49 states, excluding California, subject to individual producer
+            licensing, carrier appointments, product approval, availability, and applicable law.
+            Annuities are long-term insurance contracts and may involve surrender charges, withdrawal
+            limitations, fees, market value adjustments, and tax consequences. Guarantees depend on
+            the issuing insurer&apos;s claims-paying ability. Securities-related services, if offered,
+            are offered only through appropriately registered representatives and their affiliated
+            broker-dealer. Website content and complimentary reviews are educational and do not
+            provide investment, tax, or legal advice. See the full disclosures for important
+            limitations.
+          </p>
+          <p className="mt-3">© {new Date().getFullYear()} Rare Legacy Life Group · 59 W. Germantown Pike, East Norriton, PA 19403</p>
         </div>
       </div>
     </footer>
