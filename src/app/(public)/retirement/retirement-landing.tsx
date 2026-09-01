@@ -631,9 +631,6 @@ export function RetirementLanding() {
                         condition of purchasing any product or service. See our{" "}
                         <Link href="/privacy">privacy policy</Link>.
                       </p>
-                      <p className={styles.draftLabel}>
-                        Compliance draft—final legal/compliance approval required before launch.
-                      </p>
                       <FieldError error={state.fieldErrors?.consent_tcpa} field="consent" />
                     </div>
                   </div>
