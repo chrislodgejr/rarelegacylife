@@ -20,9 +20,13 @@ import {
   RetirementBlueprintState,
   submitRetirementBlueprint,
 } from "@/server/actions/retirement-blueprint";
+import {
+  RETIREMENT_SCHEDULER_URLS,
+  RetirementMeetingStyle,
+} from "@/lib/constants/retirement";
 import styles from "./retirement.module.css";
 
-type MeetingStyle = "virtual" | "home" | "office" | "phone";
+type MeetingStyle = RetirementMeetingStyle;
 type Attribution = Record<
   | "utm_source"
   | "utm_medium"
@@ -48,8 +52,6 @@ const emptyAttribution: Attribution = {
   msclkid: "",
   qr_source: "",
 };
-
-const schedulerUrl = "https://scheduler.zoom.us/christian-pennachiett";
 
 const meetingOptions: Array<{
   value: MeetingStyle;
@@ -137,6 +139,7 @@ export function RetirementLanding() {
   const formStartedRef = useRef(false);
   const submittedRef = useRef(false);
   const trackedRequestRef = useRef<string | null>(null);
+  const trackedAppointmentRef = useRef<string | null>(null);
   const attributionRef = useRef<Attribution>(emptyAttribution);
   const sessionIdRef = useRef("");
   const meetingStyleRef = useRef<MeetingStyle | "">("");
@@ -197,10 +200,13 @@ export function RetirementLanding() {
     }
 
     attributionRef.current = captured;
-    setAttribution(captured);
-    setStartedAt(String(Date.now()));
-    setPageContext({ landingPage: window.location.href, referrer: document.referrer });
     sessionIdRef.current = getSessionId();
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      setAttribution(captured);
+      setStartedAt(String(Date.now()));
+      setPageContext({ landingPage: window.location.href, referrer: document.referrer });
+    });
 
     trackEvent("qr_landing_visit", { entry: "page_load" });
 
@@ -210,7 +216,44 @@ export function RetirementLanding() {
         source: "confirmation_redirect",
       });
     }
+
+    return () => window.cancelAnimationFrame(animationFrame);
   }, [trackEvent]);
+
+  useEffect(() => {
+    if (!state.ok || !state.requestId) {
+      return;
+    }
+
+    function handleSchedulerMessage(event: MessageEvent<unknown>) {
+      if (event.origin !== "https://scheduler.zoom.us") {
+        return;
+      }
+
+      if (!isZoomBookingMessage(event.data)) {
+        return;
+      }
+
+      const appointmentId = event.data.payload.scheduledEventId;
+      if (trackedAppointmentRef.current === appointmentId) {
+        return;
+      }
+
+      trackedAppointmentRef.current = appointmentId;
+      trackEvent(
+        "successful_appointment",
+        {
+          appointment_id: appointmentId,
+          attendee_id: event.data.payload.attendeeId,
+          source: "zoom_scheduler_embed",
+        },
+        state.requestId,
+      );
+    }
+
+    window.addEventListener("message", handleSchedulerMessage);
+    return () => window.removeEventListener("message", handleSchedulerMessage);
+  }, [state.ok, state.requestId, trackEvent]);
 
   useEffect(() => {
     if (state.ok && state.requestId && trackedRequestRef.current !== state.requestId) {
@@ -256,6 +299,10 @@ export function RetirementLanding() {
     submittedRef.current = true;
     trackEvent("form_submission");
   }
+
+  const schedulerUrl = meetingStyle
+    ? buildEmbeddedSchedulerUrl(meetingStyle, attribution)
+    : null;
 
   return (
     <div className={styles.page}>
@@ -411,14 +458,10 @@ export function RetirementLanding() {
                       <CheckCircle2 aria-hidden="true" size={32} strokeWidth={1.7} />
                     </span>
                     <p className={styles.successEyebrow}>Request received</p>
-                    <h3>
-                      {meetingStyle === "virtual" || meetingStyle === "phone"
-                        ? "Now choose a time with Christian."
-                        : "Thank you. We'll be in touch."}
-                    </h3>
+                    <h3>Now choose a time with Christian.</h3>
                     <p>{state.message}</p>
                   </div>
-                  {meetingStyle === "virtual" || meetingStyle === "phone" ? (
+                  {schedulerUrl && meetingStyle ? (
                     <div className={styles.schedulerEmbed}>
                       <iframe
                         allow="clipboard-write"
@@ -430,7 +473,7 @@ export function RetirementLanding() {
                           }, state.requestId)
                         }
                         src={schedulerUrl}
-                        title="Choose a meeting time with Christian using Zoom Scheduler"
+                        title={`Choose a time for your ${meetingLabels[meetingStyle]} with Christian`}
                       />
                       <p>
                         If the scheduler does not display, use the secure fallback link to{" "}
@@ -439,15 +482,7 @@ export function RetirementLanding() {
                         </a>.
                       </p>
                     </div>
-                  ) : (
-                    <div className={styles.successNext}>
-                      <strong>What happens next</strong>
-                      <span>
-                        Christian will contact you to confirm the home or office meeting details and
-                        find a time that works for you.
-                      </span>
-                    </div>
-                  )}
+                  ) : null}
                 </div>
               ) : (
                 <form
@@ -709,4 +744,41 @@ function getSessionId() {
       : `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   window.sessionStorage.setItem(storageKey, id);
   return id;
+}
+
+function buildEmbeddedSchedulerUrl(meetingStyle: MeetingStyle, attribution: Attribution) {
+  const url = new URL(RETIREMENT_SCHEDULER_URLS[meetingStyle]);
+  url.searchParams.set("embed", "true");
+  url.searchParams.set("utm_source", attribution.utm_source || "rare_legacy_website");
+  url.searchParams.set("utm_medium", attribution.utm_medium || "website");
+  url.searchParams.set("utm_campaign", attribution.utm_campaign || "retirement_blueprint");
+  url.searchParams.set("utm_content", attribution.utm_content || meetingStyle);
+
+  if (attribution.utm_term) {
+    url.searchParams.set("utm_term", attribution.utm_term);
+  }
+
+  return url.toString();
+}
+
+function isZoomBookingMessage(
+  data: unknown,
+): data is {
+  type: "bookingForm";
+  payload: { scheduledEventId: string; attendeeId: string };
+} {
+  if (!data || typeof data !== "object") {
+    return false;
+  }
+
+  const candidate = data as {
+    type?: unknown;
+    payload?: { scheduledEventId?: unknown; attendeeId?: unknown };
+  };
+
+  return (
+    candidate.type === "bookingForm" &&
+    typeof candidate.payload?.scheduledEventId === "string" &&
+    typeof candidate.payload.attendeeId === "string"
+  );
 }
