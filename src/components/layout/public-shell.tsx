@@ -124,10 +124,7 @@ export function PublicFooter() {
       </div>
       <div className="border-t border-white/10 px-4 py-7 text-xs leading-5 text-white/45 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <p className="font-semibold text-[#F5E7A3]/80">
-            Compliance review draft—must be reviewed and approved before publication.
-          </p>
-          <p className="mt-2 max-w-6xl">
+          <p className="max-w-6xl">
             Insurance products are offered through properly licensed insurance producers. Insurance
             services are available in 49 states, excluding California, subject to individual producer
             licensing, carrier appointments, product approval, availability, and applicable law.
@@ -136,8 +133,8 @@ export function PublicFooter() {
             the issuing insurer&apos;s claims-paying ability. Securities-related services, if offered,
             are offered only through appropriately registered representatives and their affiliated
             broker-dealer. Website content and complimentary reviews are educational and do not
-            provide investment, tax, or legal advice. See the full draft disclosures for important
-            limitations and required placeholders.
+            provide investment, tax, or legal advice. See the full disclosures for important
+            limitations.
           </p>
           <p className="mt-3">© {new Date().getFullYear()} Rare Legacy Life Group · 59 W. Germantown Pike, East Norriton, PA 19403</p>
         </div>
