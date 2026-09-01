@@ -576,11 +576,6 @@
   text-underline-offset: 2px;
 }
 
-.draftLabel {
-  color: #7d632f !important;
-  font-weight: 750;
-}
-
 .honeypot {
   height: 1px;
   left: -10000px;
