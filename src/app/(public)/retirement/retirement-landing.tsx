@@ -437,9 +437,9 @@ export function RetirementLanding() {
               <p className={styles.sectionEyebrow}>Your next step</p>
               <h2 id="form-title">Request your complimentary blueprint.</h2>
               <p>
-                Share a few details first so Christian receives your request. Virtual and phone
-                visitors can then choose a time without leaving this page; for home and office
-                meetings, Christian will reach out to confirm the details.
+                Share a few details first so Christian receives your request. You can then choose a
+                convenient time without leaving this page, whether you prefer virtual, phone, home,
+                or office.
               </p>
               <div className={styles.assuranceCard}>
                 <CalendarDays aria-hidden="true" size={24} strokeWidth={1.6} />
