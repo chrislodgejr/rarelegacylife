@@ -20,7 +20,7 @@ const successMessage =
   "Your request has been received and sent to Christian. Choose a convenient time below to complete your booking.";
 
 const consentText =
-  "I agree that Rare Legacy Life Group and its licensed professionals may call, email, or text me at the contact information I provide, including using automated technology, about my request and related insurance or retirement planning services. Message and data rates may apply. Consent is not a condition of purchasing any product or service. Compliance draft—final legal/compliance approval required before launch.";
+  "I agree that Rare Legacy Life Group and its licensed professionals may call, email, or text me at the contact information I provide, including using automated technology, about my request and related insurance or retirement planning services. Message and data rates may apply. Consent is not a condition of purchasing any product or service.";
 
 const meetingLabels = {
   virtual: "Virtual Meeting",
@@ -113,7 +113,7 @@ export async function submitRetirementBlueprint(
       source: "retirement_blueprint_qr",
       consent_tcpa: input.consent_tcpa,
       consent_text: consentText,
-      consent_version: "retirement-blueprint-v1-draft",
+      consent_version: "retirement-blueprint-v1-approved",
       consent_timestamp: now,
       consent_ip: ipAddress,
       consent_user_agent: userAgent,
