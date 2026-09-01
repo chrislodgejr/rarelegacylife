@@ -97,7 +97,12 @@ Content-Type: application/json
 }
 ```
 
-The endpoint marks the request `scheduled` and records `successful_appointment`. After the Rare Legacy lead form is submitted, virtual and phone visitors see `https://scheduler.zoom.us/christian-pennachiett` embedded in the branded success state, with a secure fallback link if their browser blocks the frame. Configure Zoom Scheduler to call this endpoint or redirect to `/retirement?appointment=confirmed&appointment_id=...` after booking. The authenticated webhook is the authoritative signal.
+The endpoint marks the request `scheduled` and records `successful_appointment`. After the Rare Legacy lead form is submitted, every visitor sees the appropriate Zoom Scheduler embedded in the branded success state, with a secure fallback link if their browser blocks the frame:
+
+- Virtual and phone: `https://scheduler.zoom.us/christian-pennachietti/30-minute-meeting-with-christian`
+- Home and office: `https://scheduler.zoom.us/christian-pennachietti/in-person-meeting-with-christian`
+
+Both embedded URLs include `embed=true` plus campaign UTMs. In Zoom Scheduler, configure **Share > Add to Website > Origin** with the production Rare Legacy domain so the page can receive the validated `bookingForm` postMessage and record `successful_appointment`. A server-to-server Scheduler/CRM webhook to `/api/retirement/appointment-confirmed` remains the authoritative appointment-status signal.
 
 ## Form behavior and spam controls
 
