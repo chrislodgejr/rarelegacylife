@@ -3,6 +3,7 @@
 import { isIP } from "node:net";
 import { headers } from "next/headers";
 import { after } from "next/server";
+import { RETIREMENT_SCHEDULER_URLS } from "@/lib/constants/retirement";
 import { sendEmail } from "@/lib/email/provider";
 import { getSiteUrl } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -16,7 +17,7 @@ export type RetirementBlueprintState = {
 };
 
 const successMessage =
-  "Your request has been received. A Rare Legacy team member will contact you shortly to confirm the meeting style and time that works best for you.";
+  "Your request has been received and sent to Christian. Choose a convenient time below to complete your booking.";
 
 const consentText =
   "I agree that Rare Legacy Life Group and its licensed professionals may call, email, or text me at the contact information I provide, including using automated technology, about my request and related insurance or retirement planning services. Message and data rates may apply. Consent is not a condition of purchasing any product or service. Compliance draft—final legal/compliance approval required before launch.";
@@ -265,11 +266,13 @@ async function sendRetirementConfirmation(input: {
   const businessPhone = process.env.BUSINESS_PHONE?.trim();
   const privacyUrl =
     process.env.RETIREMENT_PRIVACY_POLICY_URL?.trim() ?? `${getSiteUrl()}/privacy`;
+  const schedulerUrl = RETIREMENT_SCHEDULER_URLS[input.meetingStyle];
   const text = [
     `Hi ${input.firstName},`,
     "Your Retirement Income Blueprint request has been received.",
     `Meeting preference: ${meetingLabels[input.meetingStyle]}`,
-    "A Rare Legacy team member will contact you shortly to confirm the meeting style and time that works best for you.",
+    "Choose a convenient time with Christian to complete your booking:",
+    schedulerUrl,
     businessPhone ? `Rare Legacy Life Group: ${businessPhone}` : null,
     `Privacy: ${privacyUrl}`,
   ].filter(Boolean) as string[];
@@ -282,7 +285,8 @@ async function sendRetirementConfirmation(input: {
       `Thank you, ${escapeHtml(input.firstName)}.`,
       `<p style="margin:0 0 16px">Your Retirement Income Blueprint request has been received.</p>
        <p style="margin:0 0 16px"><strong>Meeting preference:</strong> ${escapeHtml(meetingLabels[input.meetingStyle])}</p>
-       <p style="margin:0 0 16px">A Rare Legacy team member will contact you shortly to confirm the meeting style and time that works best for you.</p>
+       <p style="margin:0 0 16px">Choose a convenient time with Christian to complete your booking.</p>
+       <p style="margin:0 0 22px"><a href="${escapeHtml(schedulerUrl)}" style="display:inline-block;background:#c6a66b;border-radius:999px;color:#19201f;font-weight:700;padding:12px 20px;text-decoration:none">Choose a meeting time</a></p>
        ${businessPhone ? `<p style="margin:0 0 16px"><strong>Rare Legacy Life Group:</strong> ${escapeHtml(businessPhone)}</p>` : ""}
        <p style="margin:24px 0 0;font-size:13px"><a href="${escapeHtml(privacyUrl)}" style="color:#806633">Privacy policy</a></p>`,
     ),
