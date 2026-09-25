@@ -30,7 +30,7 @@ function PipelineCard({ item }: { item: CrmItem }) {
     <p className="mt-2 truncate text-xs text-neutral-500">{item.email}</p>
     <p className="mt-1 text-xs text-neutral-500">{item.detail.replaceAll("_", " ")} · {new Date(item.createdAt).toLocaleDateString()}</p>
     <form action={movePipelineItem} className="mt-3"><input type="hidden" name="id" value={item.id} /><input type="hidden" name="kind" value={item.kind} />
-      <select name="status" defaultValue={item.status} aria-label={`Move ${item.name} to stage`} onChange={undefined} className="h-10 w-full rounded-xl border border-neutral-300 bg-white px-2 text-xs capitalize">
+      <select name="status" defaultValue={item.status} aria-label={`Move ${item.name} to stage`} className="h-10 w-full rounded-xl border border-neutral-300 bg-white px-2 text-xs capitalize">
         {stagesByKind[item.kind].map(stage => <option key={stage.value} value={stage.value}>{stage.label}</option>)}
       </select><button type="submit" className="mt-2 w-full rounded-xl border border-[#C9A227] px-3 py-2 text-xs font-semibold">Save stage</button>
     </form>
@@ -54,7 +54,7 @@ export default async function PipelinePage({ searchParams }: { searchParams: Pro
         if (!matches.length && view === "closed") return null;
         return <section key={lane.status} className="w-[min(82vw,320px)] shrink-0 snap-start rounded-2xl bg-[#EEEAE0] p-3 sm:w-72">
           <div className="flex items-center justify-between px-2 py-2"><h2 className="text-sm font-bold">{lane.label}</h2><span className="rounded-full bg-white px-2 py-0.5 text-xs">{matches.length}</span></div>
-          <div className="mt-2 grid max-h-[65vh] gap-3 overflow-y-auto">{matches.slice(0,100).map(item => <PipelineCard key={`${item.kind}:${item.id}`} item={item} />)}{!matches.length && <p className="px-2 py-5 text-xs text-neutral-500">No records</p>}</div>
+          <div className="mt-2 grid max-h-[65vh] gap-3 overflow-y-auto">{matches.map(item => <PipelineCard key={`${item.kind}:${item.id}`} item={item} />)}{!matches.length && <p className="px-2 py-5 text-xs text-neutral-500">No records</p>}</div>
         </section>;
       })}
     </div>
