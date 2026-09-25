@@ -10,6 +10,9 @@ async function authorized() {
 export async function POST(request: Request) {
   const profile = await authorized();
   if (!profile) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY || !process.env.VAPID_SUBJECT) {
+    return NextResponse.json({ error: "Push delivery is not configured yet" }, { status: 503 });
+  }
   const body = await request.json().catch(() => null);
   const endpoint = body?.endpoint;
   const keys = body?.keys;
@@ -25,6 +28,17 @@ export async function POST(request: Request) {
     profile_id: profile.id, endpoint, p256dh: keys.p256dh, auth_secret: keys.auth, updated_at: new Date().toISOString(),
   }, { onConflict: "endpoint" });
   return error ? NextResponse.json({ error: "Could not enable notifications" }, { status: 500 }) : NextResponse.json({ ok: true });
+}
+
+export async function GET() {
+  const profile = await authorized();
+  if (!profile) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { count, error } = await createAdminClient().from("crm_push_subscriptions")
+    .select("id", { count: "exact", head: true }).eq("profile_id", profile.id);
+  return error ? NextResponse.json({ error: "Could not check push status" }, { status: 500 }) : NextResponse.json({
+    configured: Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY && process.env.VAPID_SUBJECT),
+    subscribedDevices: count ?? 0,
+  });
 }
 
 export async function DELETE(request: Request) {

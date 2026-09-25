@@ -1,4 +1,4 @@
-/** The two authorized CRM sign-ins. Update only after an explicit access review. */
+/** Explicitly authorized CRM sign-ins. Keep access narrow and review changes. */
 export function isCrmOwnerEmail(email?: string | null) {
-  return ["chris@endlessconsulting.co", "dan@endlessconsulting.co"].includes(email?.toLowerCase() ?? "");
+  return ["chris@endlessconsulting.co", "dan@endlessconsulting.co", "christian@rarelegacylife.com"].includes(email?.toLowerCase() ?? "");
 }
