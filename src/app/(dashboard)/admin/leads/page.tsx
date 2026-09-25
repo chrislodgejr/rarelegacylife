@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { COVERAGE_LABELS, STATUS_LABELS, LEAD_STATUSES } from "@/lib/constants/options";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireRole } from "@/lib/auth/session";
 import { LeadGradeBadge } from "@/components/lead/lead-grade-badge";
 import type { Lead, LeadGrade } from "@/types/domain";
 
@@ -11,6 +13,7 @@ type LeadsPageProps = {
 };
 
 export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
+  await requireRole(["admin", "manager"]);
   const params = await searchParams;
   const page = Math.max(Number(getParam(params.page) ?? "1"), 1);
   const status = getParam(params.status);
@@ -25,6 +28,10 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
   const supabase = await createClient();
+  const { count: websiteLeadCount, error: websiteLeadError } = await createAdminClient()
+    .from("contact_messages")
+    .select("id", { count: "exact", head: true })
+    .eq("inquiry_type", "get_coverage");
 
   let query = supabase
     .from("leads")
@@ -83,9 +90,14 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <h1 className="font-premium text-3xl font-semibold text-[#050505]">Quote requests</h1>
-          <p className="mt-2 text-sm text-neutral-600">Paginated, server-filtered lead management.</p>
+          <p className="mt-2 text-sm text-neutral-600">Manage quote requests and earlier website coverage leads.</p>
         </div>
       </div>
+
+      <Link href="/admin/contacts?type=website_lead" className="premium-card mt-6 flex items-center justify-between gap-4 rounded-2xl p-5 hover:border-[#C9A227]">
+        <span><strong className="block text-lg">Website coverage leads</strong><span className="mt-1 block text-sm text-neutral-600">Browse names, contact details, and original submissions from the contact form.</span></span>
+        <span className="shrink-0 text-sm font-semibold text-[#8A6A16]">{websiteLeadError ? "View leads →" : `${websiteLeadCount ?? 0} submissions →`}</span>
+      </Link>
 
       <form className="premium-card mt-6 grid gap-3 rounded-xl p-4 md:grid-cols-[1fr_150px_110px_110px_140px_140px_auto]" action="/admin/leads">
         <input

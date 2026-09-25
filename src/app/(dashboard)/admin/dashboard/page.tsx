@@ -29,7 +29,8 @@ export default async function AdminDashboardPage() {
       <section className="premium-card rounded-2xl p-5 sm:p-6"><h2 className="font-premium text-2xl font-semibold">Workspaces</h2><div className="mt-4 grid gap-3">
         <Workspace href="/admin/leads" label="Life insurance quotes" count={items.filter(i => i.kind === "quote").length} />
         <Workspace href="/admin/retirement" label="Retirement reviews" count={items.filter(i => i.kind === "retirement").length} />
-        <Workspace href="/admin/contacts?type=inquiry" label="General inquiries" count={items.filter(i => i.kind === "inquiry").length} />
+        <Workspace href="/admin/contacts?type=website_lead" label="Website coverage leads" count={items.filter(i => i.kind === "inquiry" && i.detail === "get_coverage").length} />
+        <Workspace href="/admin/contacts?type=inquiry" label="Other contact inquiries" count={items.filter(i => i.kind === "inquiry" && i.detail !== "get_coverage").length} />
         <Workspace href="/admin/tasks" label="Follow-up tasks" count={(tasks.data ?? []).length} />
       </div></section>
     </div>
