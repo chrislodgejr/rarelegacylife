@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Rare Legacy Life",
   description:
     "Personal life insurance guidance, retirement income reviews, and annuity education from Rare Legacy Life Group.",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Rare Legacy CRM" },
   icons: {
     icon: "/favicon.png",
     apple: "/apple-touch-icon.png",

@@ -107,7 +107,8 @@ export function NotificationBar({
           </div>
           <div className="max-h-96 overflow-y-auto">
             {notifications.map((notification) => {
-              const href = notification.lead_id ? leadPath(notification.lead_id) : messagesPath;
+              const path = notification.metadata && typeof notification.metadata === "object" && "path" in notification.metadata ? notification.metadata.path : null;
+              const href = typeof path === "string" && path.startsWith("/admin/retirement/") && portal === "admin" ? path : notification.lead_id ? leadPath(notification.lead_id) : messagesPath;
               return (
                 <Link
                   key={notification.id}

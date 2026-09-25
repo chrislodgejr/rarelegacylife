@@ -3,14 +3,13 @@ import { LeadChatForm, LeadEmailForm } from "@/components/lead/communication-for
 import { LeadContactForm } from "@/components/lead/lead-contact-form";
 import { LeadGradeBadge, ScoreReasonList } from "@/components/lead/lead-grade-badge";
 import {
-  LeadAssignmentForm,
   LeadNoteForm,
   LeadStatusForm,
   LeadTaskForm,
 } from "@/components/lead/lead-workflow-forms";
 import { COVERAGE_LABELS, STATUS_LABELS } from "@/lib/constants/options";
 import { createClient } from "@/lib/supabase/server";
-import type { Agent, Lead, LeadGrade } from "@/types/domain";
+import type { Lead, LeadGrade } from "@/types/domain";
 
 type LeadDetailProps = {
   params: Promise<{ id: string }>;
@@ -25,8 +24,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
     notFound();
   }
 
-  const [agentsResult, notesResult, tasksResult, activityResult, communicationsResult, threadResult] = await Promise.all([
-    supabase.from("agents").select("*").eq("active", true).order("last_name"),
+  const [notesResult, tasksResult, activityResult, communicationsResult, threadResult] = await Promise.all([
     supabase.from("lead_notes").select("id, note, created_at, profiles(full_name, email)").eq("lead_id", id).order("created_at", { ascending: false }),
     supabase.from("lead_tasks").select("*").eq("lead_id", id).order("due_date", { ascending: true }),
     supabase.from("lead_activity").select("*").eq("lead_id", id).order("created_at", { ascending: false }).limit(30),
@@ -34,7 +32,6 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
     supabase.from("chat_threads").select("id").eq("lead_id", id).eq("thread_type", "lead").maybeSingle<{ id: string }>(),
   ]);
 
-  const agents = (agentsResult.data ?? []) as Agent[];
   const { data: chatMessages } = threadResult.data
     ? await supabase
         .from("chat_messages")
@@ -201,7 +198,6 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
       <aside className="space-y-4">
         <LeadContactForm lead={lead} />
         <LeadStatusForm currentStatus={lead.status} leadId={lead.id} />
-        <LeadAssignmentForm agents={agents} currentAgentId={lead.assigned_agent_id} leadId={lead.id} />
         <LeadEmailForm leadId={lead.id} />
         <LeadNoteForm leadId={lead.id} />
         <LeadTaskForm leadId={lead.id} />

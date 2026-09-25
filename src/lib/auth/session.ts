@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { isCrmOwnerEmail } from "@/lib/auth/owners";
 import { getLandingPath } from "@/lib/auth/routing";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -30,7 +31,7 @@ export async function requireAuthenticatedProfile() {
     redirect("/login");
   }
 
-  if (!profile || profile.role === "pending" || profile.status !== "active") {
+  if (!profile || profile.role === "pending" || profile.status !== "active" || !isCrmOwnerEmail(user.email)) {
     redirect("/pending-approval");
   }
 
@@ -52,7 +53,7 @@ export async function ensureProfileForAuthUser(user: {
   email?: string | null;
   user_metadata?: Record<string, unknown>;
 }) {
-  if (!user.email) {
+  if (!user.email || !isCrmOwnerEmail(user.email)) {
     return null;
   }
 

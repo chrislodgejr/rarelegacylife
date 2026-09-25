@@ -7,6 +7,7 @@ import { RETIREMENT_SCHEDULER_URLS } from "@/lib/constants/retirement";
 import { sendEmail } from "@/lib/email/provider";
 import { getSiteUrl } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyAdmins } from "@/lib/notifications/db";
 import { retirementBlueprintSchema } from "@/lib/validation/forms";
 
 export type RetirementBlueprintState = {
@@ -109,7 +110,7 @@ export async function submitRetirementBlueprint(
       best_time_to_contact: input.best_time_to_contact,
       question: input.question ?? null,
       status: "new",
-      assigned_agent_id: specialist?.id ?? null,
+      assigned_agent_id: null,
       source: "retirement_blueprint_qr",
       consent_tcpa: input.consent_tcpa,
       consent_text: consentText,
@@ -140,6 +141,14 @@ export async function submitRetirementBlueprint(
     };
   }
 
+  await notifyAdmins({
+    title: "New retirement request",
+    body: `${input.full_name} requested a retirement review.`,
+    notificationType: "retirement_request",
+    priority: "high",
+    metadata: { request_id: request.id, path: `/admin/retirement/${request.id}` },
+  });
+
   after(async () => {
     const results = await Promise.allSettled([
       sendRetirementNotification({
@@ -167,7 +176,7 @@ export async function submitRetirementBlueprint(
         meetingStyle: input.meeting_style,
         bestTime: input.best_time_to_contact,
         question: input.question ?? null,
-        assignedAgentId: specialist?.id ?? null,
+        assignedAgentId: null,
         attribution: {
           utm_source: input.utm_source,
           utm_medium: input.utm_medium,

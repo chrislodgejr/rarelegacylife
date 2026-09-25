@@ -28,7 +28,7 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
 
   let query = supabase
     .from("leads")
-    .select("id, first_name, last_name, email, phone, state, coverage_purpose, status, lead_score, lead_grade, lead_temperature, assigned_agent_id, created_at, last_activity_at, next_follow_up_at", {
+    .select("id, first_name, last_name, email, phone, state, coverage_purpose, status, lead_score, lead_grade, lead_temperature, created_at, last_activity_at, next_follow_up_at", {
       count: "exact",
     })
     .range(from, to);
@@ -69,10 +69,6 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
     query = query.in("lead_grade", ["D", "F"]);
   }
 
-  if (priority === "unassigned_hot") {
-    query = query.eq("lead_temperature", "hot").is("assigned_agent_id", null);
-  }
-
   if (search) {
     query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,email.ilike.%${search}%,phone.ilike.%${search}%`);
   }
@@ -80,18 +76,13 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
   query = applySort(query, sort);
 
   const { data: leads, count } = await query;
-  const agentIds = Array.from(new Set((leads ?? []).map((lead) => lead.assigned_agent_id).filter(Boolean)));
-  const { data: agents } = agentIds.length
-    ? await supabase.from("agents").select("id, first_name, last_name").in("id", agentIds)
-    : { data: [] };
-  const agentMap = new Map((agents ?? []).map((agent) => [agent.id, `${agent.first_name} ${agent.last_name}`]));
   const hasNext = count ? to + 1 < count : false;
 
   return (
     <div>
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h1 className="font-premium text-3xl font-semibold text-[#050505]">Leads</h1>
+          <h1 className="font-premium text-3xl font-semibold text-[#050505]">Quote requests</h1>
           <p className="mt-2 text-sm text-neutral-600">Paginated, server-filtered lead management.</p>
         </div>
       </div>
@@ -122,7 +113,6 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
           <option value="">Priority</option>
           <option value="hot_only">Hot only</option>
           <option value="a_leads">A/A+ leads</option>
-          <option value="unassigned_hot">Unassigned hot</option>
           <option value="low_quality">Low quality</option>
         </select>
         <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={sort} name="sort">
@@ -150,7 +140,24 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
         </button>
       </form>
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
+      <div className="mt-6 grid gap-3 md:hidden">
+        {(leads ?? []).map((lead) => (
+          <Link key={lead.id} href={`/admin/leads/${lead.id}`} className="premium-card block rounded-2xl p-4">
+            <div className="flex items-start justify-between gap-3">
+              <span className="font-semibold">{lead.first_name} {lead.last_name}</span>
+              <span className="rounded-full bg-[#F7F5EF] px-2 py-1 text-xs">{STATUS_LABELS[lead.status as Lead["status"]]}</span>
+            </div>
+            <p className="mt-2 break-all text-sm text-neutral-600">{lead.email}</p>
+            <div className="mt-3 flex items-center justify-between gap-2 text-xs text-neutral-500">
+              <span>{lead.state} · {COVERAGE_LABELS[lead.coverage_purpose as Lead["coverage_purpose"]]}</span>
+              <span>{new Date(lead.created_at).toLocaleDateString()}</span>
+            </div>
+            {lead.next_follow_up_at && <p className="mt-2 text-xs text-[#8A6A16]">Follow up {new Date(lead.next_follow_up_at).toLocaleDateString()}</p>}
+          </Link>
+        ))}
+        {!leads?.length && <p className="rounded-xl bg-white p-5 text-sm text-neutral-500">No quote requests found.</p>}
+      </div>
+      <div className="mt-6 hidden overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-left text-sm">
             <thead className="bg-neutral-50 text-xs uppercase text-neutral-500">
@@ -160,7 +167,6 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
                 <th className="px-4 py-3">Purpose</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Grade</th>
-                <th className="px-4 py-3">Agent</th>
                 <th className="px-4 py-3">Next</th>
                 <th className="px-4 py-3">Created</th>
               </tr>
@@ -180,14 +186,13 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
                   <td className="px-4 py-3">
                     <LeadGradeBadge grade={lead.lead_grade as LeadGrade} score={lead.lead_score} temperature={lead.lead_temperature} />
                   </td>
-                  <td className="px-4 py-3">{lead.assigned_agent_id ? agentMap.get(lead.assigned_agent_id) ?? "Assigned" : "Unassigned"}</td>
                   <td className="px-4 py-3 text-xs text-neutral-500">{lead.next_follow_up_at ? new Date(lead.next_follow_up_at).toLocaleDateString() : "No follow-up"}</td>
                   <td className="px-4 py-3">{new Date(lead.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
               {!leads?.length ? (
                 <tr>
-                  <td className="px-4 py-8 text-center text-neutral-500" colSpan={8}>
+                  <td className="px-4 py-8 text-center text-neutral-500" colSpan={7}>
                     No leads found.
                   </td>
                 </tr>

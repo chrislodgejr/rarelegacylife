@@ -5,11 +5,10 @@ import { SubmitButton } from "@/components/forms/submit-button";
 import { LEAD_STATUSES, STATUS_LABELS, TASK_PRIORITIES, TASK_TYPES } from "@/lib/constants/options";
 import {
   addLeadNote,
-  assignLead,
   createLeadTask,
   updateLeadStatus,
 } from "@/server/actions/crm";
-import type { Agent, LeadStatus } from "@/types/domain";
+import type { LeadStatus } from "@/types/domain";
 
 const initialState = { ok: false, message: "" };
 
@@ -35,41 +34,6 @@ export function LeadStatusForm({ leadId, currentStatus }: { leadId: string; curr
       </label>
       <InlineState state={state} />
       <SubmitButton>Update status</SubmitButton>
-    </form>
-  );
-}
-
-export function LeadAssignmentForm({
-  leadId,
-  currentAgentId,
-  agents,
-}: {
-  leadId: string;
-  currentAgentId: string | null;
-  agents: Agent[];
-}) {
-  const [state, action] = useActionState(assignLead, initialState);
-
-  return (
-    <form action={action} className="grid gap-3 rounded-lg border border-neutral-200 bg-white p-5">
-      <input name="lead_id" type="hidden" value={leadId} />
-      <label>
-        <span className="text-sm font-medium text-neutral-700">Assigned agent</span>
-        <select
-          className="mt-2 h-11 w-full rounded-md border border-neutral-300 bg-white px-3 text-sm"
-          name="agent_id"
-          defaultValue={currentAgentId ?? ""}
-        >
-          <option value="">Unassigned</option>
-          {agents.map((agent) => (
-            <option key={agent.id} value={agent.id}>
-              {agent.first_name} {agent.last_name} ({agent.state ?? "multi-state"})
-            </option>
-          ))}
-        </select>
-      </label>
-      <InlineState state={state} />
-      <SubmitButton>Save assignment</SubmitButton>
     </form>
   );
 }

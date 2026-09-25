@@ -99,6 +99,7 @@ export type CrmNotification = {
   title: string;
   body: string | null;
   notification_type: string;
+  metadata: Record<string, unknown>;
   priority: TaskPriority;
   read_at: string | null;
   created_at: string;

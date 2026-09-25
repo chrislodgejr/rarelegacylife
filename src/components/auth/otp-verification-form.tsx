@@ -72,7 +72,7 @@ export function OtpVerificationForm() {
       email: normalizedEmail,
       options: {
         emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
-        shouldCreateUser: true,
+        shouldCreateUser: false,
       },
     });
 

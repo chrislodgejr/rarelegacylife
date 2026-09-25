@@ -7,9 +7,9 @@ import type { AppRole, CrmNotification, Profile } from "@/types/domain";
 
 const adminNav = [
   { href: "/admin/dashboard", label: "Dashboard" },
-  { href: "/admin/leads", label: "Leads" },
-  { href: "/admin/agents", label: "Agents" },
-  { href: "/admin/users", label: "Users" },
+  { href: "/admin/leads", label: "Quotes" },
+  { href: "/admin/retirement", label: "Retirement" },
+
   { href: "/admin/messages", label: "Messages" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/settings", label: "Settings" },
@@ -56,7 +56,7 @@ export async function DashboardShell({
             </p>
           </div>
         </div>
-        <nav className="flex gap-2 overflow-x-auto px-4 pb-5 text-sm lg:grid lg:gap-1 lg:overflow-visible lg:px-4">
+        <nav className="hidden gap-2 overflow-x-auto px-4 pb-5 text-sm lg:grid lg:gap-1 lg:overflow-visible lg:px-4">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -94,10 +94,15 @@ export async function DashboardShell({
             </div>
           </div>
         </header>
-        <main className="px-4 py-8 sm:px-6 lg:px-8">
+        <main className="px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-8">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
+      <nav aria-label="CRM mobile navigation" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-neutral-200 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-lg backdrop-blur lg:hidden">
+        {(role === "agent" ? agentNav.slice(0,4) : [adminNav[0], adminNav[1], adminNav[2], { href: "/admin/settings", label: "Settings" }]).map(item => (
+          <Link key={item.href} href={item.href} className="flex min-h-14 items-center justify-center px-1 text-center text-xs font-semibold text-[#050505] active:bg-[#F5E7A3]">{item.label}</Link>
+        ))}
+      </nav>
     </div>
   );
 }

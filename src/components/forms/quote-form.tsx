@@ -34,6 +34,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
   const [otpMessage, setOtpMessage] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
   const [isOtpLoading, setIsOtpLoading] = useState(false);
+  const [isSubmittingAfterVerification, setIsSubmittingAfterVerification] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const progress = ((step + 1) / steps.length) * 100;
@@ -100,6 +101,13 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
       return;
     }
 
+    // Check the entire form before consuming a valid code and starting submission.
+    const form = formRef.current;
+    if (!form?.reportValidity()) {
+      setOtpError("Complete the required fields and consent boxes before verifying your code.");
+      return;
+    }
+
     setIsOtpLoading(true);
     const result = await confirmQuoteVerification(quoteVerificationId, normalizedQuoteEmail, otpCode);
 
@@ -108,7 +116,15 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
     } else {
       setVerifiedEmail(normalizedQuoteEmail);
       setQuoteVerificationId(result.verificationId ?? quoteVerificationId);
-      setOtpMessage(result.message);
+      setOtpMessage("Email verified. Submitting your request now…");
+      setIsSubmittingAfterVerification(true);
+      // React state commits asynchronously; set the successful verification ID on the
+      // actual form before requesting the native, validated server-action submit.
+      const verificationField = form.elements.namedItem("quote_verification_id");
+      if (verificationField instanceof HTMLInputElement) {
+        verificationField.value = result.verificationId ?? quoteVerificationId;
+      }
+      form.requestSubmit();
     }
 
     setIsOtpLoading(false);
@@ -332,11 +348,11 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
             onClick={verifyQuoteOtp}
             disabled={isOtpLoading || isQuoteEmailVerified || otpCode.length !== 6}
           >
-            {isOtpLoading ? "Checking..." : "Verify Code"}
+            {isOtpLoading ? "Checking..." : "Verify & Submit Request"}
           </button>
         </div>
         {otpError ? <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{otpError}</p> : null}
-        {otpMessage ? <p className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{otpMessage}</p> : null}
+        {otpMessage ? <p role="status" className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{otpMessage}</p> : null}
       </div>
       <div className="space-y-3 rounded-xl border border-neutral-200 bg-[#F7F5EF] p-4">
         <p className="text-sm leading-6 text-neutral-700">
@@ -377,7 +393,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
           </button>
         ) : (
           <div className="sm:min-w-64">
-            <SubmitButton disabled={!isQuoteEmailVerified}>Submit My Request</SubmitButton>
+            <SubmitButton disabled={!isQuoteEmailVerified || (isSubmittingAfterVerification && !state.message)}>Submit My Request</SubmitButton>
           </div>
         )}
       </div>

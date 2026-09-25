@@ -1,3 +1,4 @@
+import { sendCrmPush } from "@/lib/notifications/push";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 type NotificationPayload = {
@@ -50,6 +51,12 @@ export async function notifyAdmins(input: Omit<NotificationPayload, "profileId">
       metadata: input.metadata ?? {},
     })),
   );
+  await sendCrmPush(admins.map((profile) => profile.id), {
+    title: input.title,
+    body: "Open the CRM to review the new activity.",
+    url: typeof input.metadata?.path === "string" && input.metadata.path.startsWith("/admin/")
+      ? input.metadata.path : input.leadId ? `/admin/leads/${input.leadId}` : "/admin/dashboard",
+  });
 }
 
 export async function notifyAssignedAgent(input: Omit<NotificationPayload, "profileId">) {

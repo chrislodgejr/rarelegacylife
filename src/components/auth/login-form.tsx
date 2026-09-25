@@ -9,7 +9,6 @@ import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
   const [authTab, setAuthTab] = useState<"password" | "otp">("password");
-  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -23,49 +22,15 @@ export function LoginForm() {
     setError(null);
     setMessage(null);
 
-    const authCall =
-      mode === "login"
-        ? supabase.auth.signInWithPassword({ email, password })
-        : supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
-            },
-          });
-
-    const { error: authError, data } = await authCall;
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authError) {
       setError(authError.message);
-      setIsLoading(false);
-      return;
-    }
-
-    if (mode === "signup" && !data.session) {
-      setMessage("Check your email to confirm your account, then return to sign in.");
       setIsLoading(false);
       return;
     }
 
     window.location.href = "/auth/landing";
-  }
-
-  async function handleGoogleSignIn() {
-    setIsLoading(true);
-    setError(null);
-
-    const { error: authError } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: getAuthRedirectUrl("/auth/callback"),
-      },
-    });
-
-    if (authError) {
-      setError(authError.message);
-      setIsLoading(false);
-    }
   }
 
   async function handleOtpRequest(event: React.FormEvent<HTMLFormElement>) {
@@ -79,7 +44,7 @@ export function LoginForm() {
       email: normalizedEmail,
       options: {
         emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
-        shouldCreateUser: true,
+        shouldCreateUser: false,
       },
     });
 
@@ -111,21 +76,6 @@ export function LoginForm() {
           Access is reserved for approved Rare Legacy Life agents, managers, and administrators.
           Sign in to manage leads, communication, tasks, and team activity.
         </p>
-      </div>
-
-      <button
-        className="h-11 w-full rounded-full border border-white/[0.16] bg-white px-4 text-sm font-semibold text-[#050505] transition hover:border-[#C9A227] disabled:cursor-not-allowed disabled:opacity-60"
-        type="button"
-        onClick={handleGoogleSignIn}
-        disabled={isLoading}
-      >
-        Continue with Google
-      </button>
-
-      <div className="my-5 flex items-center gap-3">
-        <span className="h-px flex-1 bg-white/12" />
-        <span className="text-xs uppercase tracking-[0.18em] text-white/36">or</span>
-        <span className="h-px flex-1 bg-white/12" />
       </div>
 
       <div className="grid grid-cols-2 rounded-full border border-white/12 bg-white/[0.04] p-1">
@@ -174,7 +124,7 @@ export function LoginForm() {
             <input
               className="h-11 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/28"
               type="password"
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               minLength={8}
@@ -197,7 +147,7 @@ export function LoginForm() {
           type="submit"
           disabled={isLoading}
         >
-          {isLoading ? "Working..." : mode === "login" ? "Sign in" : "Create account"}
+          {isLoading ? "Working..." : "Sign in"}
         </button>
       </form>
       ) : (
@@ -217,8 +167,7 @@ export function LoginForm() {
             </span>
           </label>
           <p className="rounded-2xl border border-white/12 bg-white/[0.04] p-4 text-xs leading-5 text-white/58">
-            We will email a one-time sign-in code. Account approval still controls dashboard access,
-            so new users may be directed to pending approval after signing in.
+            We will email a one-time sign-in code. Only approved CRM users can request a sign-in code.
           </p>
           <button
             className="gold-gradient-button h-11 w-full rounded-full px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
@@ -231,18 +180,6 @@ export function LoginForm() {
       )}
 
       <div className="mt-5 flex items-center justify-between text-sm">
-        <button
-          className="font-medium text-[#F5E7A3] underline-offset-4 hover:underline"
-          type="button"
-          onClick={() => {
-            setAuthTab("password");
-            setMode(mode === "login" ? "signup" : "login");
-            setError(null);
-            setMessage(null);
-          }}
-        >
-          {mode === "login" ? "Create account" : "Back to sign in"}
-        </button>
         <Link className="text-white/58 underline-offset-4 hover:text-[#F5E7A3] hover:underline" href="/forgot-password">
           Forgot password?
         </Link>

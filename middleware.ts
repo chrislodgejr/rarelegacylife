@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isCrmOwnerEmail } from "@/lib/auth/owners";
 import { getLandingPath } from "@/lib/auth/routing";
 import type { AppRole, Profile } from "@/types/domain";
 
@@ -64,7 +65,7 @@ export async function middleware(request: NextRequest) {
     .eq("auth_user_id", user.id)
     .maybeSingle<Pick<Profile, "id" | "role" | "status">>();
 
-  const role = profile?.status === "active" ? (profile.role as AppRole) : "pending";
+  const role = profile?.status === "active" && isCrmOwnerEmail(user.email) ? (profile.role as AppRole) : "pending";
 
   if (pathname === "/login") {
     const redirectUrl = request.nextUrl.clone();

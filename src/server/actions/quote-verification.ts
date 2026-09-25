@@ -119,8 +119,13 @@ export async function confirmQuoteVerification(
     return { ok: false, message: "That verification code is incorrect. Please try again." };
   }
 
-  await admin.from("quote_email_verifications").update({ verified_at: new Date().toISOString() }).eq("id", row.id);
-  return { ok: true, message: "Email verified. You can now submit your quote request securely.", verificationId: row.id };
+  const { error: updateError } = await admin.from("quote_email_verifications")
+    .update({ verified_at: new Date().toISOString() }).eq("id", row.id);
+  if (updateError) {
+    console.error("Quote verification approval failed", updateError);
+    return { ok: false, message: "We could not confirm your code. Please try again." };
+  }
+  return { ok: true, message: "Email verified. Your request is being submitted.", verificationId: row.id };
 }
 
 export async function isQuoteVerificationApproved(verificationId: string, email: string) {

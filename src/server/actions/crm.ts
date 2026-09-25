@@ -5,16 +5,13 @@ import { createAuditLog } from "@/lib/audit";
 import { requireRole } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
-  assignmentSchema,
   internalChatMessageSchema,
   leadChatMessageSchema,
   leadEmailSchema,
   leadStatusSchema,
   noteSchema,
   taskSchema,
-  userApprovalSchema,
 } from "@/lib/validation/forms";
-import { sendUserApprovedNotification } from "@/lib/notifications";
 import { sendEmail } from "@/lib/email/provider";
 import { createCrmNotification, notifyAdmins, notifyAssignedAgent } from "@/lib/notifications/db";
 import type { AppRole, Lead } from "@/types/domain";
@@ -167,142 +164,6 @@ export async function createLeadTask(_state: ActionState, formData: FormData) {
 
   revalidateCrmPaths(parsed.data.lead_id);
   return { ok: true, message: "Task created." };
-}
-
-export async function assignLead(_state: ActionState, formData: FormData) {
-  const { profile } = await requireRole(["admin", "manager"]);
-  const parsed = assignmentSchema.safeParse(Object.fromEntries(formData.entries()));
-
-  if (!parsed.success) {
-    return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid assignment." };
-  }
-
-  const admin = createAdminClient();
-  const canAccess = await canAccessLead(admin, parsed.data.lead_id, profile.id, profile.role);
-
-  if (!canAccess) {
-    return { ok: false, message: "You do not have access to this lead." };
-  }
-
-  const now = new Date().toISOString();
-  await admin
-    .from("lead_assignments")
-    .update({ active: false, unassigned_at: now })
-    .eq("lead_id", parsed.data.lead_id)
-    .eq("active", true);
-
-  const { error } = await admin
-    .from("leads")
-    .update({
-      assigned_agent_id: parsed.data.agent_id,
-      assigned_at: parsed.data.agent_id ? now : null,
-      status: parsed.data.agent_id ? "assigned" : "new",
-      last_activity_at: now,
-    })
-    .eq("id", parsed.data.lead_id);
-
-  if (error) {
-    return { ok: false, message: "Lead could not be assigned." };
-  }
-
-  if (parsed.data.agent_id) {
-    await admin.from("lead_assignments").insert({
-      lead_id: parsed.data.lead_id,
-      agent_id: parsed.data.agent_id,
-      assigned_by_user_id: profile.id,
-      assignment_reason: "Manual dashboard assignment",
-      assigned_at: now,
-      active: true,
-    });
-
-    await admin.from("agents").update({ last_assigned_at: now }).eq("id", parsed.data.agent_id);
-
-    const { data: agent } = await admin
-      .from("agents")
-      .select("profile_id")
-      .eq("id", parsed.data.agent_id)
-      .maybeSingle<{ profile_id: string | null }>();
-
-    if (agent?.profile_id) {
-      await createCrmNotification({
-        profileId: agent.profile_id,
-        actorProfileId: profile.id,
-        leadId: parsed.data.lead_id,
-        title: "Lead assigned to you",
-        body: "A lead is ready in your pipeline.",
-        notificationType: "lead_assigned",
-        priority: "high",
-      });
-    }
-  }
-
-  await admin.from("lead_activity").insert({
-    lead_id: parsed.data.lead_id,
-    user_id: profile.id,
-    activity_type: "lead_assigned",
-    description: parsed.data.agent_id ? "Lead assigned manually." : "Lead unassigned manually.",
-    metadata: { assigned_agent_id: parsed.data.agent_id },
-  });
-
-  await createAuditLog({
-    userId: profile.id,
-    action: "lead_assigned",
-    entityType: "lead",
-    entityId: parsed.data.lead_id,
-    description: "Lead assignment changed.",
-    metadata: { assigned_agent_id: parsed.data.agent_id },
-  });
-
-  revalidateCrmPaths(parsed.data.lead_id);
-  return { ok: true, message: "Assignment updated." };
-}
-
-export async function approveUser(_state: ActionState, formData: FormData) {
-  const { profile } = await requireRole(["admin"]);
-  const parsed = userApprovalSchema.safeParse(Object.fromEntries(formData.entries()));
-
-  if (!parsed.success) {
-    return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid user update." };
-  }
-
-  const admin = createAdminClient();
-  const { data: updatedProfile, error } = await admin
-    .from("profiles")
-    .update({
-      role: parsed.data.role,
-      status: parsed.data.status,
-      approved_by: profile.id,
-      approved_at: parsed.data.status === "active" ? new Date().toISOString() : null,
-    })
-    .eq("id", parsed.data.profile_id)
-    .select("email, role")
-    .single<{ email: string; role: string }>();
-
-  if (error || !updatedProfile) {
-    return { ok: false, message: "User could not be updated." };
-  }
-
-  await createAuditLog({
-    userId: profile.id,
-    action: "user_role_changed",
-    entityType: "profile",
-    entityId: parsed.data.profile_id,
-    description: `User set to ${parsed.data.role}/${parsed.data.status}.`,
-  });
-
-  if (parsed.data.status === "active") {
-    try {
-      await sendUserApprovedNotification({
-        email: updatedProfile.email,
-        role: updatedProfile.role,
-      });
-    } catch (error) {
-      console.error("User approval email failed", error);
-    }
-  }
-
-  revalidatePath("/admin/users");
-  return { ok: true, message: "User updated." };
 }
 
 export async function sendLeadEmail(_state: ActionState, formData: FormData) {
