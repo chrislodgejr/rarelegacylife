@@ -90,13 +90,13 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <h1 className="font-premium text-3xl font-semibold text-[#050505]">Quote requests</h1>
-          <p className="mt-2 text-sm text-neutral-600">Manage quote requests and earlier website coverage leads.</p>
+          <p className="mt-2 text-sm text-neutral-600">Manage verified quote requests.</p>
         </div>
       </div>
 
-      <Link href="/admin/contacts?type=website_lead" className="premium-card mt-6 flex items-center justify-between gap-4 rounded-2xl p-5 hover:border-[#C9A227]">
-        <span><strong className="block text-lg">Website coverage leads</strong><span className="mt-1 block text-sm text-neutral-600">Browse names, contact details, and original submissions from the contact form.</span></span>
-        <span className="shrink-0 text-sm font-semibold text-[#8A6A16]">{websiteLeadError ? "View leads →" : `${websiteLeadCount ?? 0} submissions →`}</span>
+      <Link href="/admin/contacts?type=inquiry" className="premium-card mt-6 flex items-center justify-between gap-4 rounded-2xl p-5 hover:border-[#C9A227]">
+        <span><strong className="block text-lg">Contact form archive</strong><span className="mt-1 block text-sm text-neutral-600">Review the original fields and messages. Historical submissions include automated spam and have not been qualified as leads.</span></span>
+        <span className="shrink-0 text-sm font-semibold text-[#8A6A16]">{websiteLeadError ? "View archive →" : `${websiteLeadCount ?? 0} submissions →`}</span>
       </Link>
 
       <form className="premium-card mt-6 grid gap-3 rounded-xl p-4 md:grid-cols-[1fr_150px_110px_110px_140px_140px_auto]" action="/admin/leads">

@@ -41,11 +41,11 @@ export default async function PipelinePage({ searchParams }: { searchParams: Pro
   await requireRole(["admin", "manager"]);
   const { kind, view } = await searchParams;
   const { items, errors } = await getCrmItems();
-  const scope = ["quote", "retirement", "inquiry"].includes(kind ?? "") ? kind : "all";
-  const filtered = items.filter(i => (scope === "all" || i.kind === scope) && (view === "closed" ? closed.has(i.status) : !closed.has(i.status)));
+  const scope = ["quote", "retirement"].includes(kind ?? "") ? kind : "all";
+  const filtered = items.filter(i => (scope === "all" ? i.kind !== "inquiry" : i.kind === scope) && (view === "closed" ? closed.has(i.status) : !closed.has(i.status)));
   return <div className="space-y-5">
     <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8A6A16]">Work in progress</p><h1 className="font-premium mt-1 text-3xl font-semibold">Pipeline</h1><p className="mt-2 text-sm text-neutral-600">Move each inquiry through its own sales or review stages. Chris and Dan share the same pipeline.</p></div>
-    <div className="flex flex-wrap gap-2 text-sm">{["all", "quote", "retirement", "inquiry"].map(value => <Link key={value} href={`/admin/pipeline?kind=${value}&view=${view ?? "open"}`} className={`rounded-full px-4 py-2 capitalize ${scope === value ? "bg-black text-white" : "border border-neutral-300 bg-white"}`}>{value === "all" ? "All" : value === "inquiry" ? "General inquiries" : value}</Link>)}<Link href={`/admin/pipeline?kind=${scope}&view=${view === "closed" ? "open" : "closed"}`} className="rounded-full border border-neutral-300 bg-white px-4 py-2">{view === "closed" ? "Open pipeline" : "Closed / lost"}</Link></div>
+    <div className="flex flex-wrap gap-2 text-sm">{["all", "quote", "retirement"].map(value => <Link key={value} href={`/admin/pipeline?kind=${value}&view=${view ?? "open"}`} className={`rounded-full px-4 py-2 capitalize ${scope === value ? "bg-black text-white" : "border border-neutral-300 bg-white"}`}>{value === "all" ? "All verified" : value}</Link>)}<Link href={`/admin/pipeline?kind=${scope}&view=${view === "closed" ? "open" : "closed"}`} className="rounded-full border border-neutral-300 bg-white px-4 py-2">{view === "closed" ? "Open pipeline" : "Closed / lost"}</Link></div>
     {errors.length > 0 && <p role="alert" className="rounded-xl bg-amber-50 p-4 text-sm">Some records could not be loaded: {errors.join(", ")}.</p>}
     <p className="text-sm text-neutral-500">{filtered.length} records</p>
     <div className="flex snap-x gap-4 overflow-x-auto pb-5" aria-label="Pipeline stages">

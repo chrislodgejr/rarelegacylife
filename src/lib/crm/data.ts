@@ -13,6 +13,7 @@ export type CrmItem = {
   followUpAt: string | null;
   href: string;
   detail: string;
+  message?: string;
 };
 
 export async function getCrmItems(): Promise<{ items: CrmItem[]; errors: string[] }> {
@@ -21,7 +22,7 @@ export async function getCrmItems(): Promise<{ items: CrmItem[]; errors: string[
   const [quotes, retirement, inquiries] = await Promise.all([
     admin.from("leads").select("id,first_name,last_name,email,phone,status,source,created_at,next_follow_up_at,coverage_purpose").order("created_at", { ascending: false }).limit(1000),
     admin.from("retirement_blueprint_requests").select("id,first_name,last_name,email,phone,status,source,created_at,meeting_style").order("created_at", { ascending: false }).limit(1000),
-    admin.from("contact_messages").select("id,name,email,phone,status,inquiry_type,created_at").order("created_at", { ascending: false }).limit(1000),
+    admin.from("contact_messages").select("id,name,email,phone,status,inquiry_type,message,created_at").order("created_at", { ascending: false }).limit(1000),
   ]);
   const errors = [quotes.error && "quotes", retirement.error && "retirement", inquiries.error && "inquiries"].filter(Boolean) as string[];
   const items: CrmItem[] = [
@@ -41,7 +42,7 @@ export async function getCrmItems(): Promise<{ items: CrmItem[]; errors: string[
       id: row.id, kind: "inquiry" as const, name: row.name,
       email: row.email, phone: row.phone, status: row.status, source: "website_contact_form",
       createdAt: row.created_at, followUpAt: null,
-      href: `/admin/inquiries/${row.id}`, detail: String(row.inquiry_type ?? "General inquiry"),
+      href: `/admin/inquiries/${row.id}`, detail: String(row.inquiry_type ?? "General inquiry"), message: row.message,
     })),
   ];
   items.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
