@@ -1,5 +1,2 @@
-import { InternalChat } from "@/components/dashboard/internal-chat";
-
-export default function AgentMessagesPage() {
-  return <InternalChat title="Agent team room" />;
-}
+import { redirect } from "next/navigation";
+export default function RetiredAgentPage() { redirect("/admin/dashboard"); }

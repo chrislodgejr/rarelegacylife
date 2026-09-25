@@ -6,7 +6,7 @@ export function getLandingPath(role?: AppRole | null) {
   }
 
   if (role === "agent") {
-    return "/agent/dashboard";
+    return "/pending-approval";
   }
 
   return "/pending-approval";

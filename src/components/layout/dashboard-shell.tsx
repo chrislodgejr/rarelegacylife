@@ -6,23 +6,14 @@ import { signOut } from "@/server/actions/auth";
 import type { AppRole, CrmNotification, Profile } from "@/types/domain";
 
 const adminNav = [
-  { href: "/admin/dashboard", label: "Dashboard" },
+  { href: "/admin/dashboard", label: "Home" },
+  { href: "/admin/contacts", label: "Contacts" },
+  { href: "/admin/pipeline", label: "Pipeline" },
+  { href: "/admin/tasks", label: "Tasks" },
   { href: "/admin/leads", label: "Quotes" },
   { href: "/admin/retirement", label: "Retirement" },
-
-  { href: "/admin/messages", label: "Messages" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/settings", label: "Settings" },
-];
-
-const agentNav = [
-  { href: "/agent/dashboard", label: "Dashboard" },
-  { href: "/agent/leads", label: "Leads" },
-  { href: "/agent/profile", label: "Profile" },
-  { href: "/agent/feature-requests", label: "Feature Requests" },
-  { href: "/agent/messages", label: "Messages" },
-  { href: "/agent/tasks", label: "Tasks" },
-  { href: "/agent/performance", label: "Performance" },
 ];
 
 export async function DashboardShell({
@@ -30,11 +21,11 @@ export async function DashboardShell({
   profile,
   children,
 }: {
-  role: Extract<AppRole, "admin" | "manager" | "agent">;
+  role: Extract<AppRole, "admin" | "manager">;
   profile: Profile;
   children: React.ReactNode;
 }) {
-  const nav = role === "agent" ? agentNav : adminNav;
+  const nav = adminNav;
   const supabase = await createClient();
   const { data: notifications } = await supabase
     .from("crm_notifications")
@@ -47,7 +38,7 @@ export async function DashboardShell({
     <div className="min-h-screen bg-[#F7F5EF] lg:flex">
       <aside className="border-b border-white/10 bg-black text-white lg:fixed lg:inset-y-0 lg:left-0 lg:w-72 lg:border-b-0 lg:border-r">
         <div className="flex items-center justify-between px-5 py-5 lg:block lg:px-6 lg:py-7">
-          <Link aria-label="Rare Legacy Life dashboard" href={role === "agent" ? "/agent/dashboard" : "/admin/dashboard"}>
+          <Link aria-label="Rare Legacy Life dashboard" href="/admin/dashboard">
             <BrandLogo className="h-16 w-auto lg:h-20" lockup="stacked" variant="dark" />
           </Link>
           <div>
@@ -80,7 +71,7 @@ export async function DashboardShell({
             <div className="flex items-center gap-2">
               <NotificationBar
                 initialNotifications={(notifications ?? []) as CrmNotification[]}
-                portal={role === "agent" ? "agent" : "admin"}
+                portal="admin"
                 profileId={profile.id}
               />
               <form action={signOut}>
@@ -99,7 +90,7 @@ export async function DashboardShell({
         </main>
       </div>
       <nav aria-label="CRM mobile navigation" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-neutral-200 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-lg backdrop-blur lg:hidden">
-        {(role === "agent" ? agentNav.slice(0,4) : [adminNav[0], adminNav[1], adminNav[2], { href: "/admin/settings", label: "Settings" }]).map(item => (
+        {adminNav.slice(0, 4).map(item => (
           <Link key={item.href} href={item.href} className="flex min-h-14 items-center justify-center px-1 text-center text-xs font-semibold text-[#050505] active:bg-[#F5E7A3]">{item.label}</Link>
         ))}
       </nav>

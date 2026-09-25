@@ -62,7 +62,7 @@ export function PublicHeader() {
                   className="rounded-xl border border-white/12 px-4 py-3 text-center text-sm font-semibold text-white/76 transition hover:border-[#C9A227]/70 hover:text-[#F5E7A3]"
                   href="/login"
                 >
-                  Agent Login
+                  CRM Login
                 </Link>
                 <Link
                   className="gold-gradient-button rounded-xl px-4 py-3 text-center text-sm font-bold"
@@ -105,7 +105,7 @@ export function PublicFooter() {
           <p className="font-semibold text-white">Secure portal</p>
           <div className="mt-3 grid gap-2">
             <Link className="hover:text-[#F5E7A3]" href="/login">
-              Agent and admin login
+              CRM login
             </Link>
             <Link className="hover:text-[#F5E7A3]" href="/quote">
               Start a quote

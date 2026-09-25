@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Bell, CheckCheck, MessageSquare } from "lucide-react";
+import { Bell, CheckCheck } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { CrmNotification } from "@/types/domain";
@@ -19,7 +19,7 @@ export function NotificationBar({
   const [open, setOpen] = useState(false);
   const supabase = useMemo(() => createClient(), []);
   const unread = notifications.filter((notification) => !notification.read_at);
-  const messagesPath = portal === "agent" ? "/agent/messages" : "/admin/messages";
+  const homePath = portal === "agent" ? "/agent/dashboard" : "/admin/dashboard";
   const leadPath = (leadId: string) =>
     portal === "agent" ? `/agent/leads/${leadId}` : `/admin/leads/${leadId}`;
 
@@ -64,15 +64,6 @@ export function NotificationBar({
 
   return (
     <div className="relative flex items-center gap-2">
-      <Link
-        className="inline-flex h-10 items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 text-sm font-semibold text-[#050505] shadow-sm transition hover:border-[#C9A227]"
-        href={messagesPath}
-        title="Open internal group chat"
-      >
-        <MessageSquare className="h-4 w-4 text-[#C9A227]" />
-        <span className="hidden sm:inline">Chat</span>
-      </Link>
-
       <button
         className="inline-flex h-10 items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 text-sm font-semibold text-[#050505] shadow-sm transition hover:border-[#C9A227]"
         type="button"
@@ -94,7 +85,7 @@ export function NotificationBar({
           <div className="flex items-center justify-between border-b border-neutral-100 p-4">
             <div>
               <p className="text-sm font-semibold text-[#050505]">Notifications</p>
-              <p className="text-xs text-neutral-500">Lead activity and internal chat alerts</p>
+              <p className="text-xs text-neutral-500">Updates to your CRM records</p>
             </div>
             <button
               className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs font-semibold text-neutral-600 hover:bg-neutral-50"
@@ -108,7 +99,7 @@ export function NotificationBar({
           <div className="max-h-96 overflow-y-auto">
             {notifications.map((notification) => {
               const path = notification.metadata && typeof notification.metadata === "object" && "path" in notification.metadata ? notification.metadata.path : null;
-              const href = typeof path === "string" && path.startsWith("/admin/retirement/") && portal === "admin" ? path : notification.lead_id ? leadPath(notification.lead_id) : messagesPath;
+              const href = typeof path === "string" && path.startsWith("/admin/retirement/") && portal === "admin" ? path : notification.lead_id ? leadPath(notification.lead_id) : homePath;
               return (
                 <Link
                   key={notification.id}
@@ -118,7 +109,7 @@ export function NotificationBar({
                 >
                   <div className="flex gap-3">
                     <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#050505] text-[#F5E7A3]">
-                      <MessageSquare className="h-4 w-4" />
+                      <Bell className="h-4 w-4" />
                     </span>
                     <span>
                       <span className="block text-sm font-semibold text-[#050505]">
@@ -140,8 +131,8 @@ export function NotificationBar({
             {!notifications.length ? (
               <div className="grid gap-3 p-6 text-sm text-neutral-500">
                 <p>No notifications yet.</p>
-                <Link className="font-semibold text-[#8A6A16] hover:underline" href={messagesPath}>
-                  Open internal group chat
+                <Link className="font-semibold text-[#8A6A16] hover:underline" href={homePath}>
+                  Open dashboard
                 </Link>
               </div>
             ) : null}

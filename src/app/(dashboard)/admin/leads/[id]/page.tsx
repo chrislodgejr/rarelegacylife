@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { LeadChatForm, LeadEmailForm } from "@/components/lead/communication-forms";
 import { LeadContactForm } from "@/components/lead/lead-contact-form";
 import { LeadGradeBadge, ScoreReasonList } from "@/components/lead/lead-grade-badge";
 import {
@@ -24,23 +23,12 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
     notFound();
   }
 
-  const [notesResult, tasksResult, activityResult, communicationsResult, threadResult] = await Promise.all([
+  const [notesResult, tasksResult, activityResult, communicationsResult] = await Promise.all([
     supabase.from("lead_notes").select("id, note, created_at, profiles(full_name, email)").eq("lead_id", id).order("created_at", { ascending: false }),
     supabase.from("lead_tasks").select("*").eq("lead_id", id).order("due_date", { ascending: true }),
     supabase.from("lead_activity").select("*").eq("lead_id", id).order("created_at", { ascending: false }).limit(30),
     supabase.from("communications").select("*").eq("lead_id", id).order("created_at", { ascending: false }).limit(20),
-    supabase.from("chat_threads").select("id").eq("lead_id", id).eq("thread_type", "lead").maybeSingle<{ id: string }>(),
   ]);
-
-  const { data: chatMessages } = threadResult.data
-    ? await supabase
-        .from("chat_messages")
-        .select("id, body, created_at, profiles(full_name, email)")
-        .eq("thread_id", threadResult.data.id)
-        .is("deleted_at", null)
-        .order("created_at", { ascending: false })
-        .limit(25)
-    : { data: [] };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
@@ -128,25 +116,6 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
         </section>
 
         <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h2 className="text-xl font-semibold text-[#050505]">Lead chat</h2>
-          <div className="mt-4 grid gap-3">
-            {(chatMessages ?? []).map((message) => (
-              <div key={message.id} className="rounded-md bg-neutral-50 p-4 text-sm leading-6 text-neutral-700">
-                <p className="font-semibold text-[#050505]">
-                  {profileName(message.profiles)}
-                </p>
-                <p className="mt-2 whitespace-pre-wrap">{message.body}</p>
-                <p className="mt-2 text-xs text-neutral-500">{new Date(message.created_at).toLocaleString()}</p>
-              </div>
-            ))}
-            {!chatMessages?.length ? <p className="text-sm text-neutral-500">No lead chat messages yet.</p> : null}
-          </div>
-          <div className="mt-5">
-            <LeadChatForm leadId={lead.id} />
-          </div>
-        </section>
-
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
           <h2 className="text-xl font-semibold text-[#050505]">Communication history</h2>
           <div className="mt-4 grid gap-3">
             {(communicationsResult.data ?? []).map((communication) => (
@@ -198,7 +167,6 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
       <aside className="space-y-4">
         <LeadContactForm lead={lead} />
         <LeadStatusForm currentStatus={lead.status} leadId={lead.id} />
-        <LeadEmailForm leadId={lead.id} />
         <LeadNoteForm leadId={lead.id} />
         <LeadTaskForm leadId={lead.id} />
       </aside>
@@ -221,17 +189,6 @@ function currency(value: number) {
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(value);
-}
-
-function profileName(profile: unknown) {
-  const normalized = Array.isArray(profile) ? profile[0] : profile;
-
-  if (!normalized || typeof normalized !== "object") {
-    return "CRM user";
-  }
-
-  const value = normalized as { full_name?: string | null; email?: string | null };
-  return value.full_name ?? value.email ?? "CRM user";
 }
 
 function titleCase(value: string) {
