@@ -54,10 +54,10 @@ export default function AboutPage() {
                   // Add a headshot by setting `photo` (e.g. "/team/daniel.jpg") in src/lib/site.ts.
                   <Image
                     alt={`${advisor.name}, ${advisor.title}`}
-                    className="h-20 w-20 rounded-full object-cover ring-2 ring-[#C9A227]/60"
-                    height={160}
+                    className="h-28 w-28 rounded-full object-cover ring-2 ring-[#C9A227]/60 ring-offset-2 ring-offset-white"
+                    height={224}
                     src={advisor.photo}
-                    width={160}
+                    width={224}
                   />
                 ) : (
                   <span className="gold-gradient-subtle flex h-12 w-12 items-center justify-center rounded-full text-black">

@@ -81,6 +81,7 @@ export function personSchema(advisor: Advisor = PRIMARY_ADVISOR) {
     "@type": "Person",
     name: advisor.name,
     jobTitle: advisor.title,
+    ...(advisor.photo ? { image: absoluteUrl(advisor.photo) } : {}),
     worksFor: { "@id": ORG_ID },
     url: absoluteUrl(`/about#${advisor.slug}`),
   };

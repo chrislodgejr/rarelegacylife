@@ -47,6 +47,7 @@ export const ADVISORS: Advisor[] = [
     name: "Daniel Pennachietti",
     title: "Licensed Life & Fixed Annuity Advisor",
     license: "NPN 21395664 · Life and Fixed Annuities",
+    photo: "/team/daniel-pennachietti.jpg",
     bio: "Daniel helps families compare term, permanent, mortgage-protection, and final-expense coverage in plain language, so the policy matches the people it is meant to protect.",
   },
   {
@@ -54,6 +55,7 @@ export const ADVISORS: Advisor[] = [
     name: "Christian Pennachietti",
     title: "Licensed Life & Annuity Advisor",
     license: "NPN 21707801 · Series 6, Series 63, SIE · Life, Variable and Fixed Annuities",
+    photo: "/team/christian-pennachietti.jpg",
     bio: "Christian leads Rare Legacy's Retirement Income Blueprint reviews, helping pre-retirees and retirees understand how income sources, annuity features, and legacy goals fit together.",
   },
 ];

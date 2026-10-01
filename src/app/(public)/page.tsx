@@ -266,12 +266,22 @@ export default function HomePage() {
               {ADVISORS.map((advisor) => (
                 <Link
                   key={advisor.slug}
-                  className="premium-card group flex gap-4 rounded-2xl p-6 transition hover:-translate-y-0.5"
+                  className="premium-card group flex items-center gap-5 rounded-2xl p-6 transition hover:-translate-y-0.5"
                   href={`/about#${advisor.slug}`}
                 >
-                  <span className="gold-gradient-subtle flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-black">
-                    <BadgeCheck aria-hidden="true" className="h-6 w-6" />
-                  </span>
+                  {advisor.photo ? (
+                    <Image
+                      alt={`${advisor.name}, ${advisor.title}`}
+                      className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-[#C9A227]/60 ring-offset-2 ring-offset-white"
+                      height={160}
+                      src={advisor.photo}
+                      width={160}
+                    />
+                  ) : (
+                    <span className="gold-gradient-subtle flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-black">
+                      <BadgeCheck aria-hidden="true" className="h-6 w-6" />
+                    </span>
+                  )}
                   <span>
                     <span className="font-premium block text-2xl font-semibold text-black">{advisor.name}</span>
                     <span className="block text-sm font-medium text-[#8A6A16]">{advisor.title}</span>

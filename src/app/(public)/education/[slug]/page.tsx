@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, BadgeCheck, CalendarDays, Clock, Phone } from "lucide-react";
@@ -130,12 +131,23 @@ export default async function GuidePage({ params }: GuidePageProps) {
               </div>
             </section>
 
-            <aside className="mt-12 rounded-2xl border border-neutral-200 p-6" aria-label="About the author">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Written and reviewed by</p>
-              <p className="font-premium mt-2 text-2xl font-semibold text-[#050505]">{author.name}</p>
-              <p className="text-sm font-medium text-[#8A6A16]">{author.title}</p>
-              <p className="mt-1 text-xs text-neutral-500">{author.license}</p>
-              <p className="mt-3 text-sm leading-6 text-neutral-700">{author.bio}</p>
+            <aside className="mt-12 flex flex-col gap-5 rounded-2xl border border-neutral-200 p-6 sm:flex-row" aria-label="About the author">
+              {author.photo ? (
+                <Image
+                  alt={`${author.name}, ${author.title}`}
+                  className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-[#C9A227]/60 ring-offset-2 ring-offset-white"
+                  height={160}
+                  src={author.photo}
+                  width={160}
+                />
+              ) : null}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Written and reviewed by</p>
+                <p className="font-premium mt-2 text-2xl font-semibold text-[#050505]">{author.name}</p>
+                <p className="text-sm font-medium text-[#8A6A16]">{author.title}</p>
+                <p className="mt-1 text-xs text-neutral-500">{author.license}</p>
+                <p className="mt-3 text-sm leading-6 text-neutral-700">{author.bio}</p>
+              </div>
             </aside>
 
             {guide.sources?.length ? (
