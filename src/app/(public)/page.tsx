@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, CalendarDays, CheckCircle2, Phone, Shield, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, Phone, Shield, Sparkles, Users } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
 import { JsonLd } from "@/components/seo/json-ld";
 import { GUIDES } from "@/content/guides";
@@ -10,7 +11,6 @@ import { Section } from "@/components/ui/section";
 import {
   GoldButton,
   GoldDivider,
-  PremiumBadge,
   PremiumSectionHeader,
   StepCard,
   TrustBar,
@@ -145,42 +145,49 @@ export default function HomePage() {
         </section>
 
         <Section className="bg-white">
-          <MotionReveal>
-            <PremiumSectionHeader
-              align="center"
-              eyebrow="Retirement planning"
-              title="Turn retirement questions into a clearer income plan."
-              copy="A complimentary review can help organize income sources, timing, market risk, liquidity, family goals, and the trade-offs surrounding annuities—without promising outcomes or pressuring you to purchase."
-            />
-            <div className="mt-9 grid gap-5 md:grid-cols-3">
-              <DarkValueLight icon={<CalendarDays />} title="Retirement income review" copy="See how Social Security, pensions, savings, and other income sources may work together." />
-              <DarkValueLight icon={<Shield />} title="Annuity education" copy="Understand contract features, surrender periods, liquidity limits, costs, and insurer-backed guarantees." />
-              <DarkValueLight icon={<Users />} title="Family and legacy goals" copy="Connect retirement decisions with the people, priorities, and legacy your plan is meant to support." />
+          <MotionReveal className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-[0_24px_70px_rgba(0,0,0,0.14)] lg:aspect-[4/5]">
+              <Image
+                alt="A retired couple enjoying a walk together in a landscaped park"
+                className="object-cover object-[center_40%]"
+                fill
+                sizes="(max-width: 1023px) 100vw, 40vw"
+                src="https://images.pexels.com/photos/8972326/pexels-photo-8972326.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              />
+              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+              <p className="font-premium absolute bottom-5 left-5 right-5 text-xl italic text-white">
+                A clearer plan for what comes next.
+              </p>
             </div>
-            <div className="mt-8 text-center">
-              <Link className="gold-gradient-button inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold" href="/retirement">
+            <div>
+              <PremiumSectionHeader
+                eyebrow="Retirement planning"
+                title="Turn retirement questions into a clearer income plan."
+                copy="A complimentary review can help organize income sources, timing, market risk, liquidity, family goals, and the trade-offs surrounding annuities—without promising outcomes or pressuring you to purchase."
+              />
+              <ul className="mt-7 grid gap-4">
+                {[
+                  [<CalendarDays key="i" />, "Retirement income review", "See how Social Security, pensions, savings, and other income sources may work together."],
+                  [<Shield key="i" />, "Annuity education", "Understand contract features, surrender periods, liquidity limits, costs, and insurer-backed guarantees."],
+                  [<Users key="i" />, "Family and legacy goals", "Connect retirement decisions with the people, priorities, and legacy your plan is meant to support."],
+                ].map(([icon, title, copy]) => (
+                  <li key={title as string} className="flex gap-4">
+                    <span className="gold-gradient-subtle flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-black [&>svg]:h-5 [&>svg]:w-5">
+                      {icon}
+                    </span>
+                    <span>
+                      <span className="block font-semibold text-black">{title}</span>
+                      <span className="mt-1 block text-sm leading-6 text-[#737373]">{copy}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                className="gold-gradient-button mt-8 inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold"
+                href="/retirement"
+              >
                 Request a Retirement Income Blueprint
               </Link>
-            </div>
-          </MotionReveal>
-        </Section>
-
-        <Section className="bg-[#F7F5EF]">
-          <MotionReveal>
-            <div className="grid gap-6 md:grid-cols-3">
-            {[
-              ["Clear guidance", "Plain-language help with term, permanent, and coverage amounts."],
-              ["Private by design", "Your request is handled securely and shared only for coverage guidance."],
-              ["Personal next steps", "An advisor can help you understand options that fit your family and budget."],
-            ].map(([title, copy]) => (
-              <div key={title} className="premium-card rounded-xl p-6">
-                <span className="gold-gradient-subtle flex h-10 w-10 items-center justify-center rounded-full text-black">
-                  <CheckCircle2 className="h-5 w-5" />
-                </span>
-                <h2 className="mt-4 text-lg font-semibold text-black">{title}</h2>
-                <p className="mt-3 text-sm leading-6 text-[#737373]">{copy}</p>
-              </div>
-            ))}
             </div>
           </MotionReveal>
         </Section>
@@ -241,38 +248,9 @@ export default function HomePage() {
               copy="Start with what matters most, then refine the strategy with an advisor."
             />
             <div className="mt-10 grid gap-5 md:grid-cols-3">
-              <DarkValue icon={<Shield />} title="Family protection" copy="Income replacement and stability for the people who depend on you." />
-              <DarkValue icon={<Users />} title="Mortgage safety net" copy="Protection designed around home, debt, and long-term obligations." />
-              <DarkValue icon={<Sparkles />} title="Legacy planning" copy="Coverage conversations that can support wealth transfer and responsible planning." />
-            </div>
-          </MotionReveal>
-        </Section>
-
-        <Section className="bg-[#F7F5EF]">
-          <MotionReveal className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
-            <div>
-              <PremiumSectionHeader
-                eyebrow="Guided quote"
-                title="Let's find coverage that fits your life."
-                copy="A few quick questions help us understand your goals and prepare a thoughtful coverage conversation."
-              />
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {["About 2 minutes", "Private & secure", "Licensed advisor"].map((item) => (
-                  <PremiumBadge key={item} tone="light">{item}</PremiumBadge>
-                ))}
-              </div>
-            </div>
-            <div className="gold-border premium-card rounded-2xl p-6">
-              <h3 className="font-premium text-2xl font-semibold text-black">Ready to check your options?</h3>
-              <p className="mt-3 text-sm leading-6 text-[#737373]">
-                Start with a secure quote request. We will review it and follow up with next steps.
-              </p>
-              <Link
-                className="gold-gradient-button mt-5 inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold"
-                href="/quote"
-              >
-                Check My Coverage Options
-              </Link>
+              <DarkValue href="/education/how-much-life-insurance-do-i-need" icon={<Shield />} title="Family protection" copy="Income replacement and stability for the people who depend on you." />
+              <DarkValue href="/education/mortgage-protection-insurance" icon={<Users />} title="Mortgage safety net" copy="Protection designed around home, debt, and long-term obligations." />
+              <DarkValue href="/education/term-vs-whole-life-insurance" icon={<Sparkles />} title="Legacy planning" copy="Coverage conversations that can support wealth transfer and responsible planning." />
             </div>
           </MotionReveal>
         </Section>
@@ -374,32 +352,30 @@ export default function HomePage() {
   );
 }
 
-function DarkValueLight({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
-  return (
-    <div className="premium-card rounded-2xl p-6">
-      <div className="gold-gradient-subtle flex h-11 w-11 items-center justify-center rounded-full text-black">{icon}</div>
-      <h2 className="font-premium mt-5 text-2xl font-semibold text-black">{title}</h2>
-      <p className="mt-3 text-sm leading-6 text-[#737373]">{copy}</p>
-    </div>
-  );
-}
-
 function DarkValue({
+  href,
   icon,
   title,
   copy,
 }: {
+  href: string;
   icon: React.ReactNode;
   title: string;
   copy: string;
 }) {
   return (
-    <div className="dark-premium-card rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-[#C9A227]/70">
+    <Link
+      className="dark-premium-card group block rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-[#C9A227]/70"
+      href={href}
+    >
       <div className="gold-gradient-subtle flex h-11 w-11 items-center justify-center rounded-full text-black">
         {icon}
       </div>
-      <h2 className="font-premium mt-5 text-2xl font-semibold">{title}</h2>
+      <h3 className="font-premium mt-5 text-2xl font-semibold">{title}</h3>
       <p className="mt-3 text-sm leading-6 text-white/72">{copy}</p>
-    </div>
+      <p className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#F5E7A3]">
+        Learn more <ArrowRight aria-hidden="true" className="h-4 w-4 transition group-hover:translate-x-0.5" />
+      </p>
+    </Link>
   );
 }

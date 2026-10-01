@@ -81,11 +81,13 @@ export default async function GuidePage({ params }: GuidePageProps) {
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/70">
               <span className="inline-flex items-center gap-2">
                 <BadgeCheck aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
-                By{" "}
-                <Link className="font-semibold text-white hover:text-[#F5E7A3]" href={`/about#${author.slug}`}>
-                  {author.name}
-                </Link>
-                , {author.title}
+                <span>
+                  By{" "}
+                  <Link className="font-semibold text-white hover:text-[#F5E7A3]" href={`/about#${author.slug}`}>
+                    {author.name}
+                  </Link>
+                  , {author.title}
+                </span>
               </span>
               <span className="inline-flex items-center gap-2">
                 <CalendarDays aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />

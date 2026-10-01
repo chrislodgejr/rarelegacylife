@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { BadgeCheck, MapPin, Phone } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
@@ -49,9 +50,20 @@ export default function AboutPage() {
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {ADVISORS.map((advisor) => (
               <article key={advisor.slug} id={advisor.slug} className="premium-card scroll-mt-28 rounded-2xl p-7">
-                <span className="gold-gradient-subtle flex h-12 w-12 items-center justify-center rounded-full text-black">
-                  <BadgeCheck aria-hidden="true" className="h-6 w-6" />
-                </span>
+                {advisor.photo ? (
+                  // Add a headshot by setting `photo` (e.g. "/team/daniel.jpg") in src/lib/site.ts.
+                  <Image
+                    alt={`${advisor.name}, ${advisor.title}`}
+                    className="h-20 w-20 rounded-full object-cover ring-2 ring-[#C9A227]/60"
+                    height={160}
+                    src={advisor.photo}
+                    width={160}
+                  />
+                ) : (
+                  <span className="gold-gradient-subtle flex h-12 w-12 items-center justify-center rounded-full text-black">
+                    <BadgeCheck aria-hidden="true" className="h-6 w-6" />
+                  </span>
+                )}
                 <h3 className="font-premium mt-5 text-2xl font-semibold text-[#050505]">{advisor.name}</h3>
                 <p className="text-sm font-medium text-[#8A6A16]">{advisor.title}</p>
                 <p className="mt-1 text-xs text-neutral-500">{advisor.license}</p>

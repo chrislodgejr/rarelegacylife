@@ -117,7 +117,7 @@ export const US_STATES = [
 // Consumer-facing navigation only. Agent recruiting and CRM login live in the
 // footer so they don't compete with the quote button.
 export const PUBLIC_NAV = [
-  { href: "/education", label: "Life Insurance Guides" },
+  { href: "/education", label: "Guides" },
   { href: "/retirement", label: "Retirement" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },

@@ -24,7 +24,7 @@ export function PublicHeader() {
           {PUBLIC_NAV.map((item) => (
             <Link
               key={item.href}
-              className="group relative overflow-hidden rounded-full px-4 py-2 font-medium transition hover:bg-white/[0.075] hover:text-white"
+              className="group relative overflow-hidden whitespace-nowrap rounded-full px-4 py-2 font-medium transition hover:bg-white/[0.075] hover:text-white"
               href={item.href}
             >
               <span className="relative z-10">{item.label}</span>
@@ -34,15 +34,16 @@ export function PublicHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <a
-            className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold text-white/85 transition hover:text-[#F5E7A3] md:inline-flex"
+            aria-label={`Call ${SITE.phone.display}`}
+            className="hidden h-10 items-center gap-2 whitespace-nowrap rounded-full px-3 text-sm font-semibold text-white/85 transition hover:text-[#F5E7A3] md:inline-flex"
             href={SITE.phone.href}
             data-track="phone_click"
           >
             <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
-            {SITE.phone.display}
+            <span className="lg:hidden xl:inline">{SITE.phone.display}</span>
           </a>
           <Link
-            className="gold-gradient-button hidden h-10 items-center rounded-full px-5 text-sm font-bold md:inline-flex"
+            className="gold-gradient-button hidden h-10 items-center whitespace-nowrap rounded-full px-5 text-sm font-bold md:inline-flex"
             href="/quote"
           >
             Get My Free Quote
