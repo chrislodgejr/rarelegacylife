@@ -1,6 +1,14 @@
 import { PublicShell } from "@/components/layout/public-shell";
 import { Section } from "@/components/ui/section";
 import { PremiumSectionHeader } from "@/components/ui/premium";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = pageMetadata({
+  title: "Privacy Policy | Rare Legacy Life Group",
+  description:
+    "How Rare Legacy Life Group collects, uses, and protects information submitted through this website.",
+  path: "/privacy",
+});
 
 const sections = [
   {

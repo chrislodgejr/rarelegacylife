@@ -40,11 +40,13 @@ export function HeroReveal({
   const reduceMotion = useReducedMotion();
 
   return (
+    // Hero content stays fully visible from the first paint (no opacity fade) so the
+    // headline counts as Largest Contentful Paint immediately; only a subtle lift animates.
     <motion.div
       className={className}
-      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-      animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1], delay }}
+      initial={reduceMotion ? false : { y: 10 }}
+      animate={reduceMotion ? undefined : { y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: Math.min(delay, 0.2) }}
     >
       {children}
     </motion.div>

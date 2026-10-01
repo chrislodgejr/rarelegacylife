@@ -1,6 +1,14 @@
 import { AgentApplicationForm } from "@/components/forms/agent-application-form";
 import { PublicShell } from "@/components/layout/public-shell";
 import { Eyebrow, Section } from "@/components/ui/section";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = pageMetadata({
+  title: "Life Insurance Agent Careers | Apply to Rare Legacy Life Group",
+  description:
+    "Licensed or getting licensed? Apply to join Rare Legacy Life Group and get license review, carrier and state setup, and a modern lead CRM.",
+  path: "/apply-as-agent",
+});
 
 export default function ApplyAsAgentPage() {
   return (

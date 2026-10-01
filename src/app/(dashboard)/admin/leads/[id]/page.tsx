@@ -66,7 +66,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
             <Info label="Tobacco" value={lead.tobacco_use ? "Yes" : "No"} />
             <Info label="Preferred contact" value={lead.preferred_contact_method} />
             <Info label="Best time" value={lead.best_time_to_contact ?? "Not provided"} />
-            <Info label="Quote email OTP" value={lead.quote_email_otp_verified ? "Verified" : "Not verified"} />
+            <Info label="Quote email OTP" value={lead.quote_email_otp_verified ? "Verified" : "Not required"} />
             <Info label="Created" value={new Date(lead.created_at).toLocaleString()} />
           </div>
 

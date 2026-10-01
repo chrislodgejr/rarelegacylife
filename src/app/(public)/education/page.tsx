@@ -1,6 +1,18 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Eyebrow, Section } from "@/components/ui/section";
+import { GUIDES } from "@/content/guides";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { breadcrumbSchema } from "@/lib/seo/schema";
+
+export const metadata = pageMetadata({
+  title: "Life Insurance & Retirement Guides | Rare Legacy Life Group",
+  description:
+    "Plain-language guides from licensed advisors: term vs. whole life, how much coverage you need, mortgage protection, final expense, annuities, and retirement income.",
+  path: "/education",
+});
 
 const educationSections = [
   {
@@ -57,33 +69,64 @@ const planningQuestions = [
 export default function EducationPage() {
   return (
     <PublicShell>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/education" },
+        ])}
+      />
       <main>
         <Section className="black-hero-bg text-white">
           <div className="max-w-4xl">
-            <Eyebrow>Life insurance education</Eyebrow>
+            <Eyebrow>Life insurance &amp; retirement guides</Eyebrow>
             <h1 className="font-premium mt-4 text-4xl font-semibold text-white sm:text-6xl">
               Understand the protection before you choose the policy.
             </h1>
             <p className="mt-6 text-base leading-8 text-white/72">
-              Life insurance is not one-size-fits-all. Your best path depends on your family,
-              income, health, debt, business responsibilities, budget, and long-term goals. Use this
-              guide to understand the core decisions before speaking with an advisor.
+              Straight answers from licensed advisors. Your best path depends on your family,
+              income, health, debt, business responsibilities, budget, and long-term goals — start
+              with the question you have right now.
             </p>
           </div>
         </Section>
 
         <Section>
+          <h2 className="font-premium text-3xl font-semibold text-[#050505]">Popular questions</h2>
+          <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {GUIDES.map((guide) => (
+              <Link
+                key={guide.slug}
+                className="premium-card group flex flex-col rounded-xl p-6 transition hover:-translate-y-0.5"
+                href={`/education/${guide.slug}`}
+              >
+                <span className="text-xs font-semibold uppercase tracking-wide text-[#8A6A16]">{guide.category}</span>
+                <span className="font-premium mt-3 text-xl font-semibold leading-snug text-[#050505]">{guide.title}</span>
+                <span className="mt-3 flex-1 text-sm leading-6 text-neutral-600">{guide.description}</span>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#050505] group-hover:underline">
+                  Read the guide <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </Section>
+
+        <Section className="bg-[#F7F5EF] pb-6">
+          <Eyebrow>The basics</Eyebrow>
+          <h2 className="font-premium mt-3 text-3xl font-semibold text-[#050505]">Life insurance in plain language</h2>
+        </Section>
+
+        <Section className="bg-[#F7F5EF] pt-0">
           <div className="grid gap-5 md:grid-cols-2">
             {educationSections.map((section) => (
               <article key={section.title} className="premium-card rounded-xl p-6">
-                <h2 className="font-premium text-2xl font-semibold text-[#050505]">{section.title}</h2>
+                <h3 className="font-premium text-2xl font-semibold text-[#050505]">{section.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-neutral-600">{section.copy}</p>
               </article>
             ))}
           </div>
         </Section>
 
-        <Section className="bg-[#F7F5EF]">
+        <Section>
           <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
             <div>
               <Eyebrow>Planning checklist</Eyebrow>
@@ -112,9 +155,8 @@ export default function EducationPage() {
               <div>
                 <h2 className="font-premium text-3xl font-semibold">Ready to compare your options?</h2>
                 <p className="mt-3 max-w-3xl text-sm leading-7 text-white/72">
-                  The quote form helps us understand your goals, verify your email securely, and
-                  route your request for advisor guidance. You are not committing to buy a policy by
-                  submitting a quote request.
+                  A few quick questions help a licensed advisor understand your goals. Requesting a
+                  quote is free and you are not committing to buy a policy.
                 </p>
               </div>
               <Link

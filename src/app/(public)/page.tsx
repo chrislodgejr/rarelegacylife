@@ -1,6 +1,11 @@
 import Link from "next/link";
-import { CalendarDays, CheckCircle2, Shield, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, CheckCircle2, Phone, Shield, Sparkles, Users } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
+import { JsonLd } from "@/components/seo/json-ld";
+import { GUIDES } from "@/content/guides";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { faqSchema, websiteSchema } from "@/lib/seo/schema";
+import { ADVISORS, SITE } from "@/lib/site";
 import { Section } from "@/components/ui/section";
 import {
   GoldButton,
@@ -12,9 +17,59 @@ import {
 } from "@/components/ui/premium";
 import { FloatingQuoteCard, HeroReveal, MotionReveal } from "@/components/ui/premium-motion";
 
+export const metadata = pageMetadata({
+  title: "Life Insurance & Retirement Income Guidance in East Norriton, PA | Rare Legacy Life Group",
+  description:
+    "Free life insurance quotes and complimentary retirement income reviews from licensed advisors in East Norriton, PA. Term, whole life, mortgage protection, final expense, and annuities in 49 states.",
+  path: "/",
+});
+
+const HOME_FAQS = [
+  {
+    question: "Do I need term or whole life insurance?",
+    answer:
+      "Most families protecting an income and a mortgage start with term life, which covers a set number of years at the lowest cost. Whole life lasts for life and builds cash value, so it fits lifelong needs like final expenses or leaving a legacy. Many people use a mix of both.",
+  },
+  {
+    question: "How much life insurance do I need?",
+    answer:
+      "Add up the income your family would need, your mortgage and debts, future education costs, and final expenses, then subtract savings and existing coverage. A common shortcut is 10 to 12 times your income, but a needs-based estimate is more accurate.",
+  },
+  {
+    question: "Will my health history matter?",
+    answer:
+      "Yes, insurers review health, prescriptions, and tobacco use, but a health condition doesn't automatically mean you can't get coverage. Simplified-issue and other options exist, and an advisor can point you toward realistic paths.",
+  },
+  {
+    question: "Is the quote or retirement review really free?",
+    answer:
+      "Yes. Quote requests and Retirement Income Blueprint consultations are complimentary, and there is no obligation to buy anything.",
+  },
+  {
+    question: "Where are you located, and do you work outside Pennsylvania?",
+    answer:
+      "Our office is at 59 W. Germantown Pike in East Norriton, PA. We meet locally across Montgomery County and work with clients remotely in 49 states, excluding California, subject to licensing and product availability.",
+  },
+  {
+    question: "How quickly will someone contact me?",
+    answer:
+      "A licensed advisor reviews every request and follows up using the contact method you choose. To talk right away, call (484) 430-4363.",
+  },
+];
+
+const FEATURED_GUIDES = [
+  "term-vs-whole-life-insurance",
+  "how-much-life-insurance-do-i-need",
+  "how-do-annuities-work",
+  "retirement-income-planning-pennsylvania",
+];
+
 export default function HomePage() {
+  const featuredGuides = GUIDES.filter((guide) => FEATURED_GUIDES.includes(guide.slug));
+
   return (
     <PublicShell>
+      <JsonLd data={[websiteSchema(), faqSchema(HOME_FAQS)]} />
       <main>
         <section className="black-hero-bg relative overflow-hidden text-white">
           <div className="signal-grid absolute inset-0 opacity-25" aria-hidden="true" />
@@ -24,7 +79,7 @@ export default function HomePage() {
             <div className="flex flex-col justify-center">
               <HeroReveal>
                 <p className="gold-gradient-text text-sm font-semibold uppercase tracking-[0.28em]">
-                  Rare Legacy Life
+                  Life insurance &amp; retirement guidance
                 </p>
               </HeroReveal>
               <HeroReveal delay={0.08}>
@@ -37,8 +92,9 @@ export default function HomePage() {
               </HeroReveal>
               <HeroReveal delay={0.24}>
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-                  Personal guidance for life insurance, retirement income reviews, and annuity
-                  decisions—built around the people, plans, and legacy that matter most.
+                  Licensed advisors in East Norriton, PA helping families nationwide with life
+                  insurance, retirement income reviews, and annuity decisions—built around the
+                  people, plans, and legacy that matter most.
                 </p>
               </HeroReveal>
               <HeroReveal delay={0.32}>
@@ -54,15 +110,23 @@ export default function HomePage() {
               </HeroReveal>
               <HeroReveal delay={0.4}>
                 <div className="mt-6">
-                  <TrustBar items={["Secure quote request", "Advisor-guided", "No-pressure guidance"]} />
+                  <TrustBar items={["Licensed advisors", "Free quotes & reviews", "No-pressure guidance"]} />
+                  <a
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-[#F5E7A3]"
+                    href={SITE.phone.href}
+                    data-track="phone_click"
+                  >
+                    <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                    Prefer to talk? Call {SITE.phone.display}
+                  </a>
                 </div>
               </HeroReveal>
               <HeroReveal delay={0.48}>
                 <div className="home-hero-stats mt-8 grid max-w-lg grid-cols-3 gap-3">
                   {[
-                    ["100%", "Private"],
-                    ["4", "Steps"],
-                    ["0", "Pressure"],
+                    ["49", "States served"],
+                    ["2 min", "Quote request"],
+                    ["$0", "Consultation"],
                   ].map(([value, label]) => (
                     <div key={label} className="dark-premium-card rounded-2xl p-4">
                       <p className="font-premium text-2xl font-semibold">{value}</p>
@@ -157,9 +221,9 @@ export default function HomePage() {
             </div>
             <div className="grid gap-4">
               {[
-                ["1", "Share the basics", "Tell us what you want protected in the guided quote flow."],
-                ["2", "Confirm your email", "Verify your quote email so your request stays private and secure."],
-                ["3", "Move with clarity", "A Rare Legacy Life advisor helps identify practical coverage paths."],
+                ["1", "Share the basics", "Answer a few quick questions about what you want to protect. It takes about two minutes."],
+                ["2", "Talk with a licensed advisor", "An advisor reviews your goals and walks you through realistic coverage options and costs."],
+                ["3", "Decide with clarity", "Choose what fits your family and budget, on your timeline. No pressure, no obligation."],
               ].map(([number, title, copy]) => (
                 <StepCard key={number} step={number} title={title} copy={copy} />
               ))}
@@ -193,7 +257,7 @@ export default function HomePage() {
                 copy="A few quick questions help us understand your goals and prepare a thoughtful coverage conversation."
               />
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {["Private intake", "Secure email check", "Advisor guidance"].map((item) => (
+                {["About 2 minutes", "Private & secure", "Licensed advisor"].map((item) => (
                   <PremiumBadge key={item} tone="light">{item}</PremiumBadge>
                 ))}
               </div>
@@ -215,18 +279,65 @@ export default function HomePage() {
 
         <Section className="bg-white">
           <MotionReveal>
-            <PremiumSectionHeader eyebrow="FAQ preview" title="Common first questions" />
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              ["Do I need term or whole life?", "It depends on your goals, budget, timeline, and legacy planning needs."],
-              ["How much coverage is enough?", "Start with income, debt, dependents, mortgage, final expenses, and future obligations."],
-              ["Will health history matter?", "Yes, but options can still exist. Share only what is needed in the secure form."],
-            ].map(([question, answer]) => (
-              <div key={question} className="premium-card rounded-xl p-5">
-                <h3 className="font-semibold text-black">{question}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#737373]">{answer}</p>
-              </div>
-            ))}
+            <PremiumSectionHeader
+              eyebrow="Meet your advisors"
+              title="Real, licensed people—not a call center."
+              copy="When you reach out, you work directly with a licensed Rare Legacy Life advisor."
+            />
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              {ADVISORS.map((advisor) => (
+                <Link
+                  key={advisor.slug}
+                  className="premium-card group flex gap-4 rounded-2xl p-6 transition hover:-translate-y-0.5"
+                  href={`/about#${advisor.slug}`}
+                >
+                  <span className="gold-gradient-subtle flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-black">
+                    <BadgeCheck aria-hidden="true" className="h-6 w-6" />
+                  </span>
+                  <span>
+                    <span className="font-premium block text-2xl font-semibold text-black">{advisor.name}</span>
+                    <span className="block text-sm font-medium text-[#8A6A16]">{advisor.title}</span>
+                    <span className="mt-1 block text-xs text-[#737373]">{advisor.license}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </MotionReveal>
+        </Section>
+
+        <Section className="bg-[#F7F5EF]">
+          <MotionReveal>
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <PremiumSectionHeader eyebrow="Guides" title="Get straight answers first." />
+              <Link className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:underline" href="/education">
+                All guides <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {featuredGuides.map((guide) => (
+                <Link
+                  key={guide.slug}
+                  className="premium-card group rounded-xl p-5 transition hover:-translate-y-0.5"
+                  href={`/education/${guide.slug}`}
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wide text-[#8A6A16]">{guide.category}</span>
+                  <span className="mt-2 block font-semibold leading-6 text-black group-hover:underline">{guide.title}</span>
+                </Link>
+              ))}
+            </div>
+          </MotionReveal>
+        </Section>
+
+        <Section className="bg-white">
+          <MotionReveal>
+            <PremiumSectionHeader eyebrow="FAQ" title="Common first questions" />
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+              {HOME_FAQS.map((faq) => (
+                <div key={faq.question} className="premium-card rounded-xl p-5">
+                  <h3 className="font-semibold text-black">{faq.question}</h3>
+                  <p className="mt-3 text-sm leading-6 text-[#737373]">{faq.answer}</p>
+                </div>
+              ))}
             </div>
           </MotionReveal>
         </Section>
@@ -238,14 +349,24 @@ export default function HomePage() {
               Secure your family. Build your legacy.
             </h2>
             <p className="mt-4 text-sm leading-6 text-white/66">
-              A private quote request is the first step toward coverage that fits your life.
+              A free, private quote request is the first step toward coverage that fits your life.
             </p>
-            <Link
-              className="gold-gradient-button mt-7 inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold"
-              href="/quote"
-            >
-              Start My Quote
-            </Link>
+            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                className="gold-gradient-button inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold"
+                href="/quote"
+              >
+                Start My Quote
+              </Link>
+              <a
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-7 text-sm font-semibold text-white hover:border-[#F5E7A3]"
+                href={SITE.phone.href}
+                data-track="phone_click"
+              >
+                <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                {SITE.phone.display}
+              </a>
+            </div>
           </MotionReveal>
         </Section>
       </main>
