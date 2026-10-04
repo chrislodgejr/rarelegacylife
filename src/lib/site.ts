@@ -1,3 +1,5 @@
+import { SHARE_IMAGE } from "@/lib/brand";
+
 /**
  * Single source of truth for public business details used in page copy,
  * metadata, and structured data (JSON-LD). Keep name/address/phone identical
@@ -23,7 +25,8 @@ export const SITE = {
   },
   areaServed: "49 U.S. states (excluding California)",
   localArea: "Montgomery County, PA",
-  ogImage: "/og-default.png",
+  /** Share image for link previews and JSON-LD; generated from the logo (see src/lib/brand.ts). */
+  ogImage: SHARE_IMAGE.url,
 } as const;
 
 export type Advisor = {

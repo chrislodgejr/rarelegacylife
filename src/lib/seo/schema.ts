@@ -1,3 +1,4 @@
+import { BRAND_FILES } from "@/lib/brand";
 import { absoluteUrl, PRIMARY_ADVISOR, SITE, type Advisor } from "@/lib/site";
 
 type Faq = { question: string; answer: string };
@@ -12,7 +13,8 @@ export function organizationSchema() {
     name: SITE.name,
     alternateName: SITE.shortName,
     url: SITE.url,
-    logo: absoluteUrl("/brand/logo-dark-stacked.png"),
+    // Black full logo on transparent: search engines show logos on white.
+    logo: absoluteUrl(BRAND_FILES.logoBlackPng),
     image: absoluteUrl(SITE.ogImage),
     description: SITE.description,
     telephone: SITE.phone.e164,

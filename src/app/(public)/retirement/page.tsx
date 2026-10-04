@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { PublicFooter, PublicHeader } from "@/components/layout/public-shell";
+import { SHARE_IMAGE } from "@/lib/brand";
+import { absoluteUrl } from "@/lib/site";
 import { RetirementLanding } from "./retirement-landing";
 
 const title = "Complimentary Retirement Income Blueprint | Rare Legacy Life Group";
@@ -20,9 +22,9 @@ export const metadata: Metadata = {
     url: "https://rarelegacylife.com/retirement",
     images: [
       {
-        url: "https://rarelegacylife.com/brand/logo-dark-horizontal.png",
-        width: 1200,
-        height: 630,
+        url: absoluteUrl(SHARE_IMAGE.url),
+        width: SHARE_IMAGE.width,
+        height: SHARE_IMAGE.height,
         alt: "Rare Legacy Life Group",
       },
     ],
@@ -31,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["https://rarelegacylife.com/brand/logo-dark-horizontal.png"],
+    images: [absoluteUrl(SHARE_IMAGE.url)],
   },
   robots: {
     index: true,
@@ -40,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#19201F",
+  themeColor: "#0C0B09",
 };
 
 export default function RetirementPage() {
