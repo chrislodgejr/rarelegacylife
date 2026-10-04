@@ -33,20 +33,20 @@ export default function ContactPage() {
               </p>
               <div className="mt-8 grid gap-3 text-sm">
                 <a
-                  className="dark-premium-card flex items-center gap-3 rounded-xl p-4 font-semibold text-white hover:border-[#C9A227]/70"
+                  className="dark-premium-card flex items-center gap-3 rounded-xl p-4 font-semibold text-white hover:border-brand-cream-500/70"
                   href={SITE.phone.href}
                   data-track="phone_click"
                 >
-                  <Phone aria-hidden="true" className="h-5 w-5 text-[#C9A227]" />
+                  <Phone aria-hidden="true" className="h-5 w-5 text-brand-cream-500" />
                   {SITE.phone.display}
                 </a>
                 <a
-                  className="dark-premium-card flex items-center gap-3 rounded-xl p-4 text-white/85 hover:border-[#C9A227]/70"
+                  className="dark-premium-card flex items-center gap-3 rounded-xl p-4 text-white/85 hover:border-brand-cream-500/70"
                   href={mapsUrl}
                   rel="noopener"
                   target="_blank"
                 >
-                  <MapPin aria-hidden="true" className="h-5 w-5 shrink-0 text-[#C9A227]" />
+                  <MapPin aria-hidden="true" className="h-5 w-5 shrink-0 text-brand-cream-500" />
                   <span>
                     {SITE.address.street}
                     <br />
@@ -54,7 +54,7 @@ export default function ContactPage() {
                   </span>
                 </a>
                 <div className="dark-premium-card flex items-center gap-3 rounded-xl p-4 text-white/85">
-                  <Video aria-hidden="true" className="h-5 w-5 text-[#C9A227]" />
+                  <Video aria-hidden="true" className="h-5 w-5 text-brand-cream-500" />
                   Office, in-home, phone, or video meetings
                 </div>
               </div>

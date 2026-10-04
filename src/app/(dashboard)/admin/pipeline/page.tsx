@@ -32,7 +32,7 @@ function PipelineCard({ item }: { item: CrmItem }) {
     <form action={movePipelineItem} className="mt-3"><input type="hidden" name="id" value={item.id} /><input type="hidden" name="kind" value={item.kind} />
       <select name="status" defaultValue={item.status} aria-label={`Move ${item.name} to stage`} className="h-10 w-full rounded-xl border border-neutral-300 bg-white px-2 text-xs capitalize">
         {stagesByKind[item.kind].map(stage => <option key={stage.value} value={stage.value}>{stage.label}</option>)}
-      </select><button type="submit" className="mt-2 w-full rounded-xl border border-[#C9A227] px-3 py-2 text-xs font-semibold">Save stage</button>
+      </select><button type="submit" className="mt-2 w-full rounded-xl border border-brand-cream-600 px-3 py-2 text-xs font-semibold">Save stage</button>
     </form>
   </article>;
 }
@@ -44,7 +44,7 @@ export default async function PipelinePage({ searchParams }: { searchParams: Pro
   const scope = ["quote", "retirement"].includes(kind ?? "") ? kind : "all";
   const filtered = items.filter(i => (scope === "all" ? i.kind !== "inquiry" : i.kind === scope) && (view === "closed" ? closed.has(i.status) : !closed.has(i.status)));
   return <div className="space-y-5">
-    <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8A6A16]">Work in progress</p><h1 className="font-premium mt-1 text-3xl font-semibold">Pipeline</h1><p className="mt-2 text-sm text-neutral-600">Move each inquiry through its own sales or review stages. Chris and Dan share the same pipeline.</p></div>
+    <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-black-500">Work in progress</p><h1 className="font-premium mt-1 text-3xl font-semibold">Pipeline</h1><p className="mt-2 text-sm text-neutral-600">Move each inquiry through its own sales or review stages. Chris and Dan share the same pipeline.</p></div>
     <div className="flex flex-wrap gap-2 text-sm">{["all", "quote", "retirement"].map(value => <Link key={value} href={`/admin/pipeline?kind=${value}&view=${view ?? "open"}`} className={`rounded-full px-4 py-2 capitalize ${scope === value ? "bg-black text-white" : "border border-neutral-300 bg-white"}`}>{value === "all" ? "All verified" : value}</Link>)}<Link href={`/admin/pipeline?kind=${scope}&view=${view === "closed" ? "open" : "closed"}`} className="rounded-full border border-neutral-300 bg-white px-4 py-2">{view === "closed" ? "Open pipeline" : "Closed / lost"}</Link></div>
     {errors.length > 0 && <p role="alert" className="rounded-xl bg-amber-50 p-4 text-sm">Some records could not be loaded: {errors.join(", ")}.</p>}
     <p className="text-sm text-neutral-500">{filtered.length} records</p>

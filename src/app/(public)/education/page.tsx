@@ -99,7 +99,7 @@ export default function EducationPage() {
                 className="premium-card group flex flex-col rounded-xl p-6 transition hover:-translate-y-0.5"
                 href={`/education/${guide.slug}`}
               >
-                <span className="text-xs font-semibold uppercase tracking-wide text-[#8A6A16]">{guide.category}</span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">{guide.category}</span>
                 <span className="font-premium mt-3 text-xl font-semibold leading-snug text-[#050505]">{guide.title}</span>
                 <span className="mt-3 flex-1 text-sm leading-6 text-neutral-600">{guide.description}</span>
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#050505] group-hover:underline">
@@ -111,7 +111,7 @@ export default function EducationPage() {
         </Section>
 
         <Section className="bg-[#F7F5EF] pb-6">
-          <Eyebrow>The basics</Eyebrow>
+          <Eyebrow tone="light">The basics</Eyebrow>
           <h2 className="font-premium mt-3 text-3xl font-semibold text-[#050505]">Life insurance in plain language</h2>
         </Section>
 
@@ -129,7 +129,7 @@ export default function EducationPage() {
         <Section>
           <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
             <div>
-              <Eyebrow>Planning checklist</Eyebrow>
+              <Eyebrow tone="light">Planning checklist</Eyebrow>
               <h2 className="font-premium mt-3 text-4xl font-semibold text-[#050505]">
                 Questions to answer before comparing options.
               </h2>

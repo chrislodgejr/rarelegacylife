@@ -68,11 +68,11 @@ export default async function GuidePage({ params }: GuidePageProps) {
         <header className="black-hero-bg px-4 pb-12 pt-10 text-white sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <nav aria-label="Breadcrumb" className="text-xs text-white/55">
-              <Link className="hover:text-[#F5E7A3]" href="/">
+              <Link className="hover:text-brand-cream-300" href="/">
                 Home
               </Link>
               <span className="mx-2">/</span>
-              <Link className="hover:text-[#F5E7A3]" href="/education">
+              <Link className="hover:text-brand-cream-300" href="/education">
                 Guides
               </Link>
               <span className="mx-2">/</span>
@@ -81,21 +81,21 @@ export default async function GuidePage({ params }: GuidePageProps) {
             <h1 className="font-premium mt-5 text-4xl font-semibold leading-tight sm:text-5xl">{guide.title}</h1>
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/70">
               <span className="inline-flex items-center gap-2">
-                <BadgeCheck aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                <BadgeCheck aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
                 <span>
                   By{" "}
-                  <Link className="font-semibold text-white hover:text-[#F5E7A3]" href={`/about#${author.slug}`}>
+                  <Link className="font-semibold text-white hover:text-brand-cream-300" href={`/about#${author.slug}`}>
                     {author.name}
                   </Link>
                   , {author.title}
                 </span>
               </span>
               <span className="inline-flex items-center gap-2">
-                <CalendarDays aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                <CalendarDays aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
                 Updated <time dateTime={guide.updated}>{dateFormat.format(new Date(guide.updated))}</time>
               </span>
               <span className="inline-flex items-center gap-2">
-                <Clock aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                <Clock aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
                 {guide.readMinutes} min read
               </span>
             </div>
@@ -104,8 +104,8 @@ export default async function GuidePage({ params }: GuidePageProps) {
 
         <article className="px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <section aria-labelledby="quick-answer" className="rounded-2xl border border-[#C9A227]/40 bg-[#F7F5EF] p-6">
-              <h2 id="quick-answer" className="gold-gradient-text text-xs font-bold uppercase tracking-[0.18em]">
+            <section aria-labelledby="quick-answer" className="rounded-2xl border border-brand-cream-600/40 bg-[#F7F5EF] p-6">
+              <h2 id="quick-answer" className="text-brand-black-500 text-xs font-bold uppercase tracking-[0.18em]">
                 The short answer
               </h2>
               <p className="mt-3 text-lg leading-8 text-[#050505]">{guide.answer}</p>
@@ -135,7 +135,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
               {author.photo ? (
                 <Image
                   alt={`${author.name}, ${author.title}`}
-                  className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-[#C9A227]/60 ring-offset-2 ring-offset-white"
+                  className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-brand-cream-600/60 ring-offset-2 ring-offset-white"
                   height={160}
                   src={author.photo}
                   width={160}
@@ -144,7 +144,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Written and reviewed by</p>
                 <p className="font-premium mt-2 text-2xl font-semibold text-[#050505]">{author.name}</p>
-                <p className="text-sm font-medium text-[#8A6A16]">{author.title}</p>
+                <p className="text-sm font-medium text-brand-black-500">{author.title}</p>
                 <p className="mt-1 text-xs text-neutral-500">{author.license}</p>
                 <p className="mt-3 text-sm leading-6 text-neutral-700">{author.bio}</p>
               </div>
@@ -158,7 +158,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
                 <ul className="mt-2 list-disc space-y-1 pl-5">
                   {guide.sources.map((source) => (
                     <li key={source.url}>
-                      <a className="underline hover:text-[#8A6A16]" href={source.url} rel="noopener" target="_blank">
+                      <a className="underline hover:text-brand-black-500" href={source.url} rel="noopener" target="_blank">
                         {source.label}
                       </a>
                     </li>
@@ -188,7 +188,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
                       className="premium-card group rounded-xl p-5 transition hover:-translate-y-0.5"
                       href={`/education/${item.slug}`}
                     >
-                      <p className="text-xs font-semibold uppercase tracking-wide text-[#8A6A16]">{item.category}</p>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">{item.category}</p>
                       <p className="mt-2 font-semibold leading-6 text-[#050505] group-hover:underline">{item.title}</p>
                     </Link>
                   ))}
@@ -212,7 +212,7 @@ function GuideBlock({ section }: { section: GuideSection }) {
         </p>
       ))}
       {section.bullets ? (
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-7 text-neutral-700 marker:text-[#C9A227]">
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-7 text-neutral-700 marker:text-brand-cream-600">
           {section.bullets.map((bullet) => (
             <li key={bullet}>{bullet}</li>
           ))}
@@ -283,7 +283,7 @@ function InlineCta({ kind }: { kind: "quote" | "retirement" }) {
           href={SITE.phone.href}
           data-track="phone_click"
         >
-          <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+          <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
           {SITE.phone.display}
         </a>
       </div>

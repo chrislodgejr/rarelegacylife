@@ -29,7 +29,7 @@ export function FeatureRequestForm() {
   return (
     <form action={action} className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8A6A16]">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-black-500">
           Product feedback
         </p>
         <h2 className="font-premium mt-2 text-2xl font-semibold text-[#050505]">

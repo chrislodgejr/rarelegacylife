@@ -108,7 +108,7 @@ export function FloatingQuoteCard() {
             Build your protection plan
           </h2>
         </div>
-        <span className="gold-gradient-subtle inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold leading-none text-black shadow-[0_10px_28px_rgba(201,162,39,0.22)]">
+        <span className="gold-gradient-subtle inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold leading-none text-black shadow-[0_10px_28px_rgba(230,222,201,0.16)]">
           Guided Quote
         </span>
       </div>
@@ -123,7 +123,7 @@ export function FloatingQuoteCard() {
           >
             <div className="flex items-center justify-between gap-3">
               <span className="flex items-center gap-2 text-sm font-medium text-white">
-                <CheckCircle2 className="h-4 w-4 text-[#F5E7A3]" />
+                <CheckCircle2 className="h-4 w-4 text-brand-cream-300" />
                 {label}
               </span>
               <span className="text-xs text-white/50">{meta}</span>
@@ -143,7 +143,7 @@ export function FloatingQuoteCard() {
         <ArrowRight className="h-4 w-4" />
       </Link>
       <div className="mt-5 flex items-center gap-2 text-xs text-white/55">
-        <ShieldCheck className="h-4 w-4 text-[#F5E7A3]" />
+        <ShieldCheck className="h-4 w-4 text-brand-cream-300" />
         Private. Secure. Built around your goals.
       </div>
     </motion.aside>

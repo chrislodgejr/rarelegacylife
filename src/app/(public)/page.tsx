@@ -73,8 +73,8 @@ export default function HomePage() {
       <main>
         <section className="black-hero-bg relative overflow-hidden text-white">
           <div className="signal-grid absolute inset-0 opacity-25" aria-hidden="true" />
-          <div className="absolute right-[-12rem] top-12 h-[34rem] w-[34rem] rounded-full border border-[#C9A227]/[0.18]" aria-hidden="true" />
-          <div className="absolute right-[-5rem] top-32 h-[21rem] w-[21rem] rounded-full border border-[#FFF2B8]/10" aria-hidden="true" />
+          <div className="absolute right-[-12rem] top-12 h-[34rem] w-[34rem] rounded-full border border-brand-cream-500/[0.18]" aria-hidden="true" />
+          <div className="absolute right-[-5rem] top-32 h-[21rem] w-[21rem] rounded-full border border-brand-cream-50/10" aria-hidden="true" />
           <div className="home-hero-grid relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_0.88fr] lg:px-8">
             <div className="flex flex-col justify-center">
               <HeroReveal>
@@ -101,7 +101,7 @@ export default function HomePage() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <GoldButton href="/quote">Get My Free Quote</GoldButton>
                   <Link
-                    className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:border-[#F5E7A3] hover:text-[#F5E7A3]"
+                    className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:border-brand-cream-300 hover:text-brand-cream-300"
                     href="/retirement"
                   >
                     Explore Retirement Planning
@@ -112,11 +112,11 @@ export default function HomePage() {
                 <div className="mt-6">
                   <TrustBar items={["Licensed advisors", "Free quotes & reviews", "No-pressure guidance"]} />
                   <a
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-[#F5E7A3]"
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-brand-cream-300"
                     href={SITE.phone.href}
                     data-track="phone_click"
                   >
-                    <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                    <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
                     Prefer to talk? Call {SITE.phone.display}
                   </a>
                 </div>
@@ -272,7 +272,7 @@ export default function HomePage() {
                   {advisor.photo ? (
                     <Image
                       alt={`${advisor.name}, ${advisor.title}`}
-                      className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-[#C9A227]/60 ring-offset-2 ring-offset-white"
+                      className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-brand-cream-600/60 ring-offset-2 ring-offset-white"
                       height={160}
                       src={advisor.photo}
                       width={160}
@@ -284,7 +284,7 @@ export default function HomePage() {
                   )}
                   <span>
                     <span className="font-premium block text-2xl font-semibold text-black">{advisor.name}</span>
-                    <span className="block text-sm font-medium text-[#8A6A16]">{advisor.title}</span>
+                    <span className="block text-sm font-medium text-brand-black-500">{advisor.title}</span>
                     <span className="mt-1 block text-xs text-[#737373]">{advisor.license}</span>
                   </span>
                 </Link>
@@ -308,7 +308,7 @@ export default function HomePage() {
                   className="premium-card group rounded-xl p-5 transition hover:-translate-y-0.5"
                   href={`/education/${guide.slug}`}
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wide text-[#8A6A16]">{guide.category}</span>
+                  <span className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">{guide.category}</span>
                   <span className="mt-2 block font-semibold leading-6 text-black group-hover:underline">{guide.title}</span>
                 </Link>
               ))}
@@ -347,11 +347,11 @@ export default function HomePage() {
                 Start My Quote
               </Link>
               <a
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-7 text-sm font-semibold text-white hover:border-[#F5E7A3]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-7 text-sm font-semibold text-white hover:border-brand-cream-300"
                 href={SITE.phone.href}
                 data-track="phone_click"
               >
-                <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
                 {SITE.phone.display}
               </a>
             </div>
@@ -375,7 +375,7 @@ function DarkValue({
 }) {
   return (
     <Link
-      className="dark-premium-card group block rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-[#C9A227]/70"
+      className="dark-premium-card group block rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-cream-500/70"
       href={href}
     >
       <div className="gold-gradient-subtle flex h-11 w-11 items-center justify-center rounded-full text-black">
@@ -383,7 +383,7 @@ function DarkValue({
       </div>
       <h3 className="font-premium mt-5 text-2xl font-semibold">{title}</h3>
       <p className="mt-3 text-sm leading-6 text-white/72">{copy}</p>
-      <p className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#F5E7A3]">
+      <p className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-cream-300">
         Learn more <ArrowRight aria-hidden="true" className="h-4 w-4 transition group-hover:translate-x-0.5" />
       </p>
     </Link>

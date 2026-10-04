@@ -8,14 +8,14 @@ import { SITE } from "@/lib/site";
 
 export function PublicHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-black/92 text-white backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-black-950/92 text-white backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
         <Link
           aria-label="Rare Legacy Life home"
           className="inline-flex shrink-0 items-center rounded-full transition duration-200 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C9A227]"
           href="/"
         >
-          <BrandLogo className="h-10 w-auto sm:h-12" lockup="horizontal" priority variant="dark" />
+          <BrandLogo className="h-14 w-auto sm:h-16" lockup="horizontal" priority variant="dark" />
         </Link>
         <nav
           aria-label="Main"
@@ -35,11 +35,11 @@ export function PublicHeader() {
         <div className="flex items-center gap-2">
           <a
             aria-label={`Call ${SITE.phone.display}`}
-            className="hidden h-10 items-center gap-2 whitespace-nowrap rounded-full px-3 text-sm font-semibold text-white/85 transition hover:text-[#F5E7A3] md:inline-flex"
+            className="hidden h-10 items-center gap-2 whitespace-nowrap rounded-full px-3 text-sm font-semibold text-white/85 transition hover:text-brand-cream-300 md:inline-flex"
             href={SITE.phone.href}
             data-track="phone_click"
           >
-            <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+            <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
             <span className="lg:hidden xl:inline">{SITE.phone.display}</span>
           </a>
           <Link
@@ -50,26 +50,26 @@ export function PublicHeader() {
           </Link>
           <a
             aria-label={`Call ${SITE.phone.display}`}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.055] text-[#F5E7A3] md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.055] text-brand-cream-300 md:hidden"
             href={SITE.phone.href}
             data-track="phone_click"
           >
             <Phone aria-hidden="true" className="h-5 w-5" />
           </a>
           <details className="group relative lg:hidden">
-            <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-white/15 bg-white/[0.055] text-white transition hover:border-[#C9A227]/70 hover:text-[#F5E7A3] [&::-webkit-details-marker]:hidden">
+            <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-white/15 bg-white/[0.055] text-white transition hover:border-brand-cream-500/70 hover:text-brand-cream-300 [&::-webkit-details-marker]:hidden">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Open navigation menu</span>
             </summary>
-            <div className="absolute right-0 top-12 z-50 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-white/12 bg-black/95 p-3 shadow-2xl shadow-black/40 backdrop-blur">
+            <div className="absolute right-0 top-12 z-50 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-white/12 bg-brand-black-950/95 p-3 shadow-2xl shadow-black/40 backdrop-blur">
               <nav aria-label="Mobile" className="grid gap-1 text-sm">
-                <Link className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-[#F5E7A3]" href="/">
+                <Link className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-brand-cream-300" href="/">
                   Home
                 </Link>
                 {PUBLIC_NAV.map((item) => (
                   <Link
                     key={item.href}
-                    className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-[#F5E7A3]"
+                    className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-brand-cream-300"
                     href={item.href}
                   >
                     {item.label}
@@ -78,7 +78,7 @@ export function PublicHeader() {
               </nav>
               <div className="mt-3 grid gap-2 border-t border-white/10 pt-3">
                 <a
-                  className="rounded-xl border border-white/12 px-4 py-3 text-center text-sm font-semibold text-white/85 transition hover:border-[#C9A227]/70 hover:text-[#F5E7A3]"
+                  className="rounded-xl border border-white/12 px-4 py-3 text-center text-sm font-semibold text-white/85 transition hover:border-brand-cream-500/70 hover:text-brand-cream-300"
                   href={SITE.phone.href}
                   data-track="phone_click"
                 >
@@ -98,7 +98,7 @@ export function PublicHeader() {
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-white/10 bg-black text-white">
+    <footer className="border-t border-white/10 bg-brand-black-950 text-white">
       <div className="gold-divider" />
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 text-sm text-white/62 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
@@ -113,7 +113,7 @@ export function PublicFooter() {
             <br />
             {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}
             <br />
-            <a className="font-semibold text-[#F5E7A3] hover:underline" href={SITE.phone.href} data-track="phone_click">
+            <a className="font-semibold text-brand-cream-300 hover:underline" href={SITE.phone.href} data-track="phone_click">
               {SITE.phone.display}
             </a>
           </address>
@@ -121,11 +121,11 @@ export function PublicFooter() {
         <div>
           <p className="font-semibold text-white">Explore</p>
           <div className="mt-3 grid gap-2">
-            <Link className="hover:text-[#F5E7A3]" href="/quote">
+            <Link className="hover:text-brand-cream-300" href="/quote">
               Get a free quote
             </Link>
             {PUBLIC_NAV.map((item) => (
-              <Link key={item.href} className="hover:text-[#F5E7A3]" href={item.href}>
+              <Link key={item.href} className="hover:text-brand-cream-300" href={item.href}>
                 {item.label}
               </Link>
             ))}
@@ -134,10 +134,10 @@ export function PublicFooter() {
         <div>
           <p className="font-semibold text-white">Company</p>
           <div className="mt-3 grid gap-2">
-            <Link className="hover:text-[#F5E7A3]" href="/apply-as-agent">
+            <Link className="hover:text-brand-cream-300" href="/apply-as-agent">
               Careers: apply as an agent
             </Link>
-            <Link className="hover:text-[#F5E7A3]" href="/login">
+            <Link className="hover:text-brand-cream-300" href="/login">
               Advisor login
             </Link>
           </div>
@@ -145,13 +145,13 @@ export function PublicFooter() {
         <div>
           <p className="font-semibold text-white">Legal</p>
           <div className="mt-3 grid gap-2">
-            <Link className="hover:text-[#F5E7A3]" href="/privacy">
+            <Link className="hover:text-brand-cream-300" href="/privacy">
               Privacy Policy
             </Link>
-            <Link className="hover:text-[#F5E7A3]" href="/terms">
+            <Link className="hover:text-brand-cream-300" href="/terms">
               Terms and Conditions
             </Link>
-            <Link className="hover:text-[#F5E7A3]" href="/disclosures">
+            <Link className="hover:text-brand-cream-300" href="/disclosures">
               Disclosures
             </Link>
           </div>
@@ -184,14 +184,14 @@ export function PublicFooter() {
 /** Thumb-reach call + quote bar on phones. */
 function MobileActionBar() {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/95 px-4 py-3 backdrop-blur md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-brand-black-950/95 px-4 py-3 backdrop-blur md:hidden">
       <div className="mx-auto grid max-w-md grid-cols-2 gap-3">
         <a
           className="flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 text-sm font-semibold text-white"
           href={SITE.phone.href}
           data-track="phone_click"
         >
-          <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+          <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
           Call now
         </a>
         <Link className="gold-gradient-button flex h-12 items-center justify-center rounded-full text-sm font-bold" href="/quote">

@@ -11,7 +11,7 @@ export default function DisclosuresPage() {
     <PublicShell>
       <main className="bg-[#F7F5EF] px-4 py-14 sm:px-6 lg:px-8">
         <article className="mx-auto max-w-4xl rounded-3xl border border-black/10 bg-white p-6 shadow-xl sm:p-10">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#8A6A16]">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-brand-black-500">
             Important information
           </p>
           <h1 className="font-premium mt-3 text-4xl font-semibold text-[#19201F] sm:text-5xl">

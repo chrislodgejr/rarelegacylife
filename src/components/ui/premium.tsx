@@ -72,7 +72,9 @@ export function PremiumSectionHeader({
 }) {
   return (
     <div className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
-      <p className="gold-gradient-text text-xs font-semibold uppercase tracking-[0.22em]">{eyebrow}</p>
+      <p className={`${dark ? "gold-gradient-text" : "text-brand-black-500"} text-xs font-semibold uppercase tracking-[0.22em]`}>
+        {eyebrow}
+      </p>
       <h2 className={`font-premium mt-4 text-4xl font-semibold leading-tight sm:text-5xl ${dark ? "text-white" : "text-[#050505]"}`}>
         {title}
       </h2>
@@ -93,9 +95,9 @@ export function CoverageCard({
   meta: string;
 }) {
   return (
-    <PremiumCard className="group overflow-hidden p-6 transition duration-300 hover:-translate-y-1 hover:border-[#C9A227]">
+    <PremiumCard className="group overflow-hidden p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-cream-600">
       <GoldDivider className="-mx-6 -mt-6 mb-6" />
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8A6A16]">{meta}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-black-500">{meta}</p>
       <h3 className="font-premium mt-3 text-2xl font-semibold text-[#050505]">{title}</h3>
       <p className="mt-4 text-sm leading-6 text-neutral-600">{copy}</p>
     </PremiumCard>
@@ -112,7 +114,7 @@ export function StepCard({
   copy: string;
 }) {
   return (
-    <div className="premium-card flex gap-4 rounded-2xl p-5 transition duration-300 hover:-translate-y-1 hover:border-[#C9A227]">
+    <div className="premium-card flex gap-4 rounded-2xl p-5 transition duration-300 hover:-translate-y-1 hover:border-brand-cream-600">
       <span className="gold-gradient-subtle flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-black">
         {step}
       </span>

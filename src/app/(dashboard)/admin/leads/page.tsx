@@ -94,9 +94,9 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
         </div>
       </div>
 
-      <Link href="/admin/contacts?type=inquiry" className="premium-card mt-6 flex items-center justify-between gap-4 rounded-2xl p-5 hover:border-[#C9A227]">
+      <Link href="/admin/contacts?type=inquiry" className="premium-card mt-6 flex items-center justify-between gap-4 rounded-2xl p-5 hover:border-brand-cream-600">
         <span><strong className="block text-lg">Contact form archive</strong><span className="mt-1 block text-sm text-neutral-600">Review the original fields and messages. Historical submissions include automated spam and have not been qualified as leads.</span></span>
-        <span className="shrink-0 text-sm font-semibold text-[#8A6A16]">{websiteLeadError ? "View archive →" : `${websiteLeadCount ?? 0} submissions →`}</span>
+        <span className="shrink-0 text-sm font-semibold text-brand-black-500">{websiteLeadError ? "View archive →" : `${websiteLeadCount ?? 0} submissions →`}</span>
       </Link>
 
       <form className="premium-card mt-6 grid gap-3 rounded-xl p-4 md:grid-cols-[1fr_150px_110px_110px_140px_140px_auto]" action="/admin/leads">
@@ -147,7 +147,7 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
         <input type="hidden" name="sort" value={sort} />
         <input className="h-10 w-28 rounded-full border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={minScore ?? ""} name="min_score" placeholder="Min score" />
         <input className="h-10 w-28 rounded-full border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={maxScore ?? ""} name="max_score" placeholder="Max score" />
-        <button className="rounded-full border border-neutral-300 bg-white px-4 font-semibold text-[#050505] transition hover:border-[#C9A227]" type="submit">
+        <button className="rounded-full border border-neutral-300 bg-white px-4 font-semibold text-[#050505] transition hover:border-brand-cream-600" type="submit">
           Apply score range
         </button>
       </form>
@@ -164,7 +164,7 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
               <span>{lead.state} · {COVERAGE_LABELS[lead.coverage_purpose as Lead["coverage_purpose"]]}</span>
               <span>{new Date(lead.created_at).toLocaleDateString()}</span>
             </div>
-            {lead.next_follow_up_at && <p className="mt-2 text-xs text-[#8A6A16]">Follow up {new Date(lead.next_follow_up_at).toLocaleDateString()}</p>}
+            {lead.next_follow_up_at && <p className="mt-2 text-xs text-brand-black-500">Follow up {new Date(lead.next_follow_up_at).toLocaleDateString()}</p>}
           </Link>
         ))}
         {!leads?.length && <p className="rounded-xl bg-white p-5 text-sm text-neutral-500">No quote requests found.</p>}
@@ -244,7 +244,7 @@ function PageLink({
   query.set("page", String(page));
 
   return (
-    <Link className="rounded-full border border-neutral-300 bg-white px-3 py-2 font-medium text-[#050505] transition hover:border-[#C9A227]" href={`/admin/leads?${query.toString()}`}>
+    <Link className="rounded-full border border-neutral-300 bg-white px-3 py-2 font-medium text-[#050505] transition hover:border-brand-cream-600" href={`/admin/leads?${query.toString()}`}>
       {label}
     </Link>
   );

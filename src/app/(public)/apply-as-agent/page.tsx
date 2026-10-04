@@ -35,7 +35,7 @@ export default function ApplyAsAgentPage() {
             </div>
             <div>
               <div className="mb-4 rounded-2xl border border-white/12 bg-white/[0.06] p-4 text-white">
-                <p className="text-sm font-semibold text-[#F5E7A3]">Agent Application Form</p>
+                <p className="text-sm font-semibold text-brand-cream-300">Agent Application Form</p>
                 <p className="mt-1 text-xs leading-5 text-white/62">
                   This form is for agents applying to join or access the Rare Legacy Life platform.
                 </p>

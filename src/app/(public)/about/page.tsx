@@ -43,7 +43,7 @@ export default function AboutPage() {
         </Section>
 
         <Section>
-          <Eyebrow>Your advisors</Eyebrow>
+          <Eyebrow tone="light">Your advisors</Eyebrow>
           <h2 className="font-premium mt-3 text-3xl font-semibold text-[#050505] sm:text-4xl">
             Licensed, local, and accountable to you.
           </h2>
@@ -54,7 +54,7 @@ export default function AboutPage() {
                   // Add a headshot by setting `photo` (e.g. "/team/daniel.jpg") in src/lib/site.ts.
                   <Image
                     alt={`${advisor.name}, ${advisor.title}`}
-                    className="h-28 w-28 rounded-full object-cover ring-2 ring-[#C9A227]/60 ring-offset-2 ring-offset-white"
+                    className="h-28 w-28 rounded-full object-cover ring-2 ring-brand-cream-600/60 ring-offset-2 ring-offset-white"
                     height={224}
                     src={advisor.photo}
                     width={224}
@@ -65,7 +65,7 @@ export default function AboutPage() {
                   </span>
                 )}
                 <h3 className="font-premium mt-5 text-2xl font-semibold text-[#050505]">{advisor.name}</h3>
-                <p className="text-sm font-medium text-[#8A6A16]">{advisor.title}</p>
+                <p className="text-sm font-medium text-brand-black-500">{advisor.title}</p>
                 <p className="mt-1 text-xs text-neutral-500">{advisor.license}</p>
                 <p className="mt-4 text-sm leading-6 text-neutral-700">{advisor.bio}</p>
               </article>
@@ -101,12 +101,12 @@ export default function AboutPage() {
             <div>
               <h2 className="font-premium text-3xl font-semibold">Visit, call, or meet virtually.</h2>
               <p className="mt-3 flex items-center gap-2 text-sm text-white/75">
-                <MapPin aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                <MapPin aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
                 {SITE.address.street}, {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}
               </p>
               <p className="mt-2 flex items-center gap-2 text-sm text-white/75">
-                <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
-                <a className="font-semibold text-white hover:text-[#F5E7A3]" href={SITE.phone.href} data-track="phone_click">
+                <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <a className="font-semibold text-white hover:text-brand-cream-300" href={SITE.phone.href} data-track="phone_click">
                   {SITE.phone.display}
                 </a>
               </p>

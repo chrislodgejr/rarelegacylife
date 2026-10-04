@@ -115,7 +115,7 @@ export function OtpVerificationForm() {
       <label className="mt-4 block">
         <span className="text-sm font-medium text-white/78">Six-digit code</span>
         <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
-          <KeyRound className="h-4 w-4 text-[#F5E7A3]" />
+          <KeyRound className="h-4 w-4 text-brand-cream-300" />
           <input
             className="h-13 w-full bg-transparent text-center font-mono text-2xl tracking-[0.3em] text-white outline-none placeholder:text-white/24"
             inputMode="numeric"
@@ -142,7 +142,7 @@ export function OtpVerificationForm() {
       </button>
 
       <button
-        className="mt-4 h-10 w-full rounded-full border border-white/[0.14] px-4 text-sm font-semibold text-white/72 transition hover:border-[#C9A227] hover:text-[#F5E7A3] disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-4 h-10 w-full rounded-full border border-white/[0.14] px-4 text-sm font-semibold text-white/72 transition hover:border-brand-cream-500 hover:text-brand-cream-300 disabled:cursor-not-allowed disabled:opacity-40"
         type="button"
         onClick={resendCode}
         disabled={secondsLeft > 0 || isLoading}

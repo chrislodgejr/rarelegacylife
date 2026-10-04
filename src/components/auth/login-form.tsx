@@ -105,7 +105,7 @@ export function LoginForm() {
         <label className="block">
           <span className="text-sm font-medium text-white/78">Email</span>
           <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
-            <Mail className="h-4 w-4 text-[#F5E7A3]" />
+            <Mail className="h-4 w-4 text-brand-cream-300" />
             <input
               className="h-11 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/28"
               type="email"
@@ -120,7 +120,7 @@ export function LoginForm() {
         <label className="block">
           <span className="text-sm font-medium text-white/78">Password</span>
           <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
-            <Lock className="h-4 w-4 text-[#F5E7A3]" />
+            <Lock className="h-4 w-4 text-brand-cream-300" />
             <input
               className="h-11 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/28"
               type="password"
@@ -155,7 +155,7 @@ export function LoginForm() {
           <label className="block">
             <span className="text-sm font-medium text-white/78">Email</span>
             <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
-              <KeyRound className="h-4 w-4 text-[#F5E7A3]" />
+              <KeyRound className="h-4 w-4 text-brand-cream-300" />
               <input
                 className="h-11 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/28"
                 type="email"
@@ -180,7 +180,7 @@ export function LoginForm() {
       )}
 
       <div className="mt-5 flex items-center justify-between text-sm">
-        <Link className="text-white/58 underline-offset-4 hover:text-[#F5E7A3] hover:underline" href="/forgot-password">
+        <Link className="text-white/58 underline-offset-4 hover:text-brand-cream-300 hover:underline" href="/forgot-password">
           Forgot password?
         </Link>
       </div>

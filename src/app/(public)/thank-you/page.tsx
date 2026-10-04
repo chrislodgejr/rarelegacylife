@@ -18,7 +18,7 @@ export default function ThankYouPage() {
       <TrackOnMount event="generate_lead" />
       <main className="bg-[#F7F5EF] px-4 py-20 sm:px-6 lg:px-8">
         <section className="premium-card mx-auto max-w-3xl rounded-2xl p-8">
-          <p className="gold-gradient-text text-sm font-semibold uppercase">Request received</p>
+          <p className="text-brand-black-500 text-sm font-semibold uppercase">Request received</p>
           <h1 className="font-premium mt-4 text-3xl font-semibold text-[#050505]">
             Thank you. Your request has been received.
           </h1>
@@ -54,7 +54,7 @@ export default function ThankYouPage() {
               href={SITE.phone.href}
               data-track="phone_click"
             >
-              <Phone aria-hidden="true" className="h-4 w-4 text-[#8A6A16]" />
+              <Phone aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
               {SITE.phone.display}
             </a>
           </div>

@@ -14,9 +14,10 @@ export function Section({
   );
 }
 
-export function Eyebrow({ children }: { children: React.ReactNode }) {
+/** tone: "dark" for dark backgrounds (cream), "light" for light backgrounds (warm black). */
+export function Eyebrow({ children, tone = "dark" }: { children: React.ReactNode; tone?: "dark" | "light" }) {
   return (
-    <p className="gold-gradient-text text-sm font-semibold uppercase">
+    <p className={cn(tone === "dark" ? "gold-gradient-text" : "text-brand-black-500", "text-sm font-semibold uppercase")}>
       {children}
     </p>
   );

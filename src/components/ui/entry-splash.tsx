@@ -81,7 +81,7 @@ export function EntrySplash({ variant, storageKey, durationMs = 2100 }: EntrySpl
         <motion.div
           aria-label={variant === "consumer" ? "Rare Legacy Life welcome screen" : "Rare Legacy CRM welcome screen"}
           aria-live="polite"
-          className="fixed inset-0 z-[100] overflow-hidden bg-black text-white"
+          className="fixed inset-0 z-[100] overflow-hidden bg-brand-black-950 text-white"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -90,7 +90,7 @@ export function EntrySplash({ variant, storageKey, durationMs = 2100 }: EntrySpl
           <div className="signal-grid absolute inset-0 opacity-[0.16]" aria-hidden="true" />
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_22%,rgba(245,231,163,0.16),transparent_28%),linear-gradient(180deg,#050505_0%,#000000_100%)]"
+            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_22%,rgba(230,222,201,0.1),transparent_28%),linear-gradient(180deg,#14120e_0%,#0c0b09_100%)]"
           />
           <div
             aria-hidden="true"
@@ -111,7 +111,7 @@ export function EntrySplash({ variant, storageKey, durationMs = 2100 }: EntrySpl
             <div className="relative">
               <div
                 aria-hidden="true"
-                className="absolute inset-x-[-2rem] top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-[#C9A227]/45 to-transparent"
+                className="absolute inset-x-[-2rem] top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-brand-cream-500/45 to-transparent"
               />
               <BrandLogo
                 className={variant === "consumer" ? "relative h-28 w-auto sm:h-36" : "relative h-24 w-auto sm:h-32"}
@@ -180,7 +180,7 @@ export function EntrySplash({ variant, storageKey, durationMs = 2100 }: EntrySpl
             </motion.div>
 
             <button
-              className="mt-8 rounded-full border border-white/12 px-4 py-2 text-xs font-semibold text-white/50 transition hover:border-[#C9A227]/70 hover:text-[#F5E7A3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C9A227]"
+              className="mt-8 rounded-full border border-white/12 px-4 py-2 text-xs font-semibold text-white/50 transition hover:border-brand-cream-500/70 hover:text-brand-cream-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C9A227]"
               type="button"
               onClick={() => setShouldShow(false)}
             >

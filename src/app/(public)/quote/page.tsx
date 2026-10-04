@@ -41,11 +41,11 @@ export default async function QuotePage({ searchParams }: QuotePageProps) {
                 up with options that fit your family and budget.
               </p>
               <a
-                className="mt-5 hidden items-center gap-2 text-sm font-semibold text-white/80 hover:text-[#F5E7A3] lg:inline-flex"
+                className="mt-5 hidden items-center gap-2 text-sm font-semibold text-white/80 hover:text-brand-cream-300 lg:inline-flex"
                 href={SITE.phone.href}
                 data-track="phone_click"
               >
-                <Phone aria-hidden="true" className="h-4 w-4 text-[#C9A227]" />
+                <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
                 Rather talk it through? Call {SITE.phone.display}
               </a>
             </div>

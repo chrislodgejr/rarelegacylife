@@ -295,9 +295,9 @@ async function sendRetirementConfirmation(input: {
       `<p style="margin:0 0 16px">Your Retirement Income Blueprint request has been received.</p>
        <p style="margin:0 0 16px"><strong>Meeting preference:</strong> ${escapeHtml(meetingLabels[input.meetingStyle])}</p>
        <p style="margin:0 0 16px">Choose a convenient time with Christian to complete your booking.</p>
-       <p style="margin:0 0 22px"><a href="${escapeHtml(schedulerUrl)}" style="display:inline-block;background:#c6a66b;border-radius:999px;color:#19201f;font-weight:700;padding:12px 20px;text-decoration:none">Choose a meeting time</a></p>
+       <p style="margin:0 0 22px"><a href="${escapeHtml(schedulerUrl)}" style="display:inline-block;background:#0c0b09;border-radius:999px;color:#f3eee2;font-weight:700;padding:12px 20px;text-decoration:none">Choose a meeting time</a></p>
        ${businessPhone ? `<p style="margin:0 0 16px"><strong>Rare Legacy Life Group:</strong> ${escapeHtml(businessPhone)}</p>` : ""}
-       <p style="margin:24px 0 0;font-size:13px"><a href="${escapeHtml(privacyUrl)}" style="color:#806633">Privacy policy</a></p>`,
+       <p style="margin:24px 0 0;font-size:13px"><a href="${escapeHtml(privacyUrl)}" style="color:#5a5345">Privacy policy</a></p>`,
     ),
   });
 }
@@ -339,10 +339,10 @@ function getIpAddress(headerStore: Headers) {
 
 function emailShell(heading: string, body: string) {
   return `<!doctype html>
-  <html lang="en"><body style="margin:0;background:#fbf9f4;color:#19201f;font-family:Arial,sans-serif">
+  <html lang="en"><body style="margin:0;background:#fbf9f4;color:#0c0b09;font-family:Arial,sans-serif">
   <div style="max-width:620px;margin:0 auto;padding:32px 20px">
-    <div style="background:#19201f;border-top:4px solid #c6a66b;padding:26px 28px;color:#fff">
-      <p style="margin:0 0 8px;color:#c6a66b;font-size:12px;letter-spacing:1.6px;text-transform:uppercase">Rare Legacy Life Group</p>
+    <div style="background:#0c0b09;border-top:4px solid #c9c0a8;padding:26px 28px;color:#fff">
+      <p style="margin:0 0 8px;color:#e6dec9;font-size:12px;letter-spacing:1.6px;text-transform:uppercase">Rare Legacy Life Group</p>
       <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;font-weight:500">${heading}</h1>
     </div>
     <div style="background:#fff;border:1px solid #e6dfd2;border-top:0;padding:28px;line-height:1.6">${body}</div>

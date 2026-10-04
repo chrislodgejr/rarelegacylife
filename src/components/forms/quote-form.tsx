@@ -104,7 +104,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
 
       <div ref={topRef} className="scroll-mt-28">
         <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em]">
-          <span className="gold-gradient-text">
+          <span className="text-brand-black-500">
             Step {step + 1} of {steps.length}
           </span>
           <span className="flex items-center gap-1 text-neutral-500">
@@ -210,7 +210,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
           required
         />
         <details className="md:col-span-2">
-          <summary className="cursor-pointer text-sm font-semibold text-[#8A6A16]">Add health details (optional)</summary>
+          <summary className="cursor-pointer text-sm font-semibold text-brand-black-500">Add health details (optional)</summary>
           <textarea
             className="mt-2 min-h-24 w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm text-[#050505] outline-none placeholder:text-neutral-400 focus:border-[#C9A227]"
             name="medical_conditions"
@@ -279,7 +279,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
         {step > 0 ? (
           <button
-            className="h-12 rounded-full border border-neutral-300 bg-white px-5 text-sm font-semibold text-[#050505] transition hover:border-[#C9A227]"
+            className="h-12 rounded-full border border-neutral-300 bg-white px-5 text-sm font-semibold text-[#050505] transition hover:border-brand-cream-600"
             type="button"
             onClick={() => goTo(Math.max(step - 1, 0))}
           >

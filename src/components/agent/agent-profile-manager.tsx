@@ -61,7 +61,7 @@ export function AgentProfileManager({ agent, licenses, carriers, contracts }: Ag
       <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8A6A16]">Agent profile</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-black-500">Agent profile</p>
             <h1 className="font-premium mt-2 text-3xl font-semibold text-[#050505]">
               {agent.first_name} {agent.last_name}
             </h1>

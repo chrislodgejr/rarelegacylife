@@ -8,7 +8,7 @@ export default function LoginPage() {
     <main className="black-hero-bg relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12 text-white">
       <EntrySplash storageKey="rare-legacy-crm-login-splash-v1" variant="agent" />
       <div className="signal-grid absolute inset-0 opacity-20" aria-hidden="true" />
-      <div className="absolute left-[-10rem] top-[-12rem] h-[26rem] w-[26rem] rounded-full border border-[#C9A227]/16" aria-hidden="true" />
+      <div className="absolute left-[-10rem] top-[-12rem] h-[26rem] w-[26rem] rounded-full border border-brand-cream-500/16" aria-hidden="true" />
       <div className="relative w-full max-w-5xl">
         <div className="flex justify-center">
           <Link aria-label="Rare Legacy Life home" href="/">
