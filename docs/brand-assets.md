@@ -70,3 +70,11 @@ Defined in `src/app/globals.css` and available as Tailwind colours (`text-brand-
 | `--brand-cream-50` | #FFFDF6 |
 
 Use creams for accents on dark backgrounds and `--brand-black-500` for accent text on light backgrounds. The older `--*-gold` tokens and `.gold-*` classes keep their names but now carry these colours. Form focus and selection states use the same system: warm black (`brand-black-500`, #5A5345) for focus borders, checked option cards (on `brand-cream-100`) and checkboxes on light backgrounds, and cream (`brand-cream-300`) for focus on dark backgrounds. No gold is left.
+
+## Home page splash
+
+`src/components/brand/home-splash.tsx` plays a 1.75-second logo animation over the home page, once per browser session. It animates `rare-legacy-logo-cream-transparent.svg` itself: `src/lib/brand-splash.ts` reads the file at build time and splits it into the infinity band, the gem, the script, and "LIFE GROUP" with its rules. Nothing is redrawn; the only new shapes are invisible masks (a line along the middle of each loop, worked out from the band's outline, and wipe rectangles).
+
+- It never plays with reduced motion, without JavaScript, for crawlers and link previews, or when the browser blocks storage. A click, tap, scroll or any key skips it.
+- The page is ordinary server HTML underneath, so search engines and assistants read all of it.
+- After replacing the logo files, check the splash once: if the new file has another structure (not one band path, four gem facets, the script, "LIFE GROUP" and two rules, in that order), the splash switches itself off and the build logs why.

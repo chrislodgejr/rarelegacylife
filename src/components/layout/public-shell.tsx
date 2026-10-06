@@ -205,12 +205,16 @@ function MobileActionBar() {
 export function PublicShell({
   children,
   showMobileBar = true,
+  beforeHeader,
 }: {
   children: React.ReactNode;
   showMobileBar?: boolean;
+  /** Rendered first in the page, ahead of the header (the home splash uses it so it can decide before the first paint). */
+  beforeHeader?: React.ReactNode;
 }) {
   return (
     <div className={showMobileBar ? "pb-[76px] md:pb-0" : undefined}>
+      {beforeHeader}
       <JsonLd data={organizationSchema()} />
       <PublicHeader />
       {children}

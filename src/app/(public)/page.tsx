@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, CalendarDays, Phone, Shield, Sparkles, Users } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
+import { HomeSplash } from "@/components/brand/home-splash";
 import { JsonLd } from "@/components/seo/json-ld";
 import { GUIDES } from "@/content/guides";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -68,7 +69,7 @@ export default function HomePage() {
   const featuredGuides = GUIDES.filter((guide) => FEATURED_GUIDES.includes(guide.slug));
 
   return (
-    <PublicShell>
+    <PublicShell beforeHeader={<HomeSplash />}>
       <JsonLd data={[websiteSchema(), faqSchema(HOME_FAQS)]} />
       <main>
         <section className="black-hero-bg relative overflow-hidden text-white">
