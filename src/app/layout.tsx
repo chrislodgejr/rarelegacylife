@@ -15,6 +15,9 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
+  // iPhone Safari turns phone numbers in text into links on its own. That changes the page before React hydrates,
+  // so React rebuilds it and the home splash never plays. The site already has its own tap-to-call links.
+  formatDetection: { telephone: false },
   title: "Rare Legacy Life Group | Life Insurance & Retirement Income Guidance",
   description: SITE.description,
   applicationName: SITE.shortName,
