@@ -19,7 +19,7 @@ The symbol is wider than it is tall (248 × 108). Size it by height and let the 
 
 `src/lib/brand.ts` lists these paths in one place. `src/components/brand/logo.tsx` (`BrandLogo`) maps them to lockups:
 
-- `horizontal` (header) and `stacked` (footer, sign-in, splash, CRM): the full logo.
+- `horizontal` (header) and `stacked` (footer, sign-in, CRM): the full logo.
 - `icon`: the symbol.
 - `variant="dark"` means a dark background (cream artwork); `variant="light"` means a light background (black artwork).
 

@@ -4,7 +4,7 @@ import { BRAND_DIMENSIONS, BRAND_FILES } from "@/lib/brand";
 /** "dark" is for dark backgrounds (cream artwork); "light" is for light backgrounds (black artwork). */
 type LogoVariant = "dark" | "light";
 /**
- * horizontal: the header spot. stacked: larger brand moments (footer, sign-in, splash).
+ * horizontal: the header spot. stacked: larger brand moments (footer, sign-in, CRM).
  * Both use the full logo today; point "horizontal" at a horizontal lockup here if one is added.
  * icon: the symbol on its own. It is wide, so size it by height and let the width follow.
  */
