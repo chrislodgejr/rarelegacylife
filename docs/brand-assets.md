@@ -19,7 +19,7 @@ The symbol is wider than it is tall (248 × 108). Size it by height and let the 
 
 `src/lib/brand.ts` lists these paths in one place. `src/components/brand/logo.tsx` (`BrandLogo`) maps them to lockups:
 
-- `horizontal` (header) and `stacked` (footer, sign-in, CRM): the full logo.
+- `horizontal` (header) and `stacked` (footer, sign-in, CRM): the full logo. There is no horizontal version of the new logo yet; `horizontal` points at the full logo until Chris supplies one.
 - `icon`: the symbol.
 - `variant="dark"` means a dark background (cream artwork); `variant="light"` means a light background (black artwork).
 
@@ -50,7 +50,7 @@ The old PNGs were removed. Their URLs redirect (307, set in `next.config.ts` fro
 - `/brand/icon-dark.png` → cream symbol PNG
 - `/brand/icon-light.png` → black symbol PNG
 
-`public/brand/originals/` still holds the retired logo's source files and the recruiting flyer, for reference only. Nothing on the site uses them.
+`public/brand/originals/` still holds the retired logo's source files and the recruiting flyer, for reference only. Nothing on the site uses them. `logo-horizontal-dark-source.jpeg` is the retired "RL" monogram logo, not a horizontal version of the new one.
 
 ## Colours
 
