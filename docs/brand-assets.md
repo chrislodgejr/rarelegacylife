@@ -69,4 +69,4 @@ Defined in `src/app/globals.css` and available as Tailwind colours (`text-brand-
 | `--brand-cream-100` | #F3EEE2 |
 | `--brand-cream-50` | #FFFDF6 |
 
-Use creams for accents on dark backgrounds and `--brand-black-500` for accent text on light backgrounds. The older `--*-gold` tokens and `.gold-*` classes keep their names but now carry these colours. Form focus and selection states still use the previous gold (#C9A227 / #8A6A16) until a decision is made to change them.
+Use creams for accents on dark backgrounds and `--brand-black-500` for accent text on light backgrounds. The older `--*-gold` tokens and `.gold-*` classes keep their names but now carry these colours. Form focus and selection states use the same system: warm black (`brand-black-500`, #5A5345) for focus borders, checked option cards (on `brand-cream-100`) and checkboxes on light backgrounds, and cream (`brand-cream-300`) for focus on dark backgrounds. No gold is left.

@@ -103,7 +103,7 @@ export function OtpVerificationForm() {
       <label className="mt-6 block">
         <span className="text-sm font-medium text-white/78">Email</span>
         <input
-          className="mt-2 h-11 w-full rounded-xl border border-white/[0.14] bg-black/30 px-3 text-sm text-white outline-none focus:border-[#C9A227]"
+          className="mt-2 h-11 w-full rounded-xl border border-white/[0.14] bg-black/30 px-3 text-sm text-white outline-none focus:border-brand-cream-300"
           type="email"
           autoComplete="email"
           value={email}
@@ -114,7 +114,7 @@ export function OtpVerificationForm() {
 
       <label className="mt-4 block">
         <span className="text-sm font-medium text-white/78">Six-digit code</span>
-        <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
+        <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-brand-cream-300">
           <KeyRound className="h-4 w-4 text-brand-cream-300" />
           <input
             className="h-13 w-full bg-transparent text-center font-mono text-2xl tracking-[0.3em] text-white outline-none placeholder:text-white/24"

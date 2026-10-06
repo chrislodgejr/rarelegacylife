@@ -129,10 +129,10 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
             {COVERAGE_PURPOSES.map((purpose, index) => (
               <label
                 key={purpose}
-                className="flex cursor-pointer gap-3 rounded-xl border border-neutral-300 bg-white p-3 transition has-[:checked]:border-[#C9A227] has-[:checked]:bg-[#FBF6E4]"
+                className="flex cursor-pointer gap-3 rounded-xl border border-neutral-300 bg-white p-3 transition has-[:checked]:border-brand-black-500 has-[:checked]:bg-brand-cream-100"
               >
                 <input
-                  className="mt-1 h-4 w-4 accent-[#C9A227]"
+                  className="mt-1 h-4 w-4 accent-brand-black-500"
                   name="coverage_purpose"
                   required={index === 0}
                   type="radio"
@@ -194,9 +194,9 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
             ].map(([value, label], index) => (
               <label
                 key={value}
-                className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white text-sm font-semibold transition has-[:checked]:border-[#C9A227] has-[:checked]:bg-[#FBF6E4]"
+                className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white text-sm font-semibold transition has-[:checked]:border-brand-black-500 has-[:checked]:bg-brand-cream-100"
               >
-                <input className="h-4 w-4 accent-[#C9A227]" name="tobacco_use" required={index === 0} type="radio" value={value} />
+                <input className="h-4 w-4 accent-brand-black-500" name="tobacco_use" required={index === 0} type="radio" value={value} />
                 {label}
               </label>
             ))}
@@ -212,7 +212,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
         <details className="md:col-span-2">
           <summary className="cursor-pointer text-sm font-semibold text-brand-black-500">Add health details (optional)</summary>
           <textarea
-            className="mt-2 min-h-24 w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm text-[#050505] outline-none placeholder:text-neutral-400 focus:border-[#C9A227]"
+            className="mt-2 min-h-24 w-full rounded-xl border border-neutral-300 bg-white px-3 py-3 text-sm text-[#050505] outline-none placeholder:text-neutral-400 focus:border-brand-black-500"
             name="medical_conditions"
             placeholder="Major conditions only. Do not include more detail than needed."
           />
@@ -317,7 +317,7 @@ function TextField({
     <label>
       <span className="text-sm font-medium text-neutral-700">{label}</span>
       <input
-        className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base text-[#050505] outline-none placeholder:text-neutral-400 focus:border-[#C9A227] sm:text-sm"
+        className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base text-[#050505] outline-none placeholder:text-neutral-400 focus:border-brand-black-500 sm:text-sm"
         name={name}
         type={type}
         {...props}
@@ -350,7 +350,7 @@ function SelectField({
     <label>
       <span className="text-sm font-medium text-neutral-700">{label}</span>
       <select
-        className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base text-[#050505] outline-none focus:border-[#C9A227] sm:text-sm"
+        className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base text-[#050505] outline-none focus:border-brand-black-500 sm:text-sm"
         name={name}
         required={required}
         defaultValue={defaultValue ?? ""}
@@ -379,7 +379,7 @@ function CheckboxField({
 }) {
   return (
     <label className="flex gap-3 text-sm leading-6 text-neutral-700">
-      <input className="mt-1 h-4 w-4 shrink-0 accent-[#C9A227]" name={name} type="checkbox" required={required} />
+      <input className="mt-1 h-4 w-4 shrink-0 accent-brand-black-500" name={name} type="checkbox" required={required} />
       <span>{label}</span>
     </label>
   );

@@ -94,7 +94,7 @@ export function AgentProfileManager({ agent, licenses, carriers, contracts }: Ag
             <Field label="Max active leads" name="max_active_leads" type="number" min="0" defaultValue={agent.max_active_leads} />
           </div>
           <label className="mt-4 flex gap-3 text-sm text-neutral-700">
-            <input className="mt-1 h-4 w-4 accent-[#C9A227]" name="accepts_new_leads" type="checkbox" defaultChecked={agent.accepts_new_leads} />
+            <input className="mt-1 h-4 w-4 accent-brand-black-500" name="accepts_new_leads" type="checkbox" defaultChecked={agent.accepts_new_leads} />
             <span>Accepting new leads</span>
           </label>
           <InlineState state={profileState} />

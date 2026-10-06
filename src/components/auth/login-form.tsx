@@ -104,7 +104,7 @@ export function LoginForm() {
       <form className="mt-5 space-y-4" onSubmit={handleEmailAuth}>
         <label className="block">
           <span className="text-sm font-medium text-white/78">Email</span>
-          <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
+          <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-brand-cream-300">
             <Mail className="h-4 w-4 text-brand-cream-300" />
             <input
               className="h-11 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/28"
@@ -119,7 +119,7 @@ export function LoginForm() {
 
         <label className="block">
           <span className="text-sm font-medium text-white/78">Password</span>
-          <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
+          <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-brand-cream-300">
             <Lock className="h-4 w-4 text-brand-cream-300" />
             <input
               className="h-11 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/28"
@@ -154,7 +154,7 @@ export function LoginForm() {
         <form className="mt-5 space-y-4" onSubmit={handleOtpRequest}>
           <label className="block">
             <span className="text-sm font-medium text-white/78">Email</span>
-            <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-[#C9A227]">
+            <span className="mt-2 flex items-center gap-2 rounded-xl border border-white/[0.14] bg-black/30 px-3 focus-within:border-brand-cream-300">
               <KeyRound className="h-4 w-4 text-brand-cream-300" />
               <input
                 className="h-11 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/28"

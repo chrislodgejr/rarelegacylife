@@ -5,9 +5,6 @@
   --accent-on-dark: #e6dec9;
   --accent-on-light: #5a5345;
   --accent-line: #a39a82;
-  /* Kept for form focus and selection states only. */
-  --gold: #c9a227;
-  --gold-dark: #8a6a16;
   --ivory: #f7f5ef;
   --paper: #ffffff;
   --sage: #f1eee6;
@@ -316,15 +313,15 @@
 }
 
 .meetingCard:hover {
-  border-color: var(--gold);
+  border-color: var(--accent-line);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
 .meetingCardSelected {
   background: #fff;
-  border-color: var(--gold-dark);
-  box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.22), 0 12px 32px rgba(0, 0, 0, 0.08);
+  border-color: var(--accent-on-light);
+  box-shadow: 0 0 0 2px rgba(90, 83, 69, 0.22), 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 .meetingIcon {
@@ -545,8 +542,8 @@
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: var(--gold-dark);
-  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.22);
+  border-color: var(--accent-on-light);
+  box-shadow: 0 0 0 3px rgba(90, 83, 69, 0.2);
   outline: none;
 }
 

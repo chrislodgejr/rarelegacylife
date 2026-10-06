@@ -101,12 +101,12 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
 
       <form className="premium-card mt-6 grid gap-3 rounded-xl p-4 md:grid-cols-[1fr_150px_110px_110px_140px_140px_auto]" action="/admin/leads">
         <input
-          className="h-10 rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]"
+          className="h-10 rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500"
           defaultValue={search ?? ""}
           name="q"
           placeholder="Search name, email, or phone"
         />
-        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={status ?? ""} name="status">
+        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-brand-black-500" defaultValue={status ?? ""} name="status">
           <option value="">All statuses</option>
           {LEAD_STATUSES.map((leadStatus) => (
             <option key={leadStatus} value={leadStatus}>
@@ -114,20 +114,20 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
             </option>
           ))}
         </select>
-        <input className="h-10 rounded-xl border border-neutral-300 px-3 text-sm uppercase outline-none focus:border-[#C9A227]" defaultValue={state ?? ""} maxLength={2} name="state" placeholder="State" />
-        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={grade ?? ""} name="grade">
+        <input className="h-10 rounded-xl border border-neutral-300 px-3 text-sm uppercase outline-none focus:border-brand-black-500" defaultValue={state ?? ""} maxLength={2} name="state" placeholder="State" />
+        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-brand-black-500" defaultValue={grade ?? ""} name="grade">
           <option value="">Grade</option>
           {["A+", "A", "B", "C", "D", "F"].map((leadGrade) => (
             <option key={leadGrade} value={leadGrade}>{leadGrade}</option>
           ))}
         </select>
-        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={priority ?? ""} name="priority">
+        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-brand-black-500" defaultValue={priority ?? ""} name="priority">
           <option value="">Priority</option>
           <option value="hot_only">Hot only</option>
           <option value="a_leads">A/A+ leads</option>
           <option value="low_quality">Low quality</option>
         </select>
-        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={sort} name="sort">
+        <select className="h-10 rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-brand-black-500" defaultValue={sort} name="sort">
           <option value="highest_score">Highest score</option>
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
@@ -145,8 +145,8 @@ export default async function AdminLeadsPage({ searchParams }: LeadsPageProps) {
         <input type="hidden" name="grade" value={grade ?? ""} />
         <input type="hidden" name="priority" value={priority ?? ""} />
         <input type="hidden" name="sort" value={sort} />
-        <input className="h-10 w-28 rounded-full border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={minScore ?? ""} name="min_score" placeholder="Min score" />
-        <input className="h-10 w-28 rounded-full border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]" defaultValue={maxScore ?? ""} name="max_score" placeholder="Max score" />
+        <input className="h-10 w-28 rounded-full border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500" defaultValue={minScore ?? ""} name="min_score" placeholder="Min score" />
+        <input className="h-10 w-28 rounded-full border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500" defaultValue={maxScore ?? ""} name="max_score" placeholder="Max score" />
         <button className="rounded-full border border-neutral-300 bg-white px-4 font-semibold text-[#050505] transition hover:border-brand-cream-600" type="submit">
           Apply score range
         </button>

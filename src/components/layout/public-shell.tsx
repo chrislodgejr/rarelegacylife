@@ -12,7 +12,7 @@ export function PublicHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
         <Link
           aria-label="Rare Legacy Life home"
-          className="inline-flex shrink-0 items-center rounded-full transition duration-200 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C9A227]"
+          className="inline-flex shrink-0 items-center rounded-full transition duration-200 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream-300"
           href="/"
         >
           <BrandLogo className="h-14 w-auto sm:h-16" lockup="horizontal" priority variant="dark" />

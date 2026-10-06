@@ -17,7 +17,7 @@ export function PasswordResetEmailForm() {
       <label className="mt-6 block">
         <span className="text-sm font-medium text-neutral-700">Email</span>
         <input
-          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]"
+          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500"
           type="email"
           name="email"
           required

@@ -17,7 +17,7 @@ export function ContactForm() {
       <label>
         <span className="text-sm font-medium text-neutral-700">Inquiry type</span>
         <select
-          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]"
+          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-brand-black-500"
           name="inquiry_type"
           required
         >
@@ -32,7 +32,7 @@ export function ContactForm() {
       <label>
         <span className="text-sm font-medium text-neutral-700">Message</span>
         <textarea
-          className="mt-2 min-h-32 w-full rounded-xl border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-[#C9A227]"
+          className="mt-2 min-h-32 w-full rounded-xl border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-brand-black-500"
           name="message"
           required
         />
@@ -61,7 +61,7 @@ function TextField({
     <label>
       <span className="text-sm font-medium text-neutral-700">{label}</span>
       <input
-        className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]"
+        className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500"
         name={name}
         type={type}
         {...props}
