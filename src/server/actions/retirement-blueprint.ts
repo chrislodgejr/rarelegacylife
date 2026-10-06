@@ -8,6 +8,7 @@ import { sendEmail } from "@/lib/email/provider";
 import { getSiteUrl } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyAdmins } from "@/lib/notifications/db";
+import { clip, pageForIntake, phoneForIntake, sendToEndlessOne } from "@/lib/endless-one/intake";
 import { retirementBlueprintSchema } from "@/lib/validation/forms";
 
 export type RetirementBlueprintState = {
@@ -98,9 +99,42 @@ export async function submitRetirementBlueprint(
   const specialist = await getConfiguredSpecialist(admin);
   const landingPage = input.landing_page ?? `${getSiteUrl()}/retirement`;
 
+  // Endless One first (when ENDLESS_ONE_INTAKE_URL and ENDLESS_ONE_INTAKE_SECRET are set), then the site's own copy whatever
+  // Endless One answers, so no request is lost. Both keep it under one id.
+  const requestId = crypto.randomUUID();
+  await sendToEndlessOne({
+    version: 1,
+    form: "retirement",
+    submissionId: requestId,
+    submittedAt: now,
+    person: {
+      firstName: clip(firstName, 100),
+      lastName: clip(lastName, 100),
+      email: input.email,
+      phone: phoneForIntake(input.phone),
+      postalCode: input.zip_code,
+    },
+    retirement: {
+      meetingStyle: input.meeting_style,
+      bestTimeToContact: clip(input.best_time_to_contact, 160) ?? input.best_time_to_contact,
+      question: clip(input.question, 2500),
+    },
+    consents: [
+      { kind: "tcpa", given: input.consent_tcpa, text: consentText, version: "retirement-blueprint-v1-approved", at: now },
+    ],
+    page: { url: pageForIntake(landingPage) },
+    attribution: {
+      source: clip(input.utm_source, 200),
+      medium: clip(input.utm_medium, 200),
+      campaign: clip(input.utm_campaign, 200),
+    },
+    client: { ip: ipAddress },
+  });
+
   const { data: request, error: insertError } = await admin
     .from("retirement_blueprint_requests")
     .insert({
+      id: requestId,
       first_name: firstName,
       last_name: lastName,
       email: input.email,
