@@ -51,19 +51,32 @@ async function renderSvg(file, width) {
   return sharp(svg, { density }).resize({ width, kernel: "lanczos3" }).png().toBuffer();
 }
 
+// A rounded square in the given colour, the size of the canvas.
+function tileSvg(width, height, color, radiusRatio) {
+  const radius = Math.round(Math.min(width, height) * radiusRatio * 100) / 100;
+  return Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="${width}" height="${height}" rx="${radius}" ry="${radius}" fill="${color}"/></svg>`,
+  );
+}
+
 // Centres artwork on a square (or any) canvas. The symbol is wide, so it is
 // fitted by width and keeps its proportions; it is never squashed.
-async function compose({ file, canvasWidth, canvasHeight = canvasWidth, artWidth, background }) {
+// background fills the whole canvas; tile draws a rounded square instead and
+// leaves the corners transparent.
+async function compose({ file, canvasWidth, canvasHeight = canvasWidth, artWidth, background, tile }) {
   const art = await renderSvg(file, Math.round(artWidth));
   const meta = await sharp(art).metadata();
-  return sharp({
-    create: {
-      width: canvasWidth,
-      height: canvasHeight,
-      channels: 4,
-      background: background ?? TRANSPARENT,
-    },
-  })
+  const base = tile
+    ? sharp(tileSvg(canvasWidth, canvasHeight, tile.color, tile.radiusRatio)).ensureAlpha()
+    : sharp({
+        create: {
+          width: canvasWidth,
+          height: canvasHeight,
+          channels: 4,
+          background: background ?? TRANSPARENT,
+        },
+      });
+  return base
     .composite([
       {
         input: art,
@@ -113,20 +126,22 @@ const dimensions = {
 
 const generated = [];
 
-// Browser favicons: black symbol on a transparent background.
+// Browser favicons: black symbol on a cream rounded tile, so the symbol shows on
+// dark browser tabs as well as light ones.
+const FAVICON_TILE = { color: CREAM, radiusRatio: 0.22 };
 const faviconSizes = [16, 32, 48];
 const faviconPngs = [];
 for (const size of faviconSizes) {
   faviconPngs.push({
     size,
-    buffer: await compose({ file: sources.symbolBlack, canvasWidth: size, artWidth: size * 0.96 }),
+    buffer: await compose({ file: sources.symbolBlack, canvasWidth: size, artWidth: size * 0.86, tile: FAVICON_TILE }),
   });
 }
 generated.push(await writeIco(join(appDir, "favicon.ico"), faviconPngs));
 
-const transparentIcon = await compose({ file: sources.symbolBlack, canvasWidth: 512, artWidth: 512 * 0.92 });
-generated.push(await writePng(join(appDir, "icon.png"), transparentIcon));
-generated.push(await writePng(join(publicDir, "favicon.png"), transparentIcon));
+const tileIcon = await compose({ file: sources.symbolBlack, canvasWidth: 512, artWidth: 512 * 0.8, tile: FAVICON_TILE });
+generated.push(await writePng(join(appDir, "icon.png"), tileIcon));
+generated.push(await writePng(join(publicDir, "favicon.png"), tileIcon));
 
 // Apple touch icons need a solid background (iOS fills transparency with black).
 const appleIcon = await compose({

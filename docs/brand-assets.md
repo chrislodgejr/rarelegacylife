@@ -27,8 +27,8 @@ The symbol is wider than it is tall (248 × 108). Size it by height and let the 
 
 Run `npm run brand:assets` (`scripts/prepare-logo-assets.mjs`, using the `sharp` package that Next.js already installs) to rebuild:
 
-- `src/app/favicon.ico`: 16, 32 and 48 px, black symbol on transparent.
-- `src/app/icon.png` and `public/favicon.png`: 512 px, black symbol on transparent.
+- `src/app/favicon.ico`: 16, 32 and 48 px, black symbol on a cream (#F3EEE2) rounded tile, so it shows on dark browser tabs too.
+- `src/app/icon.png` and `public/favicon.png`: 512 px, the same cream tile.
 - `src/app/apple-icon.png` and `public/apple-touch-icon.png`: 180 px, black symbol on cream (#F3EEE2).
 - `public/brand/app-icon-192.png`, `app-icon-512.png`: manifest icons, black symbol on cream.
 - `public/brand/app-icon-maskable-512.png`: manifest maskable icon, symbol inside the safe zone.
