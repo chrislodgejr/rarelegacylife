@@ -36,7 +36,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
         <section className="premium-card rounded-2xl p-6">
           <div className="flex flex-col justify-between gap-4 sm:flex-row">
             <div>
-              <p className="text-sm font-semibold uppercase text-[#C9A227]">
+              <p className="text-sm font-semibold uppercase text-brand-black-500">
                 Lead detail
               </p>
               <h1 className="font-premium mt-2 text-4xl font-semibold text-[#050505]">
@@ -66,7 +66,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
             <Info label="Tobacco" value={lead.tobacco_use ? "Yes" : "No"} />
             <Info label="Preferred contact" value={lead.preferred_contact_method} />
             <Info label="Best time" value={lead.best_time_to_contact ?? "Not provided"} />
-            <Info label="Quote email OTP" value={lead.quote_email_otp_verified ? "Verified" : "Not verified"} />
+            <Info label="Quote email OTP" value={lead.quote_email_otp_verified ? "Verified" : "Not required"} />
             <Info label="Created" value={new Date(lead.created_at).toLocaleString()} />
           </div>
 
@@ -81,7 +81,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
         <section className="premium-card rounded-2xl p-6">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div>
-              <p className="gold-gradient-text text-xs font-semibold uppercase tracking-[0.18em]">
+              <p className="text-brand-black-500 text-xs font-semibold uppercase tracking-[0.18em]">
                 Lead Grade
               </p>
               <h2 className="font-premium mt-2 text-2xl font-semibold text-[#050505]">
@@ -154,7 +154,7 @@ export default async function AdminLeadDetailPage({ params }: LeadDetailProps) {
           <h2 className="text-xl font-semibold text-[#050505]">Activity timeline</h2>
           <div className="mt-4 grid gap-3">
             {(activityResult.data ?? []).map((activity) => (
-              <div key={activity.id} className="border-l-2 border-[#C9A227] pl-4 text-sm">
+              <div key={activity.id} className="border-l-2 border-brand-cream-600 pl-4 text-sm">
                 <p className="font-semibold text-[#050505]">{activity.description}</p>
                 <p className="mt-1 text-xs text-neutral-500">{new Date(activity.created_at).toLocaleString()}</p>
               </div>

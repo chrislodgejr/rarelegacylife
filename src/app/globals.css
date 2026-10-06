@@ -11,40 +11,65 @@
   --light-gray: #e5e5e5;
   --medium-gray: #737373;
   --dark-gray: #262626;
-  --deep-gold: #8a6a16;
-  --legacy-gold: #c9a227;
-  --soft-gold: #e8d27a;
-  --champagne-gold: #f5e7a3;
-  --bright-gold: #fff2b8;
+
+  /*
+   * Rare Legacy brand palette, taken from the logo artwork in public/brand/rare-legacy/.
+   * Warm blacks are for dark brand surfaces and for accents on light backgrounds;
+   * creams are for accents on dark backgrounds.
+   */
+  --brand-black-950: #0c0b09;
+  --brand-black-900: #14120e;
+  --brand-black-800: #1e1b16;
+  --brand-black-700: #2e2a22;
+  --brand-black-500: #5a5345;
+  --brand-cream-600: #a39a82;
+  --brand-cream-500: #c9c0a8;
+  --brand-cream-300: #e6dec9;
+  --brand-cream-100: #f3eee2;
+  --brand-cream-50: #fffdf6;
+
+  /*
+   * Brand accents. The "gold" names are kept so existing classes keep working;
+   * since the 2026-10 brand refresh they carry the logo's cream palette.
+   */
+  --deep-gold: var(--brand-black-500);
+  --legacy-gold: var(--brand-cream-500);
+  --soft-gold: var(--brand-cream-300);
+  --champagne-gold: var(--brand-cream-100);
+  --bright-gold: var(--brand-cream-50);
   --gold-gradient: linear-gradient(
     135deg,
-    #8a6a16 0%,
-    #c9a227 40%,
-    #f5e7a3 75%,
-    #fff2b8 100%
+    #a39a82 0%,
+    #c9c0a8 40%,
+    #e6dec9 75%,
+    #fffdf6 100%
   );
-  --gold-gradient-subtle: linear-gradient(135deg, #c9a227 0%, #e8d27a 50%, #fff2b8 100%);
-  --logo-bronze-gold-gradient: linear-gradient(
-    112deg,
-    #6f5512 0%,
-    #a77b25 22%,
-    #e8d27a 48%,
-    #fff2b8 66%,
-    #b6862c 100%
-  );
+  --gold-gradient-subtle: linear-gradient(135deg, #c9c0a8 0%, #e6dec9 50%, #fffdf6 100%);
+  --brand-rule-gradient: linear-gradient(90deg, #a39a82 0%, #e6dec9 55%, rgba(243, 238, 226, 0.25) 100%);
+  --brand-dark-surface: linear-gradient(180deg, #14120e 0%, #0c0b09 100%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-brand-black-950: var(--brand-black-950);
+  --color-brand-black-900: var(--brand-black-900);
+  --color-brand-black-800: var(--brand-black-800);
+  --color-brand-black-700: var(--brand-black-700);
+  --color-brand-black-500: var(--brand-black-500);
+  --color-brand-cream-600: var(--brand-cream-600);
+  --color-brand-cream-500: var(--brand-cream-500);
+  --color-brand-cream-300: var(--brand-cream-300);
+  --color-brand-cream-100: var(--brand-cream-100);
+  --color-brand-cream-50: var(--brand-cream-50);
+  --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 * {
@@ -83,7 +108,7 @@ textarea {
 }
 
 .font-premium {
-  font-family: "Playfair Display", "Libre Baskerville", Georgia, "Times New Roman", serif;
+  font-family: var(--font-playfair), "Playfair Display", "Libre Baskerville", Georgia, "Times New Roman", serif;
 }
 
 .gold-gradient {
@@ -94,6 +119,7 @@ textarea {
   background: var(--gold-gradient-subtle);
 }
 
+/* Accent text for dark backgrounds. On light backgrounds use text-brand-black-500 instead. */
 .gold-gradient-text {
   background: var(--gold-gradient-subtle);
   -webkit-background-clip: text;
@@ -101,17 +127,14 @@ textarea {
   color: transparent;
 }
 
-.logo-gold-gradient {
-  background: var(--logo-bronze-gold-gradient);
-  filter: drop-shadow(0 10px 24px rgba(201, 162, 39, 0.12));
-}
-
 .gold-gradient-button {
   background: var(--gold-gradient);
   color: #000000;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 12px 40px rgba(201, 162, 39, 0.25);
+  box-shadow:
+    inset 0 0 0 1px rgba(90, 83, 69, 0.22),
+    0 12px 32px rgba(12, 11, 9, 0.18);
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
@@ -135,14 +158,16 @@ textarea {
 }
 
 .gold-gradient-button:hover {
-  box-shadow: 0 18px 52px rgba(201, 162, 39, 0.34);
-  filter: saturate(1.08);
+  box-shadow:
+    inset 0 0 0 1px rgba(90, 83, 69, 0.28),
+    0 18px 44px rgba(12, 11, 9, 0.24);
+  filter: brightness(1.04);
   transform: translateY(-1px);
 }
 
 .gold-divider {
   height: 1px;
-  background: var(--gold-gradient-subtle);
+  background: var(--brand-rule-gradient);
 }
 
 .gold-border {
@@ -177,28 +202,28 @@ textarea {
 
 .black-hero-bg {
   background:
-    radial-gradient(circle at 78% 18%, rgba(201, 162, 39, 0.28), transparent 32%),
-    radial-gradient(circle at 18% 8%, rgba(255, 242, 184, 0.12), transparent 26%),
-    linear-gradient(180deg, #050505 0%, #000000 100%);
+    radial-gradient(circle at 78% 18%, rgba(230, 222, 201, 0.12), transparent 32%),
+    radial-gradient(circle at 18% 8%, rgba(255, 253, 246, 0.06), transparent 26%),
+    var(--brand-dark-surface);
 }
 
 .black-section {
   background:
-    radial-gradient(circle at top left, rgba(201, 162, 39, 0.16), transparent 32%),
-    linear-gradient(180deg, #050505 0%, #000000 100%);
+    radial-gradient(circle at top left, rgba(230, 222, 201, 0.08), transparent 32%),
+    var(--brand-dark-surface);
   color: #ffffff;
 }
 
 .gold-glow {
   box-shadow:
-    0 0 0 1px rgba(245, 231, 163, 0.16),
-    0 24px 80px rgba(201, 162, 39, 0.18);
+    0 0 0 1px rgba(243, 238, 226, 0.14),
+    0 24px 80px rgba(230, 222, 201, 0.1);
 }
 
 .signal-grid {
   background-image:
-    linear-gradient(rgba(245, 231, 163, 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 231, 163, 0.09) 1px, transparent 1px);
+    linear-gradient(rgba(243, 238, 226, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(243, 238, 226, 0.07) 1px, transparent 1px);
   background-size: 42px 42px;
 }
 

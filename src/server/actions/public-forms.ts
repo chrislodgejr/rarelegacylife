@@ -12,7 +12,6 @@ import {
 } from "@/lib/notifications";
 import { notifyAdmins } from "@/lib/notifications/db";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isQuoteVerificationApproved } from "@/server/actions/quote-verification";
 import {
   agentApplicationSchema,
   contactFormSchema,
@@ -23,6 +22,9 @@ export type FormState = {
   ok: boolean;
   message: string;
 };
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const QUOTE_SUBMISSIONS_PER_IP_PER_HOUR = 5;
 
 const defaultError = {
   ok: false,
@@ -40,20 +42,52 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
   }
 
   const input = parsed.data;
-  const quoteVerificationId = String(formData.get("quote_verification_id") ?? "");
 
-  if (!(await isQuoteVerificationApproved(quoteVerificationId, input.email))) {
-    return {
-      ok: false,
-      message: "Please verify the quote email with the one-time code before submitting.",
-    };
+  // Honeypot: real visitors never see this field. Bots that fill it get a normal-looking
+  // success page and no lead is created.
+  if (String(formData.get("company_website") ?? "").trim()) {
+    redirect("/thank-you");
   }
+
+  // Client-generated per-form-session ID. Stored in quote_verification_id, whose unique
+  // index makes double taps and retries idempotent (one lead per form session).
+  const rawSubmissionId = String(formData.get("submission_id") ?? "");
+  const submissionId = UUID_PATTERN.test(rawSubmissionId) ? rawSubmissionId : crypto.randomUUID();
 
   const headerStore = await headers();
   const userAgent = headerStore.get("user-agent");
   const ipAddress = getIpAddress(headerStore);
   const sourceUrl = input.landing_page ?? headerStore.get("referer");
   const admin = createAdminClient();
+
+  // Same person re-submitting within a few minutes: treat as already received.
+  const recentWindow = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+  const { count: recentSameEmail } = await admin
+    .from("leads")
+    .select("id", { count: "exact", head: true })
+    .eq("email", input.email)
+    .gte("created_at", recentWindow);
+
+  if ((recentSameEmail ?? 0) > 0) {
+    redirect("/thank-you");
+  }
+
+  // Basic abuse limit: cap quote submissions per IP per hour.
+  if (ipAddress) {
+    const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count: recentFromIp } = await admin
+      .from("leads")
+      .select("id", { count: "exact", head: true })
+      .eq("ip_address", ipAddress)
+      .gte("created_at", hourAgo);
+
+    if ((recentFromIp ?? 0) >= QUOTE_SUBMISSIONS_PER_IP_PER_HOUR) {
+      return {
+        ok: false,
+        message: "We've received several requests from this connection. Please call us or try again later.",
+      };
+    }
+  }
   const score = calculateLeadScore(input);
   const now = new Date().toISOString();
   const staleAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
@@ -84,9 +118,9 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
       lead_grade: score.lead_grade,
       lead_temperature: score.lead_temperature,
       lead_score_breakdown: score.lead_score_breakdown,
-      quote_email_otp_verified: true,
-      quote_email_otp_verified_at: now,
-      quote_verification_id: quoteVerificationId,
+      quote_email_otp_verified: false,
+      quote_email_otp_verified_at: null,
+      quote_verification_id: submissionId,
       quote_auth_user_id: null,
       last_activity_at: now,
       stale_at: staleAt,
@@ -148,8 +182,7 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
         lead_temperature: score.lead_temperature,
         lead_score_breakdown: score.lead_score_breakdown,
         lead_score_reasons: score.lead_score_reasons,
-        quote_email_otp_verified: true,
-        quote_verification_id: quoteVerificationId,
+        submission_id: submissionId,
       },
     },
     {
@@ -176,7 +209,7 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
       lead_grade: score.lead_grade,
       lead_temperature: score.lead_temperature,
       lead_score_breakdown: score.lead_score_breakdown,
-      quote_verification_id: quoteVerificationId,
+      submission_id: submissionId,
     },
     ipAddress,
     userAgent,

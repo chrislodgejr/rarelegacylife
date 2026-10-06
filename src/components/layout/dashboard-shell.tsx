@@ -36,7 +36,7 @@ export async function DashboardShell({
 
   return (
     <div className="min-h-screen bg-[#F7F5EF] lg:flex">
-      <aside className="border-b border-white/10 bg-black text-white lg:fixed lg:inset-y-0 lg:left-0 lg:w-72 lg:border-b-0 lg:border-r">
+      <aside className="border-b border-white/10 bg-brand-black-950 text-white lg:fixed lg:inset-y-0 lg:left-0 lg:w-72 lg:border-b-0 lg:border-r">
         <div className="flex items-center justify-between px-5 py-5 lg:block lg:px-6 lg:py-7">
           <Link aria-label="Rare Legacy Life dashboard" href="/admin/dashboard">
             <BrandLogo className="h-16 w-auto lg:h-20" lockup="stacked" variant="dark" />
@@ -51,7 +51,7 @@ export async function DashboardShell({
           {nav.map((item) => (
             <Link
               key={item.href}
-              className="shrink-0 rounded-md border-l-2 border-transparent px-3 py-2.5 font-medium text-white/68 transition hover:border-[#C9A227] hover:bg-white/[0.08] hover:text-[#F5E7A3]"
+              className="shrink-0 rounded-md border-l-2 border-transparent px-3 py-2.5 font-medium text-white/68 transition hover:border-brand-cream-500 hover:bg-white/[0.08] hover:text-brand-cream-300"
               href={item.href}
             >
               {item.label}
@@ -63,7 +63,7 @@ export async function DashboardShell({
         <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/92 backdrop-blur">
           <div className="flex items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8A6A16]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-black-500">
                 Rare Legacy CRM
               </p>
               <p className="mt-1 truncate text-sm text-neutral-600">Signed in as {profile.email}</p>
@@ -76,7 +76,7 @@ export async function DashboardShell({
               />
               <form action={signOut}>
                 <button
-                  className="h-10 rounded-md border border-neutral-300 bg-white px-4 text-sm font-semibold text-[#050505] transition hover:border-[#C9A227]"
+                  className="h-10 rounded-md border border-neutral-300 bg-white px-4 text-sm font-semibold text-[#050505] transition hover:border-brand-cream-600"
                   type="submit"
                 >
                   Sign out
@@ -91,7 +91,7 @@ export async function DashboardShell({
       </div>
       <nav aria-label="CRM mobile navigation" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-neutral-200 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-lg backdrop-blur lg:hidden">
         {adminNav.slice(0, 4).map(item => (
-          <Link key={item.href} href={item.href} className="flex min-h-14 items-center justify-center px-1 text-center text-xs font-semibold text-[#050505] active:bg-[#F5E7A3]">{item.label}</Link>
+          <Link key={item.href} href={item.href} className="flex min-h-14 items-center justify-center px-1 text-center text-xs font-semibold text-[#050505] active:bg-brand-cream-100">{item.label}</Link>
         ))}
       </nav>
     </div>

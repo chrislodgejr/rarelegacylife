@@ -39,7 +39,7 @@ export function ForgotPasswordForm() {
       <label className="mt-6 block">
         <span className="text-sm font-medium text-neutral-700">Email</span>
         <input
-          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]"
+          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -143,7 +143,7 @@ export function ResetPasswordForm() {
       <label className="mt-6 block">
         <span className="text-sm font-medium text-neutral-700">New password</span>
         <input
-          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]"
+          className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500"
           type="password"
           minLength={8}
           value={password}

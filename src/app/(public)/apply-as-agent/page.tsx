@@ -1,6 +1,14 @@
 import { AgentApplicationForm } from "@/components/forms/agent-application-form";
 import { PublicShell } from "@/components/layout/public-shell";
 import { Eyebrow, Section } from "@/components/ui/section";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+export const metadata = pageMetadata({
+  title: "Life Insurance Agent Careers | Apply to Rare Legacy Life Group",
+  description:
+    "Licensed or getting licensed? Apply to join Rare Legacy Life Group and get license review, carrier and state setup, and a modern lead CRM.",
+  path: "/apply-as-agent",
+});
 
 export default function ApplyAsAgentPage() {
   return (
@@ -27,7 +35,7 @@ export default function ApplyAsAgentPage() {
             </div>
             <div>
               <div className="mb-4 rounded-2xl border border-white/12 bg-white/[0.06] p-4 text-white">
-                <p className="text-sm font-semibold text-[#F5E7A3]">Agent Application Form</p>
+                <p className="text-sm font-semibold text-brand-cream-300">Agent Application Form</p>
                 <p className="mt-1 text-xs leading-5 text-white/62">
                   This form is for agents applying to join or access the Rare Legacy Life platform.
                 </p>

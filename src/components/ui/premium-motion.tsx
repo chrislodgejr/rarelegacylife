@@ -18,10 +18,10 @@ export function MotionReveal({
   return (
     <motion.div
       className={className}
-      initial={reduceMotion ? false : { opacity: 0, y: 22 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay }}
-      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay }}
+      viewport={{ once: true, margin: "0px 0px 120px 0px" }}
     >
       {children}
     </motion.div>
@@ -40,11 +40,13 @@ export function HeroReveal({
   const reduceMotion = useReducedMotion();
 
   return (
+    // Hero content stays fully visible from the first paint (no opacity fade) so the
+    // headline counts as Largest Contentful Paint immediately; only a subtle lift animates.
     <motion.div
       className={className}
-      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-      animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1], delay }}
+      initial={reduceMotion ? false : { y: 10 }}
+      animate={reduceMotion ? undefined : { y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: Math.min(delay, 0.2) }}
     >
       {children}
     </motion.div>
@@ -106,7 +108,7 @@ export function FloatingQuoteCard() {
             Build your protection plan
           </h2>
         </div>
-        <span className="gold-gradient-subtle inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold leading-none text-black shadow-[0_10px_28px_rgba(201,162,39,0.22)]">
+        <span className="gold-gradient-subtle inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold leading-none text-black shadow-[0_10px_28px_rgba(230,222,201,0.16)]">
           Guided Quote
         </span>
       </div>
@@ -121,7 +123,7 @@ export function FloatingQuoteCard() {
           >
             <div className="flex items-center justify-between gap-3">
               <span className="flex items-center gap-2 text-sm font-medium text-white">
-                <CheckCircle2 className="h-4 w-4 text-[#F5E7A3]" />
+                <CheckCircle2 className="h-4 w-4 text-brand-cream-300" />
                 {label}
               </span>
               <span className="text-xs text-white/50">{meta}</span>
@@ -141,7 +143,7 @@ export function FloatingQuoteCard() {
         <ArrowRight className="h-4 w-4" />
       </Link>
       <div className="mt-5 flex items-center gap-2 text-xs text-white/55">
-        <ShieldCheck className="h-4 w-4 text-[#F5E7A3]" />
+        <ShieldCheck className="h-4 w-4 text-brand-cream-300" />
         Private. Secure. Built around your goals.
       </div>
     </motion.aside>

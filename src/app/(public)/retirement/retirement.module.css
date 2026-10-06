@@ -1,15 +1,17 @@
 .page {
-  --charcoal: #19201f;
-  --charcoal-soft: #26302e;
-  --gold: #c6a66b;
-  --gold-dark: #927646;
-  --ivory: #fbf9f4;
+  /* Palette matches the main site and the logo (see :root in globals.css). */
+  --charcoal: #0c0b09;
+  --charcoal-soft: #1e1b16;
+  --accent-on-dark: #e6dec9;
+  --accent-on-light: #5a5345;
+  --accent-line: #a39a82;
+  --ivory: #f7f5ef;
   --paper: #ffffff;
-  --sage: #e9ede7;
-  --ink-muted: #5c6663;
+  --sage: #f1eee6;
+  --ink-muted: #5f5f5f;
   background: var(--ivory);
   color: var(--charcoal);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.55;
   overflow-x: clip;
   padding-bottom: 76px;
@@ -22,10 +24,10 @@
 .page h1,
 .page h2,
 .page h3 {
-  font-family: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.04;
+  font-family: var(--font-playfair), "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.08;
 }
 
 .page button,
@@ -37,7 +39,7 @@
 
 .skipLink {
   background: #fff;
-  color: #19201f;
+  color: #050505;
   left: 12px;
   padding: 12px 16px;
   position: fixed;
@@ -51,7 +53,7 @@
 
 .header {
   background: var(--charcoal);
-  border-bottom: 1px solid rgba(198, 166, 107, 0.28);
+  border-bottom: 1px solid rgba(230, 222, 201, 0.2);
   position: relative;
   z-index: 10;
 }
@@ -81,7 +83,7 @@
   align-items: center;
   background: transparent;
   border: 0;
-  color: #f6f0e5;
+  color: var(--accent-on-dark);
   cursor: pointer;
   display: inline-flex;
   font-size: 14px;
@@ -89,12 +91,15 @@
   min-height: 44px;
   padding: 8px 0 8px 12px;
   text-decoration: underline;
-  text-decoration-color: rgba(198, 166, 107, 0.62);
+  text-decoration-color: rgba(230, 222, 201, 0.5);
   text-underline-offset: 5px;
 }
 
 .hero {
-  background: var(--charcoal);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(230, 222, 201, 0.12), transparent 32%),
+    radial-gradient(circle at 18% 8%, rgba(255, 253, 246, 0.06), transparent 26%),
+    linear-gradient(180deg, #14120e 0%, #0c0b09 100%);
   color: #fff;
   overflow: hidden;
 }
@@ -113,7 +118,7 @@
 }
 
 .heroCopy::before {
-  background: radial-gradient(circle, rgba(198, 166, 107, 0.16), transparent 70%);
+  background: radial-gradient(circle, rgba(230, 222, 201, 0.08), transparent 70%);
   content: "";
   height: 280px;
   left: -140px;
@@ -126,13 +131,18 @@
 .eyebrow,
 .sectionEyebrow,
 .successEyebrow {
-  color: var(--gold);
+  color: var(--accent-on-light);
   font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.16em;
   margin: 0 0 14px;
   position: relative;
   text-transform: uppercase;
+}
+
+.eyebrow,
+.valueSection .sectionEyebrow {
+  color: var(--accent-on-dark);
 }
 
 .hero h1 {
@@ -142,7 +152,7 @@
 }
 
 .heroSupporting {
-  color: #d9dfdc;
+  color: #dddddd;
   font-size: 17px;
   line-height: 1.6;
   margin: 20px 0 24px;
@@ -154,18 +164,21 @@
 .continueButton,
 .stickyCta {
   align-items: center;
-  background: var(--gold);
-  border: 1px solid var(--gold);
-  border-radius: 3px;
-  color: #17201e;
+  background: linear-gradient(135deg, #a39a82 0%, #c9c0a8 40%, #e6dec9 75%, #fffdf6 100%);
+  border: 0;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 0 0 1px rgba(90, 83, 69, 0.22),
+    0 12px 32px rgba(12, 11, 9, 0.18);
+  color: #000000;
   cursor: pointer;
   display: inline-flex;
   font-weight: 750;
   gap: 9px;
   justify-content: center;
   min-height: 52px;
-  padding: 14px 18px;
-  transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  padding: 14px 24px;
+  transition: filter 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .primaryButton {
@@ -176,14 +189,16 @@
 .submitButton:hover,
 .continueButton:hover,
 .stickyCta:hover {
-  background: #d3b77f;
-  box-shadow: 0 12px 28px rgba(198, 166, 107, 0.2);
+  box-shadow:
+    inset 0 0 0 1px rgba(90, 83, 69, 0.28),
+    0 18px 44px rgba(12, 11, 9, 0.24);
+  filter: brightness(1.04);
   transform: translateY(-1px);
 }
 
 .trustLine {
   align-items: flex-start;
-  color: #d5dbd8;
+  color: #d9d9d9;
   display: flex;
   font-size: 13px;
   gap: 8px;
@@ -191,7 +206,7 @@
 }
 
 .trustLine svg {
-  color: var(--gold);
+  color: var(--accent-on-dark);
   flex: 0 0 auto;
   margin-top: 1px;
 }
@@ -209,7 +224,7 @@
 }
 
 .imageVeil {
-  background: linear-gradient(180deg, rgba(25, 32, 31, 0.16), rgba(25, 32, 31, 0.55));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.55));
   inset: 0;
   position: absolute;
 }
@@ -217,7 +232,7 @@
 .photoNote {
   bottom: 16px;
   color: #fff;
-  font-family: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+  font-family: var(--font-playfair), "Playfair Display", Georgia, "Times New Roman", serif;
   font-size: 18px;
   font-style: italic;
   left: 20px;
@@ -281,9 +296,10 @@
 
 .meetingCard {
   align-items: center;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid #ded8cc;
-  border-radius: 7px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
   color: var(--charcoal);
   cursor: pointer;
   display: grid;
@@ -297,22 +313,22 @@
 }
 
 .meetingCard:hover {
-  border-color: var(--gold);
-  box-shadow: 0 12px 32px rgba(25, 32, 31, 0.08);
+  border-color: var(--accent-line);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
 .meetingCardSelected {
   background: #fff;
-  border-color: var(--gold-dark);
-  box-shadow: 0 0 0 2px rgba(198, 166, 107, 0.22), 0 12px 32px rgba(25, 32, 31, 0.08);
+  border-color: var(--accent-on-light);
+  box-shadow: 0 0 0 2px rgba(90, 83, 69, 0.22), 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 .meetingIcon {
   align-items: center;
-  background: #f0e7d6;
+  background: #f3eee2;
   border-radius: 50%;
-  color: #765c2d;
+  color: var(--accent-on-light);
   display: inline-flex;
   height: 46px;
   justify-content: center;
@@ -326,7 +342,7 @@
 }
 
 .meetingText strong {
-  font-family: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+  font-family: var(--font-playfair), "Playfair Display", Georgia, "Times New Roman", serif;
   font-size: 20px;
   font-weight: 600;
   line-height: 1.2;
@@ -340,7 +356,7 @@
 
 .selectionMark {
   align-items: center;
-  border: 1px solid #c8c2b7;
+  border: 1px solid #c3c3c3;
   border-radius: 50%;
   color: #fff;
   display: inline-flex;
@@ -361,14 +377,16 @@
 }
 
 .valueSection {
-  background: var(--charcoal);
+  background:
+    radial-gradient(circle at top left, rgba(230, 222, 201, 0.08), transparent 32%),
+    linear-gradient(180deg, #14120e 0%, #0c0b09 100%);
   color: #fff;
   padding: 72px 20px;
   position: relative;
 }
 
 .valueSection::before {
-  background: linear-gradient(90deg, transparent, rgba(198, 166, 107, 0.8), transparent);
+  background: linear-gradient(90deg, transparent, rgba(230, 222, 201, 0.6), transparent);
   content: "";
   height: 1px;
   left: 15%;
@@ -383,7 +401,7 @@
 }
 
 .valueHeading > p:last-child {
-  color: #bfc8c5;
+  color: #c5c5c5;
   line-height: 1.7;
 }
 
@@ -411,9 +429,9 @@
 
 .coverageList li > span {
   align-items: center;
-  background: rgba(198, 166, 107, 0.16);
+  background: rgba(230, 222, 201, 0.12);
   border-radius: 50%;
-  color: var(--gold);
+  color: var(--accent-on-dark);
   display: inline-flex;
   height: 26px;
   justify-content: center;
@@ -432,7 +450,7 @@
 
 .assuranceCard {
   align-items: center;
-  border-left: 2px solid var(--gold);
+  border-left: 2px solid var(--accent-line);
   display: flex;
   gap: 13px;
   margin-top: 26px;
@@ -440,7 +458,7 @@
 }
 
 .assuranceCard svg {
-  color: var(--gold-dark);
+  color: var(--accent-on-light);
   flex: 0 0 auto;
 }
 
@@ -460,9 +478,10 @@
 
 .formCard {
   background: #fff;
-  border: 1px solid #d9ddd7;
-  border-top: 4px solid var(--gold);
-  box-shadow: 0 20px 60px rgba(25, 32, 31, 0.1);
+  border: 1px solid #e5e5e5;
+  border-top: 4px solid var(--accent-line);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.08);
   padding: 24px 18px;
 }
 
@@ -485,13 +504,13 @@
 
 .field label,
 .consentBox > div > label {
-  color: #303a37;
+  color: #373737;
   font-size: 13px;
   font-weight: 750;
 }
 
 .field label span {
-  color: #747c79;
+  color: #797979;
   font-weight: 500;
 }
 
@@ -500,8 +519,8 @@
 .field textarea {
   appearance: none;
   background: #fff;
-  border: 1px solid #bbc2bf;
-  border-radius: 4px;
+  border: 1px solid #c0c0c0;
+  border-radius: 12px;
   color: var(--charcoal);
   font-size: 16px;
   line-height: 1.4;
@@ -517,14 +536,14 @@
 
 .field input::placeholder,
 .field textarea::placeholder {
-  color: #7f8885;
+  color: #858585;
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: var(--gold-dark);
-  box-shadow: 0 0 0 3px rgba(198, 166, 107, 0.22);
+  border-color: var(--accent-on-light);
+  box-shadow: 0 0 0 3px rgba(90, 83, 69, 0.2);
   outline: none;
 }
 
@@ -533,7 +552,7 @@
 }
 
 .selectWrap svg {
-  color: #5b6461;
+  color: #616161;
   pointer-events: none;
   position: absolute;
   right: 13px;
@@ -548,8 +567,9 @@
 
 .consentBox {
   align-items: flex-start;
-  background: #f8f6f1;
-  border: 1px solid #e0dbd1;
+  background: #f7f5ef;
+  border: 1px solid #dbdbdb;
+  border-radius: 12px;
   display: grid;
   gap: 12px;
   grid-template-columns: 22px 1fr;
@@ -565,14 +585,14 @@
 }
 
 .consentBox p {
-  color: #5e6764;
+  color: #646464;
   font-size: 11px;
   line-height: 1.55;
   margin: 6px 0 0;
 }
 
 .consentBox a {
-  color: #4d3b19;
+  color: var(--brand-black-700, #2e2a22);
   text-underline-offset: 2px;
 }
 
@@ -606,7 +626,7 @@
 
 .formTrust {
   align-items: center;
-  color: #68716e;
+  color: #6e6e6e;
   display: flex;
   font-size: 11px;
   gap: 7px;
@@ -616,7 +636,7 @@
 }
 
 .formTrust svg {
-  color: var(--gold-dark);
+  color: var(--accent-on-light);
   flex: 0 0 auto;
 }
 
@@ -658,8 +678,9 @@
 }
 
 .successNext {
-  background: #f8f6f1;
-  border-left: 2px solid var(--gold);
+  background: #f7f5ef;
+  border-left: 2px solid var(--accent-line);
+  border-radius: 0 12px 12px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -685,8 +706,8 @@
 
 .schedulerEmbed iframe {
   background: #fff;
-  border: 1px solid #d9ddd7;
-  border-radius: 8px;
+  border: 1px solid #dbdbdb;
+  border-radius: 16px;
   display: block;
   height: min(720px, 78vh);
   min-height: 560px;
@@ -702,7 +723,7 @@
 }
 
 .schedulerEmbed a {
-  color: #4d3b19;
+  color: var(--brand-black-700, #2e2a22);
   font-weight: 750;
   text-underline-offset: 2px;
 }
@@ -721,7 +742,7 @@
   align-items: center;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--gold);
+  border-bottom: 1px solid var(--accent-line);
   color: var(--charcoal);
   cursor: pointer;
   display: inline-flex;
@@ -734,18 +755,18 @@
 }
 
 .faqList details {
-  border-bottom: 1px solid #d9d3c7;
+  border-bottom: 1px solid #d3d3d3;
 }
 
 .faqList details:first-child {
-  border-top: 1px solid #d9d3c7;
+  border-top: 1px solid #d3d3d3;
 }
 
 .faqList summary {
   align-items: center;
   cursor: pointer;
   display: flex;
-  font-family: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+  font-family: var(--font-playfair), "Playfair Display", Georgia, "Times New Roman", serif;
   font-size: 19px;
   font-weight: 600;
   gap: 16px;
@@ -760,7 +781,7 @@
 }
 
 .faqList summary svg {
-  color: var(--gold-dark);
+  color: var(--accent-on-light);
   flex: 0 0 auto;
   transition: transform 180ms ease;
 }
@@ -779,7 +800,7 @@
 
 .footer {
   background: var(--charcoal);
-  color: #d5dbd8;
+  color: #d9d9d9;
   padding: 42px 20px 34px;
 }
 
@@ -796,7 +817,7 @@
 }
 
 .footer address {
-  color: #bfc7c4;
+  color: #c4c4c4;
   font-size: 13px;
   font-style: normal;
 }
@@ -809,21 +830,21 @@
 }
 
 .disclosure strong {
-  color: var(--gold);
+  color: var(--accent-on-dark);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .disclosure p {
-  color: #aeb7b4;
+  color: #b4b4b4;
   font-size: 10px;
   line-height: 1.7;
   margin: 10px 0 0;
 }
 
 .footerBottom {
-  color: #99a3a0;
+  color: #a0a0a0;
   display: flex;
   flex-direction: column;
   font-size: 11px;
@@ -844,7 +865,7 @@
 
 .stickyCta {
   bottom: max(10px, env(safe-area-inset-bottom));
-  box-shadow: 0 12px 35px rgba(25, 32, 31, 0.34);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.34);
   font-size: 14px;
   left: 12px;
   min-height: 54px;
@@ -870,7 +891,7 @@
 .page input:focus-visible,
 .page select:focus-visible,
 .page textarea:focus-visible {
-  outline: 3px solid #e5c98f;
+  outline: 3px solid #e8d27a;
   outline-offset: 3px;
 }
 

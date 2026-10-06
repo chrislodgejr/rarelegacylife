@@ -29,7 +29,7 @@ export function FeatureRequestForm() {
   return (
     <form action={action} className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8A6A16]">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-black-500">
           Product feedback
         </p>
         <h2 className="font-premium mt-2 text-2xl font-semibold text-[#050505]">
@@ -45,7 +45,7 @@ export function FeatureRequestForm() {
         <label>
           <span className="text-sm font-medium text-neutral-700">Title</span>
           <input
-            className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-[#C9A227]"
+            className="mt-2 h-11 w-full rounded-xl border border-neutral-300 px-3 text-sm outline-none focus:border-brand-black-500"
             name="title"
             maxLength={140}
             placeholder="Example: Add carrier filter to lead assignment"
@@ -57,7 +57,7 @@ export function FeatureRequestForm() {
           <label>
             <span className="text-sm font-medium text-neutral-700">Category</span>
             <select
-              className="mt-2 h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]"
+              className="mt-2 h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-brand-black-500"
               name="category"
               defaultValue="crm"
             >
@@ -72,7 +72,7 @@ export function FeatureRequestForm() {
           <label>
             <span className="text-sm font-medium text-neutral-700">Priority</span>
             <select
-              className="mt-2 h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-[#C9A227]"
+              className="mt-2 h-11 w-full rounded-xl border border-neutral-300 bg-white px-3 text-sm outline-none focus:border-brand-black-500"
               name="priority"
               defaultValue="medium"
             >
@@ -88,7 +88,7 @@ export function FeatureRequestForm() {
         <label>
           <span className="text-sm font-medium text-neutral-700">Request details</span>
           <textarea
-            className="mt-2 min-h-36 w-full rounded-xl border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-[#C9A227]"
+            className="mt-2 min-h-36 w-full rounded-xl border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-brand-black-500"
             name="description"
             maxLength={2000}
             placeholder="Describe the problem, what you want added, and how it should work."

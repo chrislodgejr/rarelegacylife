@@ -109,8 +109,17 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
+// Only run the Supabase session check where it matters. Public marketing pages
+// skip it entirely so they respond faster (better Core Web Vitals / SEO).
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/admin/:path*",
+    "/agent/:path*",
+    "/pending-approval/:path*",
+    "/login",
+    "/otp-verify",
+    "/reset-password",
+    "/forgot-password",
+    "/api/crm/:path*",
   ],
 };

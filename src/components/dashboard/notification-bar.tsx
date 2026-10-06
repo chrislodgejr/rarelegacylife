@@ -65,13 +65,13 @@ export function NotificationBar({
   return (
     <div className="relative flex items-center gap-2">
       <button
-        className="inline-flex h-10 items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 text-sm font-semibold text-[#050505] shadow-sm transition hover:border-[#C9A227]"
+        className="inline-flex h-10 items-center gap-2 rounded-full border border-neutral-300 bg-white px-3 text-sm font-semibold text-[#050505] shadow-sm transition hover:border-brand-cream-600"
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label="Open CRM notifications"
       >
-        <Bell className="h-4 w-4 text-[#C9A227]" />
+        <Bell className="h-4 w-4 text-brand-cream-600" />
         <span className="hidden sm:inline">Notifications</span>
         {unread.length ? (
           <span className="gold-gradient-subtle rounded-full px-2 py-0.5 text-xs font-bold text-black">
@@ -108,7 +108,7 @@ export function NotificationBar({
                   onClick={() => setOpen(false)}
                 >
                   <div className="flex gap-3">
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#050505] text-[#F5E7A3]">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-brand-black-950 text-brand-cream-300">
                       <Bell className="h-4 w-4" />
                     </span>
                     <span>
@@ -131,7 +131,7 @@ export function NotificationBar({
             {!notifications.length ? (
               <div className="grid gap-3 p-6 text-sm text-neutral-500">
                 <p>No notifications yet.</p>
-                <Link className="font-semibold text-[#8A6A16] hover:underline" href={homePath}>
+                <Link className="font-semibold text-brand-black-500 hover:underline" href={homePath}>
                   Open dashboard
                 </Link>
               </div>

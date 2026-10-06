@@ -42,7 +42,7 @@ export function ScoreReasonList({ breakdown }: { breakdown?: Record<string, numb
       {entries.map(([key, value]) => (
         <li key={key} className="flex items-center justify-between gap-4 rounded-xl bg-[#F7F5EF] px-3 py-2">
           <span>{scoreReasonLabel(key)}</span>
-          <span className="font-semibold text-[#8A6A16]">+{value}</span>
+          <span className="font-semibold text-brand-black-500">+{value}</span>
         </li>
       ))}
     </ul>

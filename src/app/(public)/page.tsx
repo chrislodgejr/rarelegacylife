@@ -1,30 +1,86 @@
+import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, CheckCircle2, Shield, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, Phone, Shield, Sparkles, Users } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
+import { HomeSplash } from "@/components/brand/home-splash";
+import { JsonLd } from "@/components/seo/json-ld";
+import { GUIDES } from "@/content/guides";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { faqSchema, websiteSchema } from "@/lib/seo/schema";
+import { ADVISORS, SITE } from "@/lib/site";
 import { Section } from "@/components/ui/section";
 import {
   GoldButton,
   GoldDivider,
-  PremiumBadge,
   PremiumSectionHeader,
   StepCard,
   TrustBar,
 } from "@/components/ui/premium";
 import { FloatingQuoteCard, HeroReveal, MotionReveal } from "@/components/ui/premium-motion";
 
+export const metadata = pageMetadata({
+  title: "Life Insurance & Retirement Income Guidance in East Norriton, PA | Rare Legacy Life Group",
+  description:
+    "Free life insurance quotes and complimentary retirement income reviews from licensed advisors in East Norriton, PA. Term, whole life, mortgage protection, final expense, and annuities in 49 states.",
+  path: "/",
+});
+
+const HOME_FAQS = [
+  {
+    question: "Do I need term or whole life insurance?",
+    answer:
+      "Most families protecting an income and a mortgage start with term life, which covers a set number of years at the lowest cost. Whole life lasts for life and builds cash value, so it fits lifelong needs like final expenses or leaving a legacy. Many people use a mix of both.",
+  },
+  {
+    question: "How much life insurance do I need?",
+    answer:
+      "Add up the income your family would need, your mortgage and debts, future education costs, and final expenses, then subtract savings and existing coverage. A common shortcut is 10 to 12 times your income, but a needs-based estimate is more accurate.",
+  },
+  {
+    question: "Will my health history matter?",
+    answer:
+      "Yes, insurers review health, prescriptions, and tobacco use, but a health condition doesn't automatically mean you can't get coverage. Simplified-issue and other options exist, and an advisor can point you toward realistic paths.",
+  },
+  {
+    question: "Is the quote or retirement review really free?",
+    answer:
+      "Yes. Quote requests and Retirement Income Blueprint consultations are complimentary, and there is no obligation to buy anything.",
+  },
+  {
+    question: "Where are you located, and do you work outside Pennsylvania?",
+    answer:
+      "Our office is at 59 W. Germantown Pike in East Norriton, PA. We meet locally across Montgomery County and work with clients remotely in 49 states, excluding California, subject to licensing and product availability.",
+  },
+  {
+    question: "How quickly will someone contact me?",
+    answer:
+      "A licensed advisor reviews every request and follows up using the contact method you choose. To talk right away, call (484) 430-4363.",
+  },
+];
+
+const FEATURED_GUIDES = [
+  "term-vs-whole-life-insurance",
+  "how-much-life-insurance-do-i-need",
+  "how-do-annuities-work",
+  "retirement-income-planning-pennsylvania",
+];
+
 export default function HomePage() {
+  const featuredGuides = GUIDES.filter((guide) => FEATURED_GUIDES.includes(guide.slug));
+
   return (
-    <PublicShell>
+    <PublicShell beforeHeader={<HomeSplash />}>
+      <JsonLd data={[websiteSchema(), faqSchema(HOME_FAQS)]} />
       <main>
         <section className="black-hero-bg relative overflow-hidden text-white">
           <div className="signal-grid absolute inset-0 opacity-25" aria-hidden="true" />
-          <div className="absolute right-[-12rem] top-12 h-[34rem] w-[34rem] rounded-full border border-[#C9A227]/[0.18]" aria-hidden="true" />
-          <div className="absolute right-[-5rem] top-32 h-[21rem] w-[21rem] rounded-full border border-[#FFF2B8]/10" aria-hidden="true" />
+          <div className="absolute right-[-12rem] top-12 h-[34rem] w-[34rem] rounded-full border border-brand-cream-500/[0.18]" aria-hidden="true" />
+          <div className="absolute right-[-5rem] top-32 h-[21rem] w-[21rem] rounded-full border border-brand-cream-50/10" aria-hidden="true" />
           <div className="home-hero-grid relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_0.88fr] lg:px-8">
             <div className="flex flex-col justify-center">
               <HeroReveal>
                 <p className="gold-gradient-text text-sm font-semibold uppercase tracking-[0.28em]">
-                  Rare Legacy Life
+                  Life insurance &amp; retirement guidance
                 </p>
               </HeroReveal>
               <HeroReveal delay={0.08}>
@@ -37,15 +93,16 @@ export default function HomePage() {
               </HeroReveal>
               <HeroReveal delay={0.24}>
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-                  Personal guidance for life insurance, retirement income reviews, and annuity
-                  decisions—built around the people, plans, and legacy that matter most.
+                  Licensed advisors in East Norriton, PA helping families nationwide with life
+                  insurance, retirement income reviews, and annuity decisions—built around the
+                  people, plans, and legacy that matter most.
                 </p>
               </HeroReveal>
               <HeroReveal delay={0.32}>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <GoldButton href="/quote">Get My Free Quote</GoldButton>
                   <Link
-                    className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:border-[#F5E7A3] hover:text-[#F5E7A3]"
+                    className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:border-brand-cream-300 hover:text-brand-cream-300"
                     href="/retirement"
                   >
                     Explore Retirement Planning
@@ -54,15 +111,23 @@ export default function HomePage() {
               </HeroReveal>
               <HeroReveal delay={0.4}>
                 <div className="mt-6">
-                  <TrustBar items={["Secure quote request", "Advisor-guided", "No-pressure guidance"]} />
+                  <TrustBar items={["Licensed advisors", "Free quotes & reviews", "No-pressure guidance"]} />
+                  <a
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-brand-cream-300"
+                    href={SITE.phone.href}
+                    data-track="phone_click"
+                  >
+                    <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                    Prefer to talk? Call {SITE.phone.display}
+                  </a>
                 </div>
               </HeroReveal>
               <HeroReveal delay={0.48}>
                 <div className="home-hero-stats mt-8 grid max-w-lg grid-cols-3 gap-3">
                   {[
-                    ["100%", "Private"],
-                    ["4", "Steps"],
-                    ["0", "Pressure"],
+                    ["49", "States served"],
+                    ["2 min", "Quote request"],
+                    ["$0", "Consultation"],
                   ].map(([value, label]) => (
                     <div key={label} className="dark-premium-card rounded-2xl p-4">
                       <p className="font-premium text-2xl font-semibold">{value}</p>
@@ -81,42 +146,49 @@ export default function HomePage() {
         </section>
 
         <Section className="bg-white">
-          <MotionReveal>
-            <PremiumSectionHeader
-              align="center"
-              eyebrow="Retirement planning"
-              title="Turn retirement questions into a clearer income plan."
-              copy="A complimentary review can help organize income sources, timing, market risk, liquidity, family goals, and the trade-offs surrounding annuities—without promising outcomes or pressuring you to purchase."
-            />
-            <div className="mt-9 grid gap-5 md:grid-cols-3">
-              <DarkValueLight icon={<CalendarDays />} title="Retirement income review" copy="See how Social Security, pensions, savings, and other income sources may work together." />
-              <DarkValueLight icon={<Shield />} title="Annuity education" copy="Understand contract features, surrender periods, liquidity limits, costs, and insurer-backed guarantees." />
-              <DarkValueLight icon={<Users />} title="Family and legacy goals" copy="Connect retirement decisions with the people, priorities, and legacy your plan is meant to support." />
+          <MotionReveal className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-[0_24px_70px_rgba(0,0,0,0.14)] lg:aspect-[4/5]">
+              <Image
+                alt="A retired couple enjoying a walk together in a landscaped park"
+                className="object-cover object-[center_40%]"
+                fill
+                sizes="(max-width: 1023px) 100vw, 40vw"
+                src="https://images.pexels.com/photos/8972326/pexels-photo-8972326.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              />
+              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+              <p className="font-premium absolute bottom-5 left-5 right-5 text-xl italic text-white">
+                A clearer plan for what comes next.
+              </p>
             </div>
-            <div className="mt-8 text-center">
-              <Link className="gold-gradient-button inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold" href="/retirement">
+            <div>
+              <PremiumSectionHeader
+                eyebrow="Retirement planning"
+                title="Turn retirement questions into a clearer income plan."
+                copy="A complimentary review can help organize income sources, timing, market risk, liquidity, family goals, and the trade-offs surrounding annuities—without promising outcomes or pressuring you to purchase."
+              />
+              <ul className="mt-7 grid gap-4">
+                {[
+                  [<CalendarDays key="i" />, "Retirement income review", "See how Social Security, pensions, savings, and other income sources may work together."],
+                  [<Shield key="i" />, "Annuity education", "Understand contract features, surrender periods, liquidity limits, costs, and insurer-backed guarantees."],
+                  [<Users key="i" />, "Family and legacy goals", "Connect retirement decisions with the people, priorities, and legacy your plan is meant to support."],
+                ].map(([icon, title, copy]) => (
+                  <li key={title as string} className="flex gap-4">
+                    <span className="gold-gradient-subtle flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-black [&>svg]:h-5 [&>svg]:w-5">
+                      {icon}
+                    </span>
+                    <span>
+                      <span className="block font-semibold text-black">{title}</span>
+                      <span className="mt-1 block text-sm leading-6 text-[#737373]">{copy}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                className="gold-gradient-button mt-8 inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold"
+                href="/retirement"
+              >
                 Request a Retirement Income Blueprint
               </Link>
-            </div>
-          </MotionReveal>
-        </Section>
-
-        <Section className="bg-[#F7F5EF]">
-          <MotionReveal>
-            <div className="grid gap-6 md:grid-cols-3">
-            {[
-              ["Clear guidance", "Plain-language help with term, permanent, and coverage amounts."],
-              ["Private by design", "Your request is handled securely and shared only for coverage guidance."],
-              ["Personal next steps", "An advisor can help you understand options that fit your family and budget."],
-            ].map(([title, copy]) => (
-              <div key={title} className="premium-card rounded-xl p-6">
-                <span className="gold-gradient-subtle flex h-10 w-10 items-center justify-center rounded-full text-black">
-                  <CheckCircle2 className="h-5 w-5" />
-                </span>
-                <h2 className="mt-4 text-lg font-semibold text-black">{title}</h2>
-                <p className="mt-3 text-sm leading-6 text-[#737373]">{copy}</p>
-              </div>
-            ))}
             </div>
           </MotionReveal>
         </Section>
@@ -157,9 +229,9 @@ export default function HomePage() {
             </div>
             <div className="grid gap-4">
               {[
-                ["1", "Share the basics", "Tell us what you want protected in the guided quote flow."],
-                ["2", "Confirm your email", "Verify your quote email so your request stays private and secure."],
-                ["3", "Move with clarity", "A Rare Legacy Life advisor helps identify practical coverage paths."],
+                ["1", "Share the basics", "Answer a few quick questions about what you want to protect. It takes about two minutes."],
+                ["2", "Talk with a licensed advisor", "An advisor reviews your goals and walks you through realistic coverage options and costs."],
+                ["3", "Decide with clarity", "Choose what fits your family and budget, on your timeline. No pressure, no obligation."],
               ].map(([number, title, copy]) => (
                 <StepCard key={number} step={number} title={title} copy={copy} />
               ))}
@@ -177,56 +249,84 @@ export default function HomePage() {
               copy="Start with what matters most, then refine the strategy with an advisor."
             />
             <div className="mt-10 grid gap-5 md:grid-cols-3">
-              <DarkValue icon={<Shield />} title="Family protection" copy="Income replacement and stability for the people who depend on you." />
-              <DarkValue icon={<Users />} title="Mortgage safety net" copy="Protection designed around home, debt, and long-term obligations." />
-              <DarkValue icon={<Sparkles />} title="Legacy planning" copy="Coverage conversations that can support wealth transfer and responsible planning." />
-            </div>
-          </MotionReveal>
-        </Section>
-
-        <Section className="bg-[#F7F5EF]">
-          <MotionReveal className="grid gap-8 lg:grid-cols-[1fr_420px] lg:items-center">
-            <div>
-              <PremiumSectionHeader
-                eyebrow="Guided quote"
-                title="Let's find coverage that fits your life."
-                copy="A few quick questions help us understand your goals and prepare a thoughtful coverage conversation."
-              />
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {["Private intake", "Secure email check", "Advisor guidance"].map((item) => (
-                  <PremiumBadge key={item} tone="light">{item}</PremiumBadge>
-                ))}
-              </div>
-            </div>
-            <div className="gold-border premium-card rounded-2xl p-6">
-              <h3 className="font-premium text-2xl font-semibold text-black">Ready to check your options?</h3>
-              <p className="mt-3 text-sm leading-6 text-[#737373]">
-                Start with a secure quote request. We will review it and follow up with next steps.
-              </p>
-              <Link
-                className="gold-gradient-button mt-5 inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-semibold"
-                href="/quote"
-              >
-                Check My Coverage Options
-              </Link>
+              <DarkValue href="/education/how-much-life-insurance-do-i-need" icon={<Shield />} title="Family protection" copy="Income replacement and stability for the people who depend on you." />
+              <DarkValue href="/education/mortgage-protection-insurance" icon={<Users />} title="Mortgage safety net" copy="Protection designed around home, debt, and long-term obligations." />
+              <DarkValue href="/education/term-vs-whole-life-insurance" icon={<Sparkles />} title="Legacy planning" copy="Coverage conversations that can support wealth transfer and responsible planning." />
             </div>
           </MotionReveal>
         </Section>
 
         <Section className="bg-white">
           <MotionReveal>
-            <PremiumSectionHeader eyebrow="FAQ preview" title="Common first questions" />
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              ["Do I need term or whole life?", "It depends on your goals, budget, timeline, and legacy planning needs."],
-              ["How much coverage is enough?", "Start with income, debt, dependents, mortgage, final expenses, and future obligations."],
-              ["Will health history matter?", "Yes, but options can still exist. Share only what is needed in the secure form."],
-            ].map(([question, answer]) => (
-              <div key={question} className="premium-card rounded-xl p-5">
-                <h3 className="font-semibold text-black">{question}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#737373]">{answer}</p>
-              </div>
-            ))}
+            <PremiumSectionHeader
+              eyebrow="Meet your advisors"
+              title="Real, licensed people—not a call center."
+              copy="When you reach out, you work directly with a licensed Rare Legacy Life advisor."
+            />
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              {ADVISORS.map((advisor) => (
+                <Link
+                  key={advisor.slug}
+                  className="premium-card group flex items-center gap-5 rounded-2xl p-6 transition hover:-translate-y-0.5"
+                  href={`/about#${advisor.slug}`}
+                >
+                  {advisor.photo ? (
+                    <Image
+                      alt={`${advisor.name}, ${advisor.title}`}
+                      className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-brand-cream-600/60 ring-offset-2 ring-offset-white"
+                      height={160}
+                      src={advisor.photo}
+                      width={160}
+                    />
+                  ) : (
+                    <span className="gold-gradient-subtle flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-black">
+                      <BadgeCheck aria-hidden="true" className="h-6 w-6" />
+                    </span>
+                  )}
+                  <span>
+                    <span className="font-premium block text-2xl font-semibold text-black">{advisor.name}</span>
+                    <span className="block text-sm font-medium text-brand-black-500">{advisor.title}</span>
+                    <span className="mt-1 block text-xs text-[#737373]">{advisor.license}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </MotionReveal>
+        </Section>
+
+        <Section className="bg-[#F7F5EF]">
+          <MotionReveal>
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <PremiumSectionHeader eyebrow="Guides" title="Get straight answers first." />
+              <Link className="inline-flex items-center gap-1 text-sm font-semibold text-black hover:underline" href="/education">
+                All guides <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {featuredGuides.map((guide) => (
+                <Link
+                  key={guide.slug}
+                  className="premium-card group rounded-xl p-5 transition hover:-translate-y-0.5"
+                  href={`/education/${guide.slug}`}
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">{guide.category}</span>
+                  <span className="mt-2 block font-semibold leading-6 text-black group-hover:underline">{guide.title}</span>
+                </Link>
+              ))}
+            </div>
+          </MotionReveal>
+        </Section>
+
+        <Section className="bg-white">
+          <MotionReveal>
+            <PremiumSectionHeader eyebrow="FAQ" title="Common first questions" />
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+              {HOME_FAQS.map((faq) => (
+                <div key={faq.question} className="premium-card rounded-xl p-5">
+                  <h3 className="font-semibold text-black">{faq.question}</h3>
+                  <p className="mt-3 text-sm leading-6 text-[#737373]">{faq.answer}</p>
+                </div>
+              ))}
             </div>
           </MotionReveal>
         </Section>
@@ -238,14 +338,24 @@ export default function HomePage() {
               Secure your family. Build your legacy.
             </h2>
             <p className="mt-4 text-sm leading-6 text-white/66">
-              A private quote request is the first step toward coverage that fits your life.
+              A free, private quote request is the first step toward coverage that fits your life.
             </p>
-            <Link
-              className="gold-gradient-button mt-7 inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold"
-              href="/quote"
-            >
-              Start My Quote
-            </Link>
+            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                className="gold-gradient-button inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold"
+                href="/quote"
+              >
+                Start My Quote
+              </Link>
+              <a
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-7 text-sm font-semibold text-white hover:border-brand-cream-300"
+                href={SITE.phone.href}
+                data-track="phone_click"
+              >
+                <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                {SITE.phone.display}
+              </a>
+            </div>
           </MotionReveal>
         </Section>
       </main>
@@ -253,32 +363,30 @@ export default function HomePage() {
   );
 }
 
-function DarkValueLight({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
-  return (
-    <div className="premium-card rounded-2xl p-6">
-      <div className="gold-gradient-subtle flex h-11 w-11 items-center justify-center rounded-full text-black">{icon}</div>
-      <h2 className="font-premium mt-5 text-2xl font-semibold text-black">{title}</h2>
-      <p className="mt-3 text-sm leading-6 text-[#737373]">{copy}</p>
-    </div>
-  );
-}
-
 function DarkValue({
+  href,
   icon,
   title,
   copy,
 }: {
+  href: string;
   icon: React.ReactNode;
   title: string;
   copy: string;
 }) {
   return (
-    <div className="dark-premium-card rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-[#C9A227]/70">
+    <Link
+      className="dark-premium-card group block rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-cream-500/70"
+      href={href}
+    >
       <div className="gold-gradient-subtle flex h-11 w-11 items-center justify-center rounded-full text-black">
         {icon}
       </div>
-      <h2 className="font-premium mt-5 text-2xl font-semibold">{title}</h2>
+      <h3 className="font-premium mt-5 text-2xl font-semibold">{title}</h3>
       <p className="mt-3 text-sm leading-6 text-white/72">{copy}</p>
-    </div>
+      <p className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-cream-300">
+        Learn more <ArrowRight aria-hidden="true" className="h-4 w-4 transition group-hover:translate-x-0.5" />
+      </p>
+    </Link>
   );
 }
