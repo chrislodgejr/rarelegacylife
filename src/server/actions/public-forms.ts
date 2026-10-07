@@ -13,6 +13,14 @@ import {
 import { notifyAdmins } from "@/lib/notifications/db";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
+  clip,
+  dayForIntake,
+  pageForIntake,
+  phoneForIntake,
+  sendToEndlessOne,
+  splitName,
+} from "@/lib/endless-one/intake";
+import {
   agentApplicationSchema,
   contactFormSchema,
   quoteFormSchema,
@@ -92,9 +100,61 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
   const now = new Date().toISOString();
   const staleAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
+  // Endless One first (when ENDLESS_ONE_INTAKE_URL and ENDLESS_ONE_INTAKE_SECRET are set), then the site's own copy whatever
+  // Endless One answers, so no request is lost. Both keep it under one id: the submission id is the lead's id here too.
+  await sendToEndlessOne({
+    version: 1,
+    form: "quote",
+    submissionId,
+    submittedAt: now,
+    person: {
+      firstName: clip(input.first_name, 100),
+      lastName: clip(input.last_name, 100),
+      email: input.email,
+      phone: phoneForIntake(input.phone),
+      state: input.state,
+      postalCode: input.zip_code,
+      dateOfBirth: dayForIntake(input.date_of_birth),
+    },
+    quote: {
+      coveragePurpose: input.coverage_purpose,
+      desiredCoverageAmount: input.desired_coverage_amount ?? null,
+      maritalStatus: clip(input.marital_status, 60),
+      dependents: input.dependents,
+      currentCoverage: clip(input.current_coverage, 5000),
+      preferredContactMethod: input.preferred_contact_method,
+      bestTimeToContact: clip(input.best_time_to_contact, 160),
+      health: {
+        tobaccoUse: input.tobacco_use,
+        healthRating: input.health_rating,
+        medicalConditions: clip(input.medical_conditions, 5000),
+      },
+    },
+    consents: QUOTE_CONSENTS.map((kind) => ({
+      kind,
+      given: {
+        tcpa: input.consent_tcpa,
+        privacy: input.consent_privacy,
+        sms: input.consent_sms,
+        email_marketing: input.consent_email_marketing,
+      }[kind],
+      text: QUOTE_CONSENT_TEXT[kind],
+      version: null,
+      at: now,
+    })),
+    page: { url: pageForIntake(sourceUrl) },
+    attribution: {
+      source: clip(input.utm_source, 200),
+      medium: clip(input.utm_medium, 200),
+      campaign: clip(input.utm_campaign, 200),
+    },
+    client: { ip: ipAddress },
+  });
+
   const { data: lead, error: leadError } = await admin
     .from("leads")
     .insert({
+      id: submissionId,
       first_name: input.first_name,
       last_name: input.last_name,
       email: input.email,
@@ -147,7 +207,13 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
 
   if (leadError || !lead) {
     // The unique verification ID prevents duplicate leads on retries/double taps.
-    if (leadError?.code === "23505" && leadError.message.includes("leads_quote_verification_id_unique")) redirect("/thank-you");
+    // The submission id is also the lead's id (shared with Endless One), so a retry meets either unique rule.
+    if (
+      leadError?.code === "23505" &&
+      (leadError.message.includes("leads_quote_verification_id_unique") || leadError.message.includes("leads_pkey"))
+    ) {
+      redirect("/thank-you");
+    }
     console.error("Lead insert failed", leadError);
     return {
       ok: false,
@@ -252,7 +318,23 @@ export async function submitContactForm(_previousState: FormState, formData: For
 
   const input = parsed.data;
   const admin = createAdminClient();
+  const headerStore = await headers();
+  const messageId = crypto.randomUUID();
+
+  // Endless One first, then the site's own copy whatever it answers, both under one id (see submitQuoteForm).
+  await sendToEndlessOne({
+    version: 1,
+    form: "contact",
+    submissionId: messageId,
+    submittedAt: new Date().toISOString(),
+    person: { ...splitName(input.name), email: input.email, phone: phoneForIntake(input.phone) },
+    contact: { inquiryType: input.inquiry_type, message: input.message },
+    consents: [],
+    client: { ip: getIpAddress(headerStore) },
+  });
+
   const { error } = await admin.from("contact_messages").insert({
+    id: messageId,
     name: input.name,
     email: input.email,
     phone: input.phone,
@@ -323,28 +405,30 @@ export async function submitAgentApplication(_previousState: FormState, formData
   return { ok: true, message: "Thanks. Your application has been received." };
 }
 
+// The quote form's consents, in the words the person agreed to (the site's consent_records and Endless One keep the same words).
+const QUOTE_CONSENTS = ["tcpa", "privacy", "sms", "email_marketing"] as const;
+const QUOTE_CONSENT_TEXT: Record<(typeof QUOTE_CONSENTS)[number], string> = {
+  tcpa:
+    "I agree that Rare Legacy Life and its advisors may contact me about life insurance options using the information I provided.",
+  privacy: "I agree to the privacy policy and consent to the secure processing of my request.",
+  sms: "I agree to receive text messages related to my quote request.",
+  email_marketing: "I agree to receive helpful email updates from Rare Legacy Life.",
+};
+
 function buildConsentRecord(
   leadId: string,
-  consentType: "tcpa" | "privacy" | "sms" | "email_marketing",
+  consentType: (typeof QUOTE_CONSENTS)[number],
   consentGiven: boolean,
   timestamp: string,
   ipAddress: string | null,
   userAgent: string | null,
   sourceUrl?: string | null,
 ) {
-  const consentText: Record<typeof consentType, string> = {
-    tcpa:
-      "I agree that Rare Legacy Life and its advisors may contact me about life insurance options using the information I provided.",
-    privacy: "I agree to the privacy policy and consent to the secure processing of my request.",
-    sms: "I agree to receive text messages related to my quote request.",
-    email_marketing: "I agree to receive helpful email updates from Rare Legacy Life.",
-  };
-
   return {
     lead_id: leadId,
     consent_type: consentType,
     consent_given: consentGiven,
-    consent_text: consentText[consentType],
+    consent_text: QUOTE_CONSENT_TEXT[consentType],
     consent_timestamp: timestamp,
     ip_address: ipAddress,
     user_agent: userAgent,
