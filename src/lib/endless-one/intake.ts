@@ -47,11 +47,22 @@ export type IntakePayload = {
     bestTimeToContact: string | null;
     health: { tobaccoUse: boolean; healthRating: string; medicalConditions: string | null };
   };
-  retirement?: { meetingStyle: string; bestTimeToContact: string; question: string | null };
+  // amountTier: only the /protect page (Google Ads) sends it; /retirement never does.
+  retirement?: { meetingStyle: string; bestTimeToContact: string; question: string | null; amountTier?: string };
   contact?: { inquiryType: string; message: string };
   consents: IntakeConsent[];
   page?: { url: string | null };
-  attribution?: { source: string | null; medium: string | null; campaign: string | null };
+  attribution?: {
+    source: string | null;
+    medium: string | null;
+    campaign: string | null;
+    // Only the /protect page (Google Ads) sends these; Endless One keeps them for Google's conversion imports.
+    content?: string | null;
+    term?: string | null;
+    gclid?: string | null;
+    gbraid?: string | null;
+    wbraid?: string | null;
+  };
   client?: { ip: string | null };
 };
 

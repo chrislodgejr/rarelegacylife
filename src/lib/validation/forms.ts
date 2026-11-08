@@ -151,6 +151,52 @@ export const retirementBlueprintSchema = z.object({
   referrer: optionalAttribution,
 });
 
+// The Google Ads page, /protect (Chris, 2026-11-07): tiers "150-250k 250k-500k 500k-1m and 1m+", and under $150K is still a lead.
+// Separate from the /retirement form, which is printed on a QR code and never changes.
+export const PROTECT_AMOUNT_TIERS = [
+  ["150k_250k", "$150K to $250K"],
+  ["250k_500k", "$250K to $500K"],
+  ["500k_1m", "$500K to $1M"],
+  ["1m_plus", "$1M or more"],
+  ["under_150k", "Under $150K"],
+] as const;
+
+export const PROTECT_BEST_TIMES = [
+  ["Weekday mornings", "Weekday mornings"],
+  ["Weekday afternoons", "Weekday afternoons"],
+  ["Weekday evenings", "Weekday evenings"],
+  ["Any time", "Any time"],
+] as const;
+
+export const protectRequestSchema = z.object({
+  full_name: requiredText
+    .min(3, "Enter your first and last name")
+    .max(161, "Name is too long")
+    .refine((value) => value.split(/\s+/).length >= 2, "Enter your first and last name"),
+  phone: phoneSchema,
+  email: emailSchema,
+  zip_code: requiredText.regex(/^\d{5}(-\d{4})?$/, "Enter a valid ZIP code"),
+  amount_tier: z.enum(["150k_250k", "250k_500k", "500k_1m", "1m_plus", "under_150k"], {
+    error: "Choose about how much you want to protect",
+  }),
+  best_time_to_contact: z.enum(["Weekday mornings", "Weekday afternoons", "Weekday evenings", "Any time"], {
+    error: "Choose a good time to reach you",
+  }),
+  consent_tcpa: checkbox.refine((value) => value, "Please review and accept the contact consent"),
+  website: z.string().trim().max(200).optional().default(""),
+  started_at: z.string().trim().max(32).optional().default(""),
+  utm_source: optionalAttribution,
+  utm_medium: optionalAttribution,
+  utm_campaign: optionalAttribution,
+  utm_content: optionalAttribution,
+  utm_term: optionalAttribution,
+  gclid: optionalAttribution,
+  gbraid: optionalAttribution,
+  wbraid: optionalAttribution,
+  landing_page: optionalAttribution,
+  referrer: optionalAttribution,
+});
+
 export const leadStatusSchema = z.object({
   lead_id: z.string().uuid(),
   status: z.enum(LEAD_STATUSES),
