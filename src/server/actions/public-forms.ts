@@ -39,6 +39,9 @@ const defaultError = {
   message: "Please check the form and try again.",
 };
 
+const CLICK_ID = /^[A-Za-z0-9_-]{1,200}$/;
+const clickId = (value: string | null | undefined) => (value && CLICK_ID.test(value) ? value : null);
+
 export async function submitQuoteForm(_previousState: FormState, formData: FormData) {
   const parsed = quoteFormSchema.safeParse(Object.fromEntries(formData.entries()));
 
@@ -147,6 +150,12 @@ export async function submitQuoteForm(_previousState: FormState, formData: FormD
       source: clip(input.utm_source, 200),
       medium: clip(input.utm_medium, 200),
       campaign: clip(input.utm_campaign, 200),
+      content: clip(input.utm_content, 200),
+      term: clip(input.utm_term, 200),
+      // Google's click ids, so Endless One can tell Google Ads which life ads brought leads that closed.
+      gclid: clickId(input.gclid),
+      gbraid: clickId(input.gbraid),
+      wbraid: clickId(input.wbraid),
     },
     client: { ip: ipAddress },
   });

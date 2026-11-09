@@ -56,7 +56,7 @@ export type IntakePayload = {
     source: string | null;
     medium: string | null;
     campaign: string | null;
-    // Only the /protect page (Google Ads) sends these; Endless One keeps them for Google's conversion imports.
+    // The /protect and /quote pages (Google Ads) send these; Endless One keeps them for Google's conversion imports.
     content?: string | null;
     term?: string | null;
     gclid?: string | null;
