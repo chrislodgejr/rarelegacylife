@@ -219,11 +219,11 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
               </h2>
               <div className="mt-6 space-y-5 text-base leading-7 text-neutral-700">
                 <p>
-                  <strong className="text-[#050505]">Fixed annuities</strong> work a lot like a CD from an insurance company:
+                  <strong className="text-[#050505]">Fixed annuities</strong>{" "}work a lot like a CD from an insurance company:
                   a guaranteed rate for a set number of years.
                 </p>
                 <p>
-                  <strong className="text-[#050505]">Fixed indexed annuities</strong> credit interest based partly on how a
+                  <strong className="text-[#050505]">Fixed indexed annuities</strong>{" "}credit interest based partly on how a
                   market index performs, with a floor so a down market doesn&apos;t reduce your principal. In exchange, growth
                   is limited by caps or participation rates.
                 </p>
@@ -237,19 +237,19 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
               <h3 className="text-lg font-semibold text-brand-cream-300">The tradeoffs we&apos;ll walk you through</h3>
               <ul className="mt-4 space-y-4 text-sm leading-6 text-white/80">
                 <li>
-                  <span className="font-semibold text-white">Your money is committed for a term.</span> Most contracts run
+                  <span className="font-semibold text-white">Your money is committed for a term.</span>{" "}Most contracts run
                   several years, so they&apos;re for money you won&apos;t need right away.
                 </li>
                 <li>
-                  <span className="font-semibold text-white">Early withdrawals can cost you.</span> Taking out more than the
+                  <span className="font-semibold text-white">Early withdrawals can cost you.</span>{" "}Taking out more than the
                   contract allows during the surrender period can mean charges and tax consequences.
                 </li>
                 <li>
-                  <span className="font-semibold text-white">Upside is limited.</span> Protection from losses comes with caps
+                  <span className="font-semibold text-white">Upside is limited.</span>{" "}Protection from losses comes with caps
                   on how much you can earn.
                 </li>
                 <li>
-                  <span className="font-semibold text-white">Guarantees depend on the insurer.</span> That&apos;s why we compare
+                  <span className="font-semibold text-white">Guarantees depend on the insurer.</span>{" "}That&apos;s why we compare
                   highly rated carriers, not just one.
                 </li>
               </ul>
