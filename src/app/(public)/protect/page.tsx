@@ -11,6 +11,7 @@ import {
   PhoneCall,
   Scale,
   ShieldCheck,
+  Wallet,
 } from "lucide-react";
 import { ProtectForm, type ProtectTracking } from "@/components/forms/protect-form";
 import { LandingShell } from "@/components/layout/landing-shell";
@@ -53,6 +54,11 @@ const situations = [
     icon: LineChart,
     title: "My savings ride the market",
     copy: "If a bad year close to retirement would hurt, look at ways to keep principal safe while it still has room to grow.",
+  },
+  {
+    icon: Wallet,
+    title: "I want income I can count on",
+    copy: "See how guaranteed income options work, and how part of your savings could become a steady paycheck in retirement.",
   },
 ] as const;
 
@@ -165,7 +171,7 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
             <h2 className="font-premium mt-2 text-3xl font-semibold text-[#050505] sm:text-4xl">
               Most reviews start with one of these.
             </h2>
-            <div className="mt-8 grid gap-5 md:grid-cols-3">
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {situations.map(({ icon: Icon, title, copy }) => (
                 <a
                   key={title}
