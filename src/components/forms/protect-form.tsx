@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
-import { CheckCircle2, Lock } from "lucide-react";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { CheckCircle2, Lock, TrendingUp } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { ESTIMATE_AGE_BANDS, formatDollars, monthlyIncomeEstimate } from "@/lib/estimates/income-estimate";
 import { PROTECT_AMOUNT_TIERS, PROTECT_BEST_TIMES } from "@/lib/validation/forms";
 import { submitProtectRequest, type ProtectRequestState } from "@/server/actions/protect-request";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -20,12 +21,19 @@ export type ProtectTracking = {
 
 const initialState: ProtectRequestState = { ok: false, message: "" };
 
-/** The Google Ads page's one short form: the amount first (one tap), then how to reach you. */
+/**
+ * The Google Ads page's one short form: the amount first (one tap) and an age band, which show a rough monthly income range right
+ * away (Chris, 2026-11-10), then how to reach you for exact quotes. The age band only drives the estimate and is never sent.
+ */
 export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const [state, action] = useActionState(submitProtectRequest, initialState);
   const startedAtRef = useRef<HTMLInputElement>(null);
   const landingPageRef = useRef<HTMLInputElement>(null);
   const referrerRef = useRef<HTMLInputElement>(null);
+  const [tier, setTier] = useState<string | null>(null);
+  const [age, setAge] = useState<string | null>(null);
+  const estimate = monthlyIncomeEstimate(tier, age);
+  const estimateShown = useRef(false);
 
   useEffect(() => {
     if (startedAtRef.current) startedAtRef.current.value = String(Date.now());
@@ -33,6 +41,12 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
     if (referrerRef.current) referrerRef.current.value = document.referrer;
     trackEvent("protect_start", {});
   }, []);
+
+  useEffect(() => {
+    if (!estimate || estimateShown.current) return;
+    estimateShown.current = true;
+    trackEvent("protect_estimate_view", {});
+  }, [estimate]);
 
   useEffect(() => {
     if (state.ok) trackEvent("protect_submit", {});
@@ -56,19 +70,63 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
     <form action={action} className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8">
       <fieldset>
         <legend className="text-base font-semibold">About how much are you looking to protect?</legend>
+        <p className="mt-1 text-sm text-neutral-600">Pick an amount and your age to see a rough monthly income range.</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {PROTECT_AMOUNT_TIERS.map(([value, label]) => (
             <label
               key={value}
               className="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-neutral-300 px-4 py-3 text-sm font-medium has-[:checked]:border-brand-black-500 has-[:checked]:bg-brand-cream-50"
             >
-              <input className="h-4 w-4 accent-brand-black-500" type="radio" name="amount_tier" value={value} required />
+              <input
+                className="h-4 w-4 accent-brand-black-500"
+                type="radio"
+                name="amount_tier"
+                value={value}
+                required
+                onChange={() => setTier(value)}
+              />
               {label}
             </label>
           ))}
         </div>
         {error("amount_tier")}
       </fieldset>
+
+      <label className="block">
+        <span className="text-sm font-medium text-neutral-700">Your age</span>
+        <select
+          className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
+          defaultValue=""
+          onChange={(event) => setAge(event.target.value || null)}
+          aria-describedby="protect-estimate"
+        >
+          <option value="">Select</option>
+          {ESTIMATE_AGE_BANDS.map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <div id="protect-estimate" aria-live="polite">
+        {estimate ? (
+          <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
+            <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+              <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
+              On about {formatDollars(estimate.amount)}, guaranteed income for life could be roughly
+            </p>
+            <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
+              {formatDollars(estimate.low)} to {formatDollars(estimate.high)} a month
+            </p>
+            <p className="mt-2 text-xs leading-5 text-neutral-600">
+              A rough illustration, not a quote or a guarantee: typical lifetime income for one person starting now. Your real
+              amount depends on the carrier, the product, your age, and when income starts. Leave your details below and an
+              advisor will show you exact quotes.
+            </p>
+          </div>
+        ) : null}
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="First and last name" name="full_name" autoComplete="name" required error={error("full_name")} />
@@ -122,7 +180,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         </p>
       ) : null}
 
-      <SubmitButton>Request my free review</SubmitButton>
+      <SubmitButton>{estimate ? "Get my exact quotes" : "Request my free review"}</SubmitButton>
       <p className="flex items-center gap-2 text-xs text-neutral-500">
         <Lock aria-hidden="true" className="h-3.5 w-3.5" />
         Free and no obligation. Your information is never sold.
