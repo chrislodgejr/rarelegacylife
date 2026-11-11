@@ -126,7 +126,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           <span className="text-sm font-medium text-neutral-700">Your age</span>
           <select
             className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
-            defaultValue=""
+            value={age ?? ""}
             onChange={(event) => setAge(event.target.value || null)}
             aria-describedby="protect-estimate"
           >
