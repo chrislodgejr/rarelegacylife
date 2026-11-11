@@ -6,9 +6,13 @@ import { trackEvent } from "@/lib/analytics";
 import {
   ESTIMATE_AGE_BANDS,
   GROWTH_TERMS,
+  INDEXED_ASSUMED_CREDITS,
+  INDEXED_RIDER_CHARGE,
+  INDEXED_TERMS,
   formatDollars,
   formatRate,
   growthEstimate,
+  indexedBonusEstimate,
   monthlyIncomeEstimate,
 } from "@/lib/estimates/income-estimate";
 import { PROTECT_AMOUNT_TIERS, PROTECT_BEST_TIMES } from "@/lib/validation/forms";
@@ -30,7 +34,7 @@ const initialState: ProtectRequestState = { ok: false, message: "" };
 
 /**
  * The Google Ads page's one short form: the amount first (one tap) and an age band, which show a rough monthly income range right
- * away (Chris, 2026-11-10), or, for "Grow my money safely", a guarantee period and what the amount could grow to (2026-11-11); then how
+ * away (Chris, 2026-11-10), or, for the two growth choices, a number of years and what the amount could grow to (2026-11-11); then how
  * to reach you for exact quotes. The goal, age band and period only drive the estimate and are never sent.
  */
 export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
@@ -40,11 +44,13 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const referrerRef = useRef<HTMLInputElement>(null);
   const [tier, setTier] = useState<string | null>(null);
   const [age, setAge] = useState<string | null>(null);
-  const [goal, setGoal] = useState<"income" | "growth">("income");
+  const [goal, setGoal] = useState<"income" | "growth" | "indexed">("income");
   const [term, setTerm] = useState<string | null>(null);
   const income = goal === "income" ? monthlyIncomeEstimate(tier, age) : null;
   const growth = goal === "growth" ? growthEstimate(tier, term) : null;
-  const estimate = income ?? growth;
+  const indexed = goal === "indexed" ? indexedBonusEstimate(tier, term) : null;
+  const estimate = income ?? growth ?? indexed;
+  const terms = goal === "indexed" ? INDEXED_TERMS : GROWTH_TERMS;
   const estimateShown = useRef(false);
 
   useEffect(() => {
@@ -85,11 +91,16 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         <select
           className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
           value={goal}
-          onChange={(event) => setGoal(event.target.value === "growth" ? "growth" : "income")}
+          onChange={(event) => {
+            const next = event.target.value;
+            setGoal(next === "growth" || next === "indexed" ? next : "income");
+            setTerm(null);
+          }}
           aria-describedby="protect-estimate"
         >
           <option value="income">Income for life</option>
-          <option value="growth">Grow my money safely</option>
+          <option value="growth">Guaranteed fixed rate</option>
+          <option value="indexed">Bonus + market growth</option>
         </select>
       </label>
 
@@ -98,7 +109,9 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         <p className="mt-1 text-sm text-neutral-600">
           {goal === "income"
             ? "Pick an amount and your age to see a rough monthly income range."
-            : "Pick an amount and how long to lock in a rate to see what it could grow to."}
+            : goal === "growth"
+              ? "Pick an amount and how long to lock in a rate to see what it could grow to."
+              : "Pick an amount and how many years to see what it could grow to, bonus included."}
         </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {PROTECT_AMOUNT_TIERS.map(([value, label]) => (
@@ -140,7 +153,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         </label>
       ) : (
         <label className="block">
-          <span className="text-sm font-medium text-neutral-700">Lock in a rate for</span>
+          <span className="text-sm font-medium text-neutral-700">{goal === "indexed" ? "How many years" : "Lock in a rate for"}</span>
           <select
             className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
             value={term ?? ""}
@@ -148,7 +161,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
             aria-describedby="protect-estimate"
           >
             <option value="">Select</option>
-            {GROWTH_TERMS.map(([value, label]) => (
+            {terms.map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
@@ -158,7 +171,26 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       )}
 
       <div id="protect-estimate" aria-live="polite">
-        {growth ? (
+        {indexed ? (
+          <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
+            <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+              <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
+              In {indexed.years} years, about {formatDollars(indexed.amount)} could grow to roughly
+            </p>
+            <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
+              {formatDollars(indexed.low)} to {formatDollars(indexed.high)}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-neutral-600">
+              A rough illustration, not a quote or a guarantee: a fixed indexed annuity with an up-front bonus of about{" "}
+              {formatRate(indexed.lowBonus)} to {formatRate(indexed.highBonus)}, assuming average index credits of{" "}
+              {formatRate(INDEXED_ASSUMED_CREDITS[0])} to {formatRate(INDEXED_ASSUMED_CREDITS[1])} a year, less a yearly charge
+              of {formatRate(INDEXED_RIDER_CHARGE)}, with no withdrawals. Index credits are not guaranteed and can be zero in a
+              year, though your value never drops because the market falls. The bonus becomes fully yours over the{" "}
+              {indexed.years} years, so leaving early can forfeit part of it and bring withdrawal charges. Bonus amounts vary by
+              state and age. Leave your details below and an advisor will show you exact numbers.
+            </p>
+          </div>
+        ) : growth ? (
           <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
             <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
