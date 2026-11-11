@@ -79,8 +79,8 @@ export const formatRate = (rate: number) => `${(rate * 100).toFixed(2).replace(/
 // with the bonus", the bonus itself "in the fine print"): a fixed indexed annuity with an up-front premium bonus, projected to
 // the end of its term. Bonus ranges are the Plus versions' premium bonus in the states Rare Legacy is licensed in, from
 // Athene's product guides (rates effective September 25, 2026): Performance Elite Plus 7 (68070) 5% to 6%; Performance Elite
-// Plus 10 (68069) 21% to 25% for issue ages up to 75. Index credits are not guaranteed: the projection assumes a cautious
-// 3% to 5% a year on average, less the Plus rider's 0.95% a year.
+// Plus 10 (68069) 21% to 25% for issue ages up to 75. Index credits are not guaranteed: the projection assumes 5.5% to 6.5% a
+// year on average (Chris, 2026-11-11: "i think the average rate right now is 6.5%"), less the Plus rider's 0.95% a year.
 
 /** Indexed terms and their up-front bonus, low to high. */
 export const INDEXED_TERMS = [
@@ -89,7 +89,7 @@ export const INDEXED_TERMS = [
 ] as const;
 
 /** The yearly index credits the projection assumes, low to high, and the Plus rider's yearly charge. */
-export const INDEXED_ASSUMED_CREDITS = [0.03, 0.05] as const;
+export const INDEXED_ASSUMED_CREDITS = [0.055, 0.065] as const;
 export const INDEXED_RIDER_CHARGE = 0.0095;
 
 /** What the tier's amount could be worth at the end of the term, bonus included, rounded to $1,000. */
