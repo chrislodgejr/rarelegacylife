@@ -30,7 +30,7 @@ const initialState: ProtectRequestState = { ok: false, message: "" };
 
 /**
  * The Google Ads page's one short form: the amount first (one tap) and an age band, which show a rough monthly income range right
- * away (Chris, 2026-11-10), or, for "Grow it safely", a guarantee period and what the amount could grow to (2026-11-11); then how
+ * away (Chris, 2026-11-10), or, for "Grow my money safely", a guarantee period and what the amount could grow to (2026-11-11); then how
  * to reach you for exact quotes. The goal, age band and period only drive the estimate and are never sent.
  */
 export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
@@ -80,33 +80,18 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
 
   return (
     <form action={action} className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8">
-      <fieldset>
-        <legend className="text-base font-semibold">What matters most?</legend>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {(
-            [
-              ["income", "Income for life"],
-              ["growth", "Grow it safely"],
-            ] as const
-          ).map(([value, label]) => (
-            <label
-              key={value}
-              className="flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-neutral-300 px-3 py-3 text-center text-sm font-medium has-[:checked]:border-brand-black-500 has-[:checked]:bg-brand-cream-50"
-            >
-              <input
-                className="sr-only"
-                type="radio"
-                name="estimate_goal_choice"
-                // Tied to no form, so the choice is never submitted (like the age band).
-                form="protect-estimate-only"
-                checked={goal === value}
-                onChange={() => setGoal(value)}
-              />
-              {label}
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      <label className="block">
+        <span className="text-base font-semibold">What are you looking for?</span>
+        <select
+          className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
+          value={goal}
+          onChange={(event) => setGoal(event.target.value === "growth" ? "growth" : "income")}
+          aria-describedby="protect-estimate"
+        >
+          <option value="income">Income for life</option>
+          <option value="growth">Grow my money safely</option>
+        </select>
+      </label>
 
       <fieldset>
         <legend className="text-base font-semibold">About how much are you looking to protect?</legend>
@@ -154,27 +139,22 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           </select>
         </label>
       ) : (
-        <fieldset aria-describedby="protect-estimate">
-          <legend className="text-sm font-medium text-neutral-700">Lock in a rate for</legend>
-          <div className="mt-2 grid grid-cols-2 gap-2">
+        <label className="block">
+          <span className="text-sm font-medium text-neutral-700">Lock in a rate for</span>
+          <select
+            className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
+            value={term ?? ""}
+            onChange={(event) => setTerm(event.target.value || null)}
+            aria-describedby="protect-estimate"
+          >
+            <option value="">Select</option>
             {GROWTH_TERMS.map(([value, label]) => (
-              <label
-                key={value}
-                className="flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-neutral-300 px-2 py-3 text-sm font-medium has-[:checked]:border-brand-black-500 has-[:checked]:bg-brand-cream-50"
-              >
-                <input
-                  className="sr-only"
-                  type="radio"
-                  name="estimate_term_choice"
-                  form="protect-estimate-only"
-                  checked={term === value}
-                  onChange={() => setTerm(value)}
-                />
+              <option key={value} value={value}>
                 {label}
-              </label>
+              </option>
             ))}
-          </div>
-        </fieldset>
+          </select>
+        </label>
       )}
 
       <div id="protect-estimate" aria-live="polite">
