@@ -97,8 +97,8 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           aria-describedby="protect-estimate"
         >
           <option value="income">Income for life</option>
-          <option value="growth">Grow my money at a guaranteed rate</option>
-          <option value="indexed">Market-linked growth with a bonus, no losses</option>
+          <option value="growth">Guaranteed fixed rate</option>
+          <option value="indexed">Bonus + market growth, no losses</option>
         </select>
       </label>
 
