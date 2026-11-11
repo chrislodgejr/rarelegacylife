@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { submitContactForm, type FormState } from "@/server/actions/public-forms";
 
@@ -8,9 +8,18 @@ const initialState: FormState = { ok: false, message: "" };
 
 export function ContactForm() {
   const [state, action] = useActionState(submitContactForm, initialState);
+  const [startedAt] = useState(() => Date.now());
 
   return (
-    <form action={action} className="premium-card grid gap-4 rounded-2xl p-5 md:p-8">
+    <form action={action} className="premium-card relative grid gap-4 rounded-2xl p-5 md:p-8">
+      <input name="started_at" type="hidden" value={startedAt} />
+      {/* Honeypot: invisible to people, bots fill it in and get silently dropped. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Company website
+          <input autoComplete="off" name="company_website" tabIndex={-1} type="text" />
+        </label>
+      </div>
       <TextField label="Name" name="name" required />
       <TextField label="Email" name="email" type="email" required />
       <TextField label="Phone" name="phone" type="tel" />

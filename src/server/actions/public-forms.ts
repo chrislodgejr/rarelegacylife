@@ -12,6 +12,7 @@ import {
 } from "@/lib/notifications";
 import { notifyAdmins } from "@/lib/notifications/db";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { looksLikeRandomName, sentTooFastOrStale } from "@/lib/validation/bot-signals";
 import {
   clip,
   dayForIntake,
@@ -317,6 +318,17 @@ export async function submitContactForm(_previousState: FormState, formData: For
   }
 
   const input = parsed.data;
+
+  // Bots get the normal thank-you and nothing is stored or sent to Endless One: the hidden
+  // field filled in, sent within two seconds of the page opening, or a random-letters name.
+  if (
+    String(formData.get("company_website") ?? "").trim() ||
+    sentTooFastOrStale(formData.get("started_at")) ||
+    looksLikeRandomName(input.name)
+  ) {
+    return { ok: true, message: "Thanks. Your message has been received." };
+  }
+
   const admin = createAdminClient();
   const headerStore = await headers();
   const messageId = crypto.randomUUID();
