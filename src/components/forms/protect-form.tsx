@@ -98,7 +98,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         >
           <option value="income">Income for life</option>
           <option value="growth">Guaranteed fixed rate</option>
-          <option value="indexed">Bonus + market growth, no losses</option>
+          <option value="indexed">Bonus + market growth</option>
         </select>
       </label>
 
