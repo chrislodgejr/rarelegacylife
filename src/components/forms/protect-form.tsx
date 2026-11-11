@@ -6,6 +6,8 @@ import { trackEvent } from "@/lib/analytics";
 import {
   ESTIMATE_AGE_BANDS,
   GROWTH_TERMS,
+  INDEXED_ASSUMED_CREDITS,
+  INDEXED_RIDER_CHARGE,
   INDEXED_TERMS,
   formatDollars,
   formatRate,
@@ -109,7 +111,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
             ? "Pick an amount and your age to see a rough monthly income range."
             : goal === "growth"
               ? "Pick an amount and how long to lock in a rate to see what it could grow to."
-              : "Pick an amount and how many years to see the bonus added on day one."}
+              : "Pick an amount and how many years to see what it could grow to, bonus included."}
         </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {PROTECT_AMOUNT_TIERS.map(([value, label]) => (
@@ -173,20 +175,19 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
             <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
-              On about {formatDollars(indexed.amount)}, a {indexed.years}-year bonus could add roughly
+              In {indexed.years} years, about {formatDollars(indexed.amount)} could grow to roughly
             </p>
             <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
-              {formatDollars(indexed.low)} to {formatDollars(indexed.high)} on day one
-            </p>
-            <p className="mt-1 text-sm text-neutral-700">
-              So your account could start near {formatDollars(indexed.startLow)} to {formatDollars(indexed.startHigh)}, then
-              earn more in years the market index rises, and never lose value when it falls.
+              {formatDollars(indexed.low)} to {formatDollars(indexed.high)}
             </p>
             <p className="mt-2 text-xs leading-5 text-neutral-600">
-              A rough illustration, not a quote or a guarantee. The bonus becomes fully yours over the {indexed.years} years, so
-              leaving early can forfeit part of it and bring withdrawal charges, and the bonus version has a yearly charge of
-              about 1%. Growth depends on the index and can be zero in a year. Bonus amounts vary by state and age. Leave your
-              details below and an advisor will show you exact numbers.
+              A rough illustration, not a quote or a guarantee: a fixed indexed annuity with an up-front bonus of about{" "}
+              {formatRate(indexed.lowBonus)} to {formatRate(indexed.highBonus)}, assuming average index credits of{" "}
+              {formatRate(INDEXED_ASSUMED_CREDITS[0])} to {formatRate(INDEXED_ASSUMED_CREDITS[1])} a year, less a yearly charge
+              of {formatRate(INDEXED_RIDER_CHARGE)}, with no withdrawals. Index credits are not guaranteed and can be zero in a
+              year, though your value never drops because the market falls. The bonus becomes fully yours over the{" "}
+              {indexed.years} years, so leaving early can forfeit part of it and bring withdrawal charges. Bonus amounts vary by
+              state and age. Leave your details below and an advisor will show you exact numbers.
             </p>
           </div>
         ) : growth ? (

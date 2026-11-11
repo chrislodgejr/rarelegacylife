@@ -75,11 +75,12 @@ export function growthEstimate(tier: string | null, term: string | null) {
 export const formatRate = (rate: number) => `${(rate * 100).toFixed(2).replace(/\.?0+$/, "")}%`;
 
 // The indexed option (Chris, 2026-11-11: "athene performance elite plus 10 ... the main 10 year we use", "performance elite 7
-// year", "these have bonus's attached"): a fixed indexed annuity with an up-front premium bonus. Only the bonus is shown in
-// dollars; growth after it follows an index (never below zero) and is not projected. Bonus ranges are the Plus versions'
-// premium bonus in the states Rare Legacy is licensed in, from Athene's product guides (rates effective September 25, 2026):
-// Performance Elite Plus 7 (68070) 5% to 6%; Performance Elite Plus 10 (68069) 21% to 25% for issue ages up to 75 (23% to 25%
-// up to age 70). The bonus vests over the withdrawal-charge years and the Plus rider charges 0.95% a year.
+// year", "these have bonus's attached", then "provide a rough estimate where the annuity will be after the 10 year or 7 year
+// with the bonus", the bonus itself "in the fine print"): a fixed indexed annuity with an up-front premium bonus, projected to
+// the end of its term. Bonus ranges are the Plus versions' premium bonus in the states Rare Legacy is licensed in, from
+// Athene's product guides (rates effective September 25, 2026): Performance Elite Plus 7 (68070) 5% to 6%; Performance Elite
+// Plus 10 (68069) 21% to 25% for issue ages up to 75. Index credits are not guaranteed: the projection assumes a cautious
+// 3% to 5% a year on average, less the Plus rider's 0.95% a year.
 
 /** Indexed terms and their up-front bonus, low to high. */
 export const INDEXED_TERMS = [
@@ -87,18 +88,24 @@ export const INDEXED_TERMS = [
   ["10", "10 years", 0.21, 0.25],
 ] as const;
 
-/** The day-one bonus on the tier's amount, rounded to $1,000, or null when either is missing. */
+/** The yearly index credits the projection assumes, low to high, and the Plus rider's yearly charge. */
+export const INDEXED_ASSUMED_CREDITS = [0.03, 0.05] as const;
+export const INDEXED_RIDER_CHARGE = 0.0095;
+
+/** What the tier's amount could be worth at the end of the term, bonus included, rounded to $1,000. */
 export function indexedBonusEstimate(tier: string | null, term: string | null) {
   if (!tier || !term || !(tier in TIER_ESTIMATE_AMOUNTS)) return null;
   const row = INDEXED_TERMS.find(([value]) => value === term);
   if (!row) return null;
   const amount = TIER_ESTIMATE_AMOUNTS[tier as EstimateTier];
+  const years = Number(row[0]);
+  const grow = (bonus: number, credit: number) => amount * (1 + bonus) * (1 + credit - INDEXED_RIDER_CHARGE) ** years;
   return {
     amount,
-    years: Number(row[0]),
-    low: roundTo1000(amount * row[2]),
-    high: roundTo1000(amount * row[3]),
-    startLow: roundTo1000(amount * (1 + row[2])),
-    startHigh: roundTo1000(amount * (1 + row[3])),
+    years,
+    lowBonus: row[2],
+    highBonus: row[3],
+    low: roundTo1000(grow(row[2], INDEXED_ASSUMED_CREDITS[0])),
+    high: roundTo1000(grow(row[3], INDEXED_ASSUMED_CREDITS[1])),
   };
 }
