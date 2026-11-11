@@ -3,7 +3,14 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Lock, TrendingUp } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { ESTIMATE_AGE_BANDS, formatDollars, monthlyIncomeEstimate } from "@/lib/estimates/income-estimate";
+import {
+  ESTIMATE_AGE_BANDS,
+  GROWTH_TERMS,
+  formatDollars,
+  formatRate,
+  growthEstimate,
+  monthlyIncomeEstimate,
+} from "@/lib/estimates/income-estimate";
 import { PROTECT_AMOUNT_TIERS, PROTECT_BEST_TIMES } from "@/lib/validation/forms";
 import { submitProtectRequest, type ProtectRequestState } from "@/server/actions/protect-request";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -23,7 +30,8 @@ const initialState: ProtectRequestState = { ok: false, message: "" };
 
 /**
  * The Google Ads page's one short form: the amount first (one tap) and an age band, which show a rough monthly income range right
- * away (Chris, 2026-11-10), then how to reach you for exact quotes. The age band only drives the estimate and is never sent.
+ * away (Chris, 2026-11-10), or, for "Grow my money safely", a guarantee period and what the amount could grow to (2026-11-11); then how
+ * to reach you for exact quotes. The goal, age band and period only drive the estimate and are never sent.
  */
 export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const [state, action] = useActionState(submitProtectRequest, initialState);
@@ -32,7 +40,11 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const referrerRef = useRef<HTMLInputElement>(null);
   const [tier, setTier] = useState<string | null>(null);
   const [age, setAge] = useState<string | null>(null);
-  const estimate = monthlyIncomeEstimate(tier, age);
+  const [goal, setGoal] = useState<"income" | "growth">("income");
+  const [term, setTerm] = useState<string | null>(null);
+  const income = goal === "income" ? monthlyIncomeEstimate(tier, age) : null;
+  const growth = goal === "growth" ? growthEstimate(tier, term) : null;
+  const estimate = income ?? growth;
   const estimateShown = useRef(false);
 
   useEffect(() => {
@@ -45,8 +57,8 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   useEffect(() => {
     if (!estimate || estimateShown.current) return;
     estimateShown.current = true;
-    trackEvent("protect_estimate_view", {});
-  }, [estimate]);
+    trackEvent("protect_estimate_view", { goal });
+  }, [estimate, goal]);
 
   useEffect(() => {
     if (state.ok) trackEvent("protect_submit", {});
@@ -68,9 +80,26 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
 
   return (
     <form action={action} className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8">
+      <label className="block">
+        <span className="text-base font-semibold">What are you looking for?</span>
+        <select
+          className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
+          value={goal}
+          onChange={(event) => setGoal(event.target.value === "growth" ? "growth" : "income")}
+          aria-describedby="protect-estimate"
+        >
+          <option value="income">Income for life</option>
+          <option value="growth">Grow my money safely</option>
+        </select>
+      </label>
+
       <fieldset>
         <legend className="text-base font-semibold">About how much are you looking to protect?</legend>
-        <p className="mt-1 text-sm text-neutral-600">Pick an amount and your age to see a rough monthly income range.</p>
+        <p className="mt-1 text-sm text-neutral-600">
+          {goal === "income"
+            ? "Pick an amount and your age to see a rough monthly income range."
+            : "Pick an amount and how long to lock in a rate to see what it could grow to."}
+        </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {PROTECT_AMOUNT_TIERS.map(([value, label]) => (
             <label
@@ -92,32 +121,67 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         {error("amount_tier")}
       </fieldset>
 
-      <label className="block">
-        <span className="text-sm font-medium text-neutral-700">Your age</span>
-        <select
-          className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
-          defaultValue=""
-          onChange={(event) => setAge(event.target.value || null)}
-          aria-describedby="protect-estimate"
-        >
-          <option value="">Select</option>
-          {ESTIMATE_AGE_BANDS.map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-      </label>
+      {goal === "income" ? (
+        <label className="block">
+          <span className="text-sm font-medium text-neutral-700">Your age</span>
+          <select
+            className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
+            value={age ?? ""}
+            onChange={(event) => setAge(event.target.value || null)}
+            aria-describedby="protect-estimate"
+          >
+            <option value="">Select</option>
+            {ESTIMATE_AGE_BANDS.map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <label className="block">
+          <span className="text-sm font-medium text-neutral-700">Lock in a rate for</span>
+          <select
+            className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
+            value={term ?? ""}
+            onChange={(event) => setTerm(event.target.value || null)}
+            aria-describedby="protect-estimate"
+          >
+            <option value="">Select</option>
+            {GROWTH_TERMS.map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
 
       <div id="protect-estimate" aria-live="polite">
-        {estimate ? (
+        {growth ? (
           <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
             <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
-              On about {formatDollars(estimate.amount)}, guaranteed income for life could be roughly
+              In {growth.years} years, about {formatDollars(growth.amount)} could grow to roughly
             </p>
             <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
-              {formatDollars(estimate.low)} to {formatDollars(estimate.high)} a month
+              {formatDollars(growth.low)} to {formatDollars(growth.high)}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-neutral-600">
+              A rough illustration, not a quote or a guarantee: a fixed multi-year annuity at about {formatRate(growth.lowRate)}{" "}
+              to {formatRate(growth.highRate)} a year, compounded, with no withdrawals. Real rates depend on the carrier, the
+              amount, and the day you buy, and taking money out early can mean surrender charges. Leave your details below and
+              an advisor will show you exact rates.
+            </p>
+          </div>
+        ) : income ? (
+          <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
+            <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+              <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
+              On about {formatDollars(income.amount)}, guaranteed income for life could be roughly
+            </p>
+            <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
+              {formatDollars(income.low)} to {formatDollars(income.high)} a month
             </p>
             <p className="mt-2 text-xs leading-5 text-neutral-600">
               A rough illustration, not a quote or a guarantee: typical lifetime income for one person starting now. Your real

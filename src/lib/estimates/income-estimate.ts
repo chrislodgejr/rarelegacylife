@@ -38,3 +38,38 @@ export function monthlyIncomeEstimate(tier: string | null, age: string | null) {
 
 export const formatDollars = (value: number) =>
   value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+// The growth estimate beside it (Chris, 2026-11-11: "what about an annuity that is just growth"): what the amount could grow
+// to in a fixed multi-year guaranteed annuity (MYGA), for searchers comparing rates and CDs. Illustrative yearly rate ranges,
+// not carrier rates: compounded yearly, reviewed with compliance and the advisors when rates move. The top of each range sits
+// just under Athene MaxRate, the carrier the advisors use most (6.05% for 5 years, 6.15% for 7, $100,000 and up, early
+// November 2026, CANNEX via AdvisorWorld); the carrier is never named on the page.
+
+/** Guarantee periods and their yearly rate, low to high. */
+export const GROWTH_TERMS = [
+  ["5", "5 years", 0.055, 0.06],
+  ["7", "7 years", 0.056, 0.061],
+] as const;
+
+export type GrowthTerm = (typeof GROWTH_TERMS)[number][0];
+
+const roundTo1000 = (value: number) => Math.round(value / 1000) * 1000;
+
+/** What the tier's amount could grow to over a term, rounded to $1,000, or null when either is missing. */
+export function growthEstimate(tier: string | null, term: string | null) {
+  if (!tier || !term || !(tier in TIER_ESTIMATE_AMOUNTS)) return null;
+  const row = GROWTH_TERMS.find(([value]) => value === term);
+  if (!row) return null;
+  const amount = TIER_ESTIMATE_AMOUNTS[tier as EstimateTier];
+  const years = Number(row[0]);
+  return {
+    amount,
+    years,
+    lowRate: row[2],
+    highRate: row[3],
+    low: roundTo1000(amount * (1 + row[2]) ** years),
+    high: roundTo1000(amount * (1 + row[3]) ** years),
+  };
+}
+
+export const formatRate = (rate: number) => `${(rate * 100).toFixed(2).replace(/\.?0+$/, "")}%`;
