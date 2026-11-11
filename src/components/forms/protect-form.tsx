@@ -183,9 +183,9 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
               earn more in years the market index rises, and never lose value when it falls.
             </p>
             <p className="mt-2 text-xs leading-5 text-neutral-600">
-              A rough illustration, not a quote or a guarantee. The bonus is earned over the {indexed.years} years, so taking money
-              out early can reduce it and bring surrender charges; bonus versions can carry a yearly fee and lower index caps.
-              Growth depends on the index and can be zero in a year. Bonus amounts vary by state, age and carrier. Leave your
+              A rough illustration, not a quote or a guarantee. The bonus becomes fully yours over the {indexed.years} years, so
+              leaving early can forfeit part of it and bring withdrawal charges, and the bonus version has a yearly charge of
+              about 1%. Growth depends on the index and can be zero in a year. Bonus amounts vary by state and age. Leave your
               details below and an advisor will show you exact numbers.
             </p>
           </div>

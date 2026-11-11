@@ -41,14 +41,14 @@ export const formatDollars = (value: number) =>
 
 // The growth estimate beside it (Chris, 2026-11-11: "what about an annuity that is just growth"): what the amount could grow
 // to in a fixed multi-year guaranteed annuity (MYGA), for searchers comparing rates and CDs. Illustrative yearly rate ranges,
-// not carrier rates: compounded yearly, reviewed with compliance and the advisors when rates move. The top of each range sits
-// just under Athene MaxRate, the carrier the advisors use most (6.05% for 5 years, 6.15% for 7, $100,000 and up, early
-// November 2026, CANNEX via AdvisorWorld); the carrier is never named on the page.
+// not quotes: compounded yearly, updated when the carrier's rates move. The ranges are Athene MaxRate, the carrier the
+// advisors use most (rate card 76048, as of October 14, 2026): lowest is under $100,000 in the PA/NJ/DE/OH/SC/TX group,
+// highest is $100,000 and up elsewhere. The carrier is never named on the page.
 
 /** Guarantee periods and their yearly rate, low to high. */
 export const GROWTH_TERMS = [
-  ["5", "5 years", 0.055, 0.06],
-  ["7", "7 years", 0.056, 0.061],
+  ["5", "5 years", 0.0575, 0.0605],
+  ["7", "7 years", 0.058, 0.0615],
 ] as const;
 
 export type GrowthTerm = (typeof GROWTH_TERMS)[number][0];
@@ -76,15 +76,15 @@ export const formatRate = (rate: number) => `${(rate * 100).toFixed(2).replace(/
 
 // The indexed option (Chris, 2026-11-11: "athene performance elite plus 10 ... the main 10 year we use", "performance elite 7
 // year", "these have bonus's attached"): a fixed indexed annuity with an up-front premium bonus. Only the bonus is shown in
-// dollars; growth after it follows an index (never below zero) and is not projected. Bonus ranges are conservative, from
-// third-party reviews of Athene Performance Elite Plus 10 (about 18% to 25% by state and age) and Plus 7 (about 5% to 6%),
-// November 2026, until the advisors' current rate sheet confirms them. The bonus vests over the term and the Plus riders
-// carry a yearly fee.
+// dollars; growth after it follows an index (never below zero) and is not projected. Bonus ranges are the Plus versions'
+// premium bonus in the states Rare Legacy is licensed in, from Athene's product guides (rates effective September 25, 2026):
+// Performance Elite Plus 7 (68070) 5% to 6%; Performance Elite Plus 10 (68069) 21% to 25% for issue ages up to 75 (23% to 25%
+// up to age 70). The bonus vests over the withdrawal-charge years and the Plus rider charges 0.95% a year.
 
 /** Indexed terms and their up-front bonus, low to high. */
 export const INDEXED_TERMS = [
   ["7", "7 years", 0.05, 0.06],
-  ["10", "10 years", 0.18, 0.22],
+  ["10", "10 years", 0.21, 0.25],
 ] as const;
 
 /** The day-one bonus on the tier's amount, rounded to $1,000, or null when either is missing. */
