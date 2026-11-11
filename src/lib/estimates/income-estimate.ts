@@ -73,3 +73,32 @@ export function growthEstimate(tier: string | null, term: string | null) {
 }
 
 export const formatRate = (rate: number) => `${(rate * 100).toFixed(2).replace(/\.?0+$/, "")}%`;
+
+// The indexed option (Chris, 2026-11-11: "athene performance elite plus 10 ... the main 10 year we use", "performance elite 7
+// year", "these have bonus's attached"): a fixed indexed annuity with an up-front premium bonus. Only the bonus is shown in
+// dollars; growth after it follows an index (never below zero) and is not projected. Bonus ranges are conservative, from
+// third-party reviews of Athene Performance Elite Plus 10 (about 18% to 25% by state and age) and Plus 7 (about 5% to 6%),
+// November 2026, until the advisors' current rate sheet confirms them. The bonus vests over the term and the Plus riders
+// carry a yearly fee.
+
+/** Indexed terms and their up-front bonus, low to high. */
+export const INDEXED_TERMS = [
+  ["7", "7 years", 0.05, 0.06],
+  ["10", "10 years", 0.18, 0.22],
+] as const;
+
+/** The day-one bonus on the tier's amount, rounded to $1,000, or null when either is missing. */
+export function indexedBonusEstimate(tier: string | null, term: string | null) {
+  if (!tier || !term || !(tier in TIER_ESTIMATE_AMOUNTS)) return null;
+  const row = INDEXED_TERMS.find(([value]) => value === term);
+  if (!row) return null;
+  const amount = TIER_ESTIMATE_AMOUNTS[tier as EstimateTier];
+  return {
+    amount,
+    years: Number(row[0]),
+    low: roundTo1000(amount * row[2]),
+    high: roundTo1000(amount * row[3]),
+    startLow: roundTo1000(amount * (1 + row[2])),
+    startHigh: roundTo1000(amount * (1 + row[3])),
+  };
+}
