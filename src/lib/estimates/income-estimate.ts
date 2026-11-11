@@ -75,36 +75,35 @@ export function growthEstimate(tier: string | null, term: string | null) {
 export const formatRate = (rate: number) => `${(rate * 100).toFixed(2).replace(/\.?0+$/, "")}%`;
 
 // The indexed option (Chris, 2026-11-11: "athene performance elite plus 10 ... the main 10 year we use", "performance elite 7
-// year", "these have bonus's attached", then "provide a rough estimate where the annuity will be after the 10 year or 7 year
-// with the bonus", the bonus itself "in the fine print"): a fixed indexed annuity with an up-front premium bonus, projected to
-// the end of its term. Bonus ranges are the Plus versions' premium bonus in the states Rare Legacy is licensed in, from
-// Athene's product guides (rates effective September 25, 2026): Performance Elite Plus 7 (68070) 5% to 6%; Performance Elite
-// Plus 10 (68069) 21% to 25% for issue ages up to 75. Index credits are not guaranteed: the projection assumes 5.5% to 6.5% a
-// year on average (Chris, 2026-11-11: "i think the average rate right now is 6.5%"), less the Plus rider's 0.95% a year.
+// year", "provide a rough estimate where the annuity will be after the 10 year or 7 year with the bonus", then, after seeing
+// that the Base versions grow more than Plus, "show the base numbers then"): a fixed indexed annuity projected to the end of
+// its term. Base versions from Athene's product guides (rates effective September 25, 2026), in the states Rare Legacy is
+// licensed in: Performance Elite 10 (68069) premium bonus 20% to 22% for issue ages up to 70, vesting over the 10 years, no
+// rider charge; Performance Elite 7 (68070) has no bonus and no charge on Base. Index credits are not guaranteed: the
+// projection assumes 5.5% to 6.5% a year on average (Chris: "i think the average rate right now is 6.5%").
 
-/** Indexed terms and their up-front bonus, low to high. */
+/** Indexed terms and their up-front bonus, low to high (0 for none). */
 export const INDEXED_TERMS = [
-  ["7", "7 years", 0.05, 0.06],
-  ["10", "10 years", 0.21, 0.25],
+  ["7", "7 years", 0, 0],
+  ["10", "10 years", 0.2, 0.22],
 ] as const;
 
-/** The yearly index credits the projection assumes, low to high, and the Plus rider's yearly charge. */
+/** The yearly index credits the projection assumes, low to high. */
 export const INDEXED_ASSUMED_CREDITS = [0.055, 0.065] as const;
-export const INDEXED_RIDER_CHARGE = 0.0095;
 
-/** What the tier's amount could be worth at the end of the term, bonus included, rounded to $1,000. */
+/** What the tier's amount could be worth at the end of the term, any bonus included, rounded to $1,000. */
 export function indexedBonusEstimate(tier: string | null, term: string | null) {
   if (!tier || !term || !(tier in TIER_ESTIMATE_AMOUNTS)) return null;
   const row = INDEXED_TERMS.find(([value]) => value === term);
   if (!row) return null;
   const amount = TIER_ESTIMATE_AMOUNTS[tier as EstimateTier];
   const years = Number(row[0]);
-  const grow = (bonus: number, credit: number) => amount * (1 + bonus) * (1 + credit - INDEXED_RIDER_CHARGE) ** years;
+  const grow = (bonus: number, credit: number) => amount * (1 + bonus) * (1 + credit) ** years;
   return {
     amount,
     years,
-    lowBonus: row[2],
-    highBonus: row[3],
+    lowBonus: row[2] as number,
+    highBonus: row[3] as number,
     low: roundTo1000(grow(row[2], INDEXED_ASSUMED_CREDITS[0])),
     high: roundTo1000(grow(row[3], INDEXED_ASSUMED_CREDITS[1])),
   };
