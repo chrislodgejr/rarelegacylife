@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Lock, TrendingUp } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { formStepReporter, type FormStepReporter } from "@/lib/form-steps";
 import {
   ESTIMATE_AGE_BANDS,
   GROWTH_TERMS,
@@ -30,11 +31,15 @@ export type ProtectTracking = {
 };
 
 const initialState: ProtectRequestState = { ok: false, message: "" };
+const CONTACT_FIELDS = ["full_name", "phone", "email", "zip_code"];
 
 /**
  * The Google Ads page's one short form: the amount first (one tap) and an age band, which show a rough monthly income range right
  * away (Chris, 2026-11-10), or, for the two growth choices, a number of years and what the amount could grow to (2026-11-11); then how
  * to reach you for exact quotes. The goal, age band and period only drive the estimate and are never sent.
+ * Each step of a visit (Chris, 2026-11-12: "Is there a way to know if a person is filling it out and just not clicking submit") goes to
+ * Endless One through /api/form-steps: opened, the goal, the amount tier, age or years picked, the estimate seen, the contact fields
+ * started, best time, consent, Submit pressed, the field the browser or the server stopped them on, sent. Never a typed value.
  */
 export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const [state, action] = useActionState(submitProtectRequest, initialState);
@@ -51,23 +56,36 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const estimate = income ?? growth ?? indexed;
   const terms = goal === "indexed" ? INDEXED_TERMS : GROWTH_TERMS;
   const estimateShown = useRef(false);
+  const reportRef = useRef<FormStepReporter | null>(null);
+  const report: FormStepReporter = (step, detail) => reportRef.current?.(step, detail);
 
   useEffect(() => {
     if (startedAtRef.current) startedAtRef.current.value = String(Date.now());
     if (landingPageRef.current) landingPageRef.current.value = window.location.href;
     if (referrerRef.current) referrerRef.current.value = document.referrer;
     trackEvent("protect_start", {});
+    reportRef.current = formStepReporter(Boolean(tracking.gclid || tracking.gbraid || tracking.wbraid));
+    reportRef.current("view");
+    // Only on load: the click ids do not change during the visit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!estimate || estimateShown.current) return;
     estimateShown.current = true;
     trackEvent("protect_estimate_view", { goal });
+    reportRef.current?.("estimate", goal);
   }, [estimate, goal]);
 
   useEffect(() => {
-    if (state.ok) trackEvent("protect_submit", {});
-    else if (state.message) trackEvent("protect_error", {});
+    if (state.ok) {
+      trackEvent("protect_submit", {});
+      reportRef.current?.("submitted");
+    } else if (state.message) {
+      trackEvent("protect_error", {});
+      const fields = Object.keys(state.fieldErrors ?? {});
+      for (const field of fields.length ? fields : ["form"]) reportRef.current?.("server_error", field);
+    }
   }, [state]);
 
   if (state.ok) {
@@ -84,7 +102,21 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
     state.fieldErrors?.[name] ? <span className="mt-1 block text-xs text-red-700">{state.fieldErrors[name]}</span> : null;
 
   return (
-    <form action={action} className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8">
+    <form
+      action={action}
+      className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8"
+      onFocusCapture={(event) => {
+        const name = (event.target as EventTarget as HTMLInputElement).name;
+        if (CONTACT_FIELDS.includes(name)) report("contact_start");
+      }}
+      onClickCapture={(event) => {
+        if ((event.target as HTMLElement).closest('button[type="submit"]')) report("submit_click");
+      }}
+      onInvalidCapture={(event) => {
+        // The browser's own required check stops the submit without telling the server; keep which field, never its value.
+        report("blocked", (event.target as EventTarget as HTMLInputElement).name || "form");
+      }}
+    >
       <label className="block">
         <span className="text-base font-semibold">What are you looking for?</span>
         <select
@@ -94,6 +126,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
             const next = event.target.value;
             setGoal(next === "growth" || next === "indexed" ? next : "income");
             setTerm(null);
+            report("goal_change", next);
           }}
           aria-describedby="protect-estimate"
         >
@@ -124,7 +157,10 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
                 name="amount_tier"
                 value={value}
                 required
-                onChange={() => setTier(value)}
+                onChange={() => {
+                  setTier(value);
+                  report("amount", value);
+                }}
               />
               {label}
             </label>
@@ -139,7 +175,10 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           <select
             className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
             value={age ?? ""}
-            onChange={(event) => setAge(event.target.value || null)}
+            onChange={(event) => {
+              setAge(event.target.value || null);
+              if (event.target.value) report("age_or_term");
+            }}
             aria-describedby="protect-estimate"
           >
             <option value="">Select</option>
@@ -156,7 +195,10 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           <select
             className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
             value={term ?? ""}
-            onChange={(event) => setTerm(event.target.value || null)}
+            onChange={(event) => {
+              setTerm(event.target.value || null);
+              if (event.target.value) report("age_or_term");
+            }}
             aria-describedby="protect-estimate"
           >
             <option value="">Select</option>
@@ -241,6 +283,9 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           name="best_time_to_contact"
           required
           defaultValue=""
+          onChange={(event) => {
+            if (event.target.value) report("best_time");
+          }}
         >
           <option value="">Select</option>
           {PROTECT_BEST_TIMES.map(([value, label]) => (
@@ -253,7 +298,15 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       </label>
 
       <label className="flex gap-3 text-xs leading-5 text-neutral-600">
-        <input className="mt-0.5 h-4 w-4 shrink-0 accent-brand-black-500" name="consent_tcpa" type="checkbox" required />
+        <input
+          className="mt-0.5 h-4 w-4 shrink-0 accent-brand-black-500"
+          name="consent_tcpa"
+          type="checkbox"
+          required
+          onChange={(event) => {
+            if (event.target.checked) report("consent");
+          }}
+        />
         <span>
           I agree that Rare Legacy Life Group and its licensed professionals may call, email, or text me at the contact
           information I provide, including using automated technology, about my request and related insurance or retirement

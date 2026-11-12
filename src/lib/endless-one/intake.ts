@@ -152,6 +152,48 @@ export async function sendToEndlessOne(payload: IntakePayload): Promise<IntakeRe
   return { sent: true, ...result };
 }
 
+// ---- The /protect page's steps (Chris, 2026-11-12: "Is there a way to know if a person is filling it out and just not clicking submit") ----
+
+/** The steps a /protect visit may report, each with the details it may carry ("" for none). Never a value someone typed. */
+export const FORM_STEP_DETAILS = {
+  view: [""],
+  goal_change: ["income", "growth", "indexed"],
+  amount: ["under_150k", "150k_250k", "250k_500k", "500k_1m", "1m_plus"],
+  age_or_term: [""],
+  estimate: ["income", "growth", "indexed"],
+  contact_start: [""],
+  best_time: [""],
+  consent: [""],
+  submit_click: [""],
+  blocked: ["amount_tier", "full_name", "phone", "email", "zip_code", "best_time_to_contact", "consent_tcpa", "form"],
+  server_error: ["amount_tier", "full_name", "phone", "email", "zip_code", "best_time_to_contact", "consent_tcpa", "form"],
+  submitted: [""],
+} as const;
+export type FormStep = keyof typeof FORM_STEP_DETAILS;
+export const FORM_STEPS_MAX = 20;
+
+export type StepsPayload = {
+  version: 1;
+  form: "steps";
+  page: "/protect";
+  visitId: string;
+  fromAd: boolean;
+  mobile: boolean;
+  steps: { step: FormStep; detail: string }[];
+};
+
+/**
+ * Sends one visit's steps to Endless One, signed like a submission (Endless One keeps them apart from leads). One try only and never
+ * throws: a lost step is not worth a retry, and the visitor never waits on it.
+ */
+export async function sendStepsToEndlessOne(payload: StepsPayload) {
+  const config = configuration();
+  if (!config) return { sent: false as const };
+  const result = await attempt(config.url, config.secret, JSON.stringify(payload));
+  if (!result.ok) console.error("Endless One did not take the form steps", { status: result.status, error: result.error });
+  return { sent: true as const, ...result };
+}
+
 // ---- Shaping the form's answers as Endless One checks them ----------------------------------------------------------
 
 /** Text trimmed to Endless One's limit, or null when empty. */
