@@ -1,21 +1,11 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { CheckCircle2, Lock, TrendingUp } from "lucide-react";
+import { CheckCircle2, Lock, MessageSquareText } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { formStepReporter, type FormStepReporter } from "@/lib/form-steps";
-import {
-  ESTIMATE_AGE_BANDS,
-  GROWTH_TERMS,
-  INDEXED_ASSUMED_CREDITS,
-  INDEXED_TERMS,
-  formatDollars,
-  formatRate,
-  growthEstimate,
-  indexedBonusEstimate,
-  monthlyIncomeEstimate,
-} from "@/lib/estimates/income-estimate";
-import { PROTECT_AMOUNT_TIERS, PROTECT_BEST_TIMES } from "@/lib/validation/forms";
+import { ESTIMATE_AGE_BANDS, GROWTH_TERMS, INDEXED_TERMS, protectEstimate } from "@/lib/estimates/income-estimate";
+import { PROTECT_AMOUNT_TIERS, PROTECT_CONSENT_TEXT } from "@/lib/validation/forms";
 import { submitProtectRequest, type ProtectRequestState } from "@/server/actions/protect-request";
 import { SubmitButton } from "@/components/forms/submit-button";
 
@@ -34,12 +24,16 @@ const initialState: ProtectRequestState = { ok: false, message: "" };
 const CONTACT_FIELDS = ["full_name", "phone", "email", "zip_code"];
 
 /**
- * The Google Ads page's one short form: the amount first (one tap) and an age band, which show a rough monthly income range right
- * away (Chris, 2026-11-10), or, for the two growth choices, a number of years and what the amount could grow to (2026-11-11); then how
- * to reach you for exact quotes. The goal, age band and period only drive the estimate and are never sent.
+ * The Google Ads page's one short form: the amount first (one tap) and an age band for a rough monthly income range (Chris,
+ * 2026-11-10), or, for the two growth choices, a number of years for what the amount could grow to (2026-11-11); then how to reach you.
+ * The estimate is texted, never shown (Chris, 2026-11-13, after 10 of 10 who saw it on the page left without their details: "require
+ * people to click submit to get the quote ... lets just text them their estimate in that initial text ... That way entering a fake phone
+ * number will not get you a estimate"): once the choices are in, a card says it is ready and the button reads "Text me my estimate".
+ * The goal, age band and years are sent as hidden fields; the server works the estimate out again and Endless One texts it. The contact
+ * step is name, phone, email and ZIP only (no best time) under a short consent.
  * Each step of a visit (Chris, 2026-11-12: "Is there a way to know if a person is filling it out and just not clicking submit") goes to
- * Endless One through /api/form-steps: opened, the goal, the amount tier, age or years picked, the estimate seen, the contact fields
- * started, best time, consent, Submit pressed, the field the browser or the server stopped them on, sent. Never a typed value.
+ * Endless One through /api/form-steps: opened, the goal, the amount tier, age or years picked, the estimate ready, the contact fields
+ * started, consent, Submit pressed, the field the browser or the server stopped them on, sent. Never a typed value.
  */
 export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const [state, action] = useActionState(submitProtectRequest, initialState);
@@ -50,10 +44,8 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const [age, setAge] = useState<string | null>(null);
   const [goal, setGoal] = useState<"income" | "growth" | "indexed">("income");
   const [term, setTerm] = useState<string | null>(null);
-  const income = goal === "income" ? monthlyIncomeEstimate(tier, age) : null;
-  const growth = goal === "growth" ? growthEstimate(tier, term) : null;
-  const indexed = goal === "indexed" ? indexedBonusEstimate(tier, term) : null;
-  const estimate = income ?? growth ?? indexed;
+  // Only whether the estimate is ready: its figures are never shown, the server works them out again and Endless One texts them.
+  const estimate = protectEstimate(goal, tier, age, term) !== null;
   const terms = goal === "indexed" ? INDEXED_TERMS : GROWTH_TERMS;
   const estimateShown = useRef(false);
   const reportRef = useRef<FormStepReporter | null>(null);
@@ -140,10 +132,10 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         <legend className="text-base font-semibold">About how much are you looking to protect?</legend>
         <p className="mt-1 text-sm text-neutral-600">
           {goal === "income"
-            ? "Pick an amount and your age to see a rough monthly income range."
+            ? "Pick an amount and your age for a rough monthly income estimate, sent by text."
             : goal === "growth"
-              ? "Pick an amount and how long to lock in a rate to see what it could grow to."
-              : "Pick an amount and how many years to see what it could grow to."}
+              ? "Pick an amount and how long to lock in a rate for an estimate of what it could grow to, sent by text."
+              : "Pick an amount and how many years for an estimate of what it could grow to, sent by text."}
         </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {PROTECT_AMOUNT_TIERS.map(([value, label]) => (
@@ -192,59 +184,13 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       )}
 
       <div id="protect-estimate" aria-live="polite">
-        {indexed ? (
+        {estimate ? (
           <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
-            <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-              <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
-              In {indexed.years} years, about {formatDollars(indexed.amount)} could grow to roughly
+            <p className="font-premium flex items-center gap-2 text-lg font-semibold text-[#050505]">
+              <MessageSquareText aria-hidden="true" className="h-5 w-5 shrink-0 text-brand-black-500" />
+              Your estimate is ready
             </p>
-            <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
-              {formatDollars(indexed.low)} to {formatDollars(indexed.high)}
-            </p>
-            <p className="mt-2 text-xs leading-5 text-neutral-600">
-              A rough illustration, not a quote or a guarantee: a fixed indexed annuity
-              {indexed.highBonus > 0
-                ? ` with an up-front bonus of about ${formatRate(indexed.lowBonus)} to ${formatRate(indexed.highBonus)}`
-                : ""}
-              , assuming average index credits of {formatRate(INDEXED_ASSUMED_CREDITS[0])} to{" "}
-              {formatRate(INDEXED_ASSUMED_CREDITS[1])} a year, with no withdrawals. Index credits are not guaranteed and can be
-              zero in a year, though your value never drops because the market falls.{" "}
-              {indexed.highBonus > 0
-                ? `The bonus becomes fully yours over the ${indexed.years} years, so leaving early can forfeit part of it and bring withdrawal charges. Bonus amounts vary by state and age.`
-                : `Taking money out during the ${indexed.years} years beyond the yearly free amount can bring withdrawal charges.`}{" "}
-              Leave your details below and an advisor will show you exact numbers.
-            </p>
-          </div>
-        ) : growth ? (
-          <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
-            <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-              <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
-              In {growth.years} years, about {formatDollars(growth.amount)} could grow to roughly
-            </p>
-            <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
-              {formatDollars(growth.low)} to {formatDollars(growth.high)}
-            </p>
-            <p className="mt-2 text-xs leading-5 text-neutral-600">
-              A rough illustration, not a quote or a guarantee: a fixed multi-year annuity at about {formatRate(growth.lowRate)}{" "}
-              to {formatRate(growth.highRate)} a year, compounded, with no withdrawals. Real rates depend on the carrier, the
-              amount, and the day you buy, and taking money out early can mean surrender charges. Leave your details below and
-              an advisor will show you exact rates.
-            </p>
-          </div>
-        ) : income ? (
-          <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
-            <p className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-              <TrendingUp aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
-              On about {formatDollars(income.amount)}, guaranteed income for life could be roughly
-            </p>
-            <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
-              {formatDollars(income.low)} to {formatDollars(income.high)} a month
-            </p>
-            <p className="mt-2 text-xs leading-5 text-neutral-600">
-              A rough illustration, not a quote or a guarantee: typical lifetime income for one person starting now. Your real
-              amount depends on the carrier, the product, your age, and when income starts. Leave your details below and an
-              advisor will show you exact quotes.
-            </p>
+            <p className="mt-1 text-sm leading-6 text-neutral-700">We&apos;ll text it to you. Enter your details below.</p>
           </div>
         ) : null}
       </div>
@@ -256,27 +202,6 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         <Field label="ZIP code" name="zip_code" inputMode="numeric" autoComplete="postal-code" required error={error("zip_code")} />
       </div>
 
-      <label className="block">
-        <span className="text-sm font-medium text-neutral-700">Best time to reach you</span>
-        <select
-          className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
-          name="best_time_to_contact"
-          required
-          defaultValue=""
-          onChange={(event) => {
-            if (event.target.value) report("best_time");
-          }}
-        >
-          <option value="">Select</option>
-          {PROTECT_BEST_TIMES.map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-        {error("best_time_to_contact")}
-      </label>
-
       <label className="flex gap-3 text-xs leading-5 text-neutral-600">
         <input
           className="mt-0.5 h-4 w-4 shrink-0 accent-brand-black-500"
@@ -287,17 +212,16 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
             if (event.target.checked) report("consent");
           }}
         />
-        <span>
-          I agree that Rare Legacy Life Group and its licensed professionals may call, email, or text me at the contact
-          information I provide, including using automated technology, about my request and related insurance or retirement
-          planning services. Message and data rates may apply. Consent is not a condition of purchasing any product or service.
-        </span>
+        <span>{PROTECT_CONSENT_TEXT}</span>
       </label>
       {error("consent_tcpa")}
 
       <input ref={startedAtRef} type="hidden" name="started_at" />
       <input ref={landingPageRef} type="hidden" name="landing_page" />
       <input ref={referrerRef} type="hidden" name="referrer" />
+      <input type="hidden" name="goal" value={goal} />
+      {goal === "income" && age ? <input type="hidden" name="age_band" value={age} /> : null}
+      {goal !== "income" && term ? <input type="hidden" name="term_years" value={term} /> : null}
       {Object.entries(tracking).map(([name, value]) => (value ? <input key={name} type="hidden" name={name} value={value} /> : null))}
       <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
         <label>
@@ -312,7 +236,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         </p>
       ) : null}
 
-      <SubmitButton>{estimate ? "Get my exact quotes" : "Request my free review"}</SubmitButton>
+      <SubmitButton>{estimate ? "Text me my estimate" : "Request my free review"}</SubmitButton>
       <p className="flex items-center gap-2 text-xs text-neutral-500">
         <Lock aria-hidden="true" className="h-3.5 w-3.5" />
         Free and no obligation. Your information is never sold.
@@ -344,7 +268,7 @@ function Field({
 
 /**
  * Age or years as big tap buttons like the amounts (Chris, 2026-11-13: "Yes. Make the taps"): on phones 6 of the first 7 ad visitors who
- * picked an amount stopped at the old "Select" drop-down. Buttons, not radios, so the choice only drives the estimate and is never sent.
+ * picked an amount stopped at the old "Select" drop-down. Buttons, not radios; the form sends the pick as a hidden field (2026-11-13).
  */
 function TapChoices({
   legend,

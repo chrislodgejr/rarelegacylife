@@ -108,3 +108,34 @@ export function indexedBonusEstimate(tier: string | null, term: string | null) {
     high: roundTo1000(grow(row[3], INDEXED_ASSUMED_CREDITS[1])),
   };
 }
+
+// The estimate by text (Chris, 2026-11-13: "require people to click submit to get the quote ... lets just text them their estimate
+// in that initial text"): the page no longer shows any figure. The server works the estimate out again from the submitted choices
+// with the functions above (never a number from the browser) and sends it to Endless One, which texts it to the lead.
+
+export const ESTIMATE_GOALS = ["income", "growth", "indexed"] as const;
+export type EstimateGoal = (typeof ESTIMATE_GOALS)[number];
+
+/**
+ * The estimate sent to Endless One. Income: `low`/`high` are monthly dollars and `years` is null. Growth and indexed: `low`/`high` are
+ * the total value after `years` years and `amount` is the starting amount. Whole dollars, rounded as the page's card was.
+ */
+export type ProtectEstimate = { goal: EstimateGoal; amount: number; low: number; high: number; years: number | null };
+
+/** The estimate for a goal, amount tier, and age band (income) or term (growth, indexed), or null when a choice is missing. */
+export function protectEstimate(
+  goal: string | null | undefined,
+  tier: string | null | undefined,
+  age: string | null | undefined,
+  term: string | null | undefined,
+): ProtectEstimate | null {
+  if (goal === "income") {
+    const income = monthlyIncomeEstimate(tier ?? null, age ?? null);
+    return income ? { goal, amount: income.amount, low: income.low, high: income.high, years: null } : null;
+  }
+  if (goal === "growth" || goal === "indexed") {
+    const grown = goal === "growth" ? growthEstimate(tier ?? null, term ?? null) : indexedBonusEstimate(tier ?? null, term ?? null);
+    return grown ? { goal, amount: grown.amount, low: grown.low, high: grown.high, years: grown.years } : null;
+  }
+  return null;
+}

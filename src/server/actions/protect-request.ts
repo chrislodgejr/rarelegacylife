@@ -6,13 +6,24 @@ import { getSiteUrl } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyAdmins } from "@/lib/notifications/db";
 import { clip, pageForIntake, phoneForIntake, sendToEndlessOne } from "@/lib/endless-one/intake";
-import { PROTECT_AMOUNT_TIERS, protectRequestSchema } from "@/lib/validation/forms";
+import { protectEstimate } from "@/lib/estimates/income-estimate";
+import {
+  PROTECT_AMOUNT_TIERS,
+  PROTECT_BEST_TIME,
+  PROTECT_CONSENT_TEXT,
+  PROTECT_CONSENT_VERSION,
+  protectRequestSchema,
+  protectSuccessMessage,
+} from "@/lib/validation/forms";
 
 /**
  * The Google Ads page, /protect (Chris, 2026-11-07). Its own action: the /retirement form is printed on a QR code and never
  * changes. Endless One first (the lead, its amount tier and Google's click id, and the instant email and first text from there),
  * then the site's own copy in retirement_blueprint_requests under the same id, so no request is lost. Every tier is a lead;
  * Endless One counts only $150K and up for Google.
+ * The estimate by text (Chris, 2026-11-13: "lets just text them their estimate in that initial text ... That way entering a fake phone
+ * number will not get you a estimate"): the page shows no figure. The estimate is worked out here again from the submitted goal, amount
+ * tier and age band or years, never from a number the browser sends, and goes to Endless One as retirement.estimate for its first texts.
  */
 export type ProtectRequestState = {
   ok: boolean;
@@ -20,11 +31,8 @@ export type ProtectRequestState = {
   fieldErrors?: Record<string, string>;
 };
 
-const successMessage = "Thank you. A licensed advisor will reach out shortly to set up your free review.";
-
-const consentText =
-  "I agree that Rare Legacy Life Group and its licensed professionals may call, email, or text me at the contact information I provide, including using automated technology, about my request and related insurance or retirement planning services. Message and data rates may apply. Consent is not a condition of purchasing any product or service.";
-const consentVersion = "protect-v1";
+const consentText = PROTECT_CONSENT_TEXT;
+const consentVersion = PROTECT_CONSENT_VERSION;
 const CLICK_ID = /^[A-Za-z0-9_-]{1,200}$/;
 
 export async function submitProtectRequest(
@@ -45,7 +53,7 @@ export async function submitProtectRequest(
   const input = parsed.data;
 
   // Honeypot submissions receive a neutral success response and are not stored.
-  if (input.website) return { ok: true, message: successMessage };
+  if (input.website) return { ok: true, message: protectSuccessMessage(null, false) };
 
   const startedAt = Number(input.started_at);
   const elapsed = Date.now() - startedAt;
@@ -76,6 +84,7 @@ export async function submitProtectRequest(
   const landingPage = input.landing_page ?? `${getSiteUrl()}/protect`;
   const tierLabel = PROTECT_AMOUNT_TIERS.find(([value]) => value === input.amount_tier)?.[1] ?? input.amount_tier;
   const clickId = (value: string | null | undefined) => (value && CLICK_ID.test(value) ? value : null);
+  const estimate = protectEstimate(input.goal, input.amount_tier, input.age_band, input.term_years);
 
   const requestId = crypto.randomUUID();
   await sendToEndlessOne({
@@ -92,9 +101,10 @@ export async function submitProtectRequest(
     },
     retirement: {
       meetingStyle: "phone",
-      bestTimeToContact: input.best_time_to_contact,
+      bestTimeToContact: PROTECT_BEST_TIME,
       question: null,
       amountTier: input.amount_tier,
+      ...(estimate ? { estimate } : {}),
     },
     consents: [{ kind: "tcpa", given: input.consent_tcpa, text: consentText, version: consentVersion, at: now }],
     page: { url: pageForIntake(landingPage) },
@@ -119,7 +129,7 @@ export async function submitProtectRequest(
     phone: input.phone,
     zip_code: input.zip_code,
     meeting_style: "phone",
-    best_time_to_contact: input.best_time_to_contact,
+    best_time_to_contact: PROTECT_BEST_TIME,
     question: `Amount to protect: ${tierLabel}`,
     status: "new",
     assigned_agent_id: null,
@@ -151,7 +161,7 @@ export async function submitProtectRequest(
     metadata: { request_id: requestId, path: `/admin/retirement/${requestId}` },
   }).catch((error: unknown) => console.error("Protect request admin notice failed", error));
 
-  return { ok: true, message: successMessage };
+  return { ok: true, message: protectSuccessMessage(firstName, Boolean(estimate)) };
 }
 
 function getIpAddress(headerStore: Headers) {
