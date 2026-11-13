@@ -170,45 +170,25 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       </fieldset>
 
       {goal === "income" ? (
-        <label className="block">
-          <span className="text-sm font-medium text-neutral-700">Your age</span>
-          <select
-            className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
-            value={age ?? ""}
-            onChange={(event) => {
-              setAge(event.target.value || null);
-              if (event.target.value) report("age_or_term");
-            }}
-            aria-describedby="protect-estimate"
-          >
-            <option value="">Select</option>
-            {ESTIMATE_AGE_BANDS.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <TapChoices
+          legend="Your age"
+          choices={ESTIMATE_AGE_BANDS}
+          value={age}
+          onPick={(value) => {
+            setAge(value);
+            report("age_or_term");
+          }}
+        />
       ) : (
-        <label className="block">
-          <span className="text-sm font-medium text-neutral-700">{goal === "indexed" ? "How many years" : "Lock in a rate for"}</span>
-          <select
-            className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
-            value={term ?? ""}
-            onChange={(event) => {
-              setTerm(event.target.value || null);
-              if (event.target.value) report("age_or_term");
-            }}
-            aria-describedby="protect-estimate"
-          >
-            <option value="">Select</option>
-            {terms.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <TapChoices
+          legend={goal === "indexed" ? "How many years" : "Lock in a rate for"}
+          choices={terms}
+          value={term}
+          onPick={(value) => {
+            setTerm(value);
+            report("age_or_term");
+          }}
+        />
       )}
 
       <div id="protect-estimate" aria-live="polite">
@@ -359,5 +339,40 @@ function Field({
       />
       {error}
     </label>
+  );
+}
+
+/**
+ * Age or years as big tap buttons like the amounts (Chris, 2026-11-13: "Yes. Make the taps"): on phones 6 of the first 7 ad visitors who
+ * picked an amount stopped at the old "Select" drop-down. Buttons, not radios, so the choice only drives the estimate and is never sent.
+ */
+function TapChoices({
+  legend,
+  choices,
+  value,
+  onPick,
+}: {
+  legend: string;
+  choices: readonly (readonly [string, string, ...unknown[]])[];
+  value: string | null;
+  onPick: (value: string) => void;
+}) {
+  return (
+    <fieldset aria-describedby="protect-estimate">
+      <legend className="text-sm font-medium text-neutral-700">{legend}</legend>
+      <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        {choices.map(([choice, label]) => (
+          <button
+            key={choice}
+            type="button"
+            aria-pressed={value === choice}
+            onClick={() => onPick(choice)}
+            className="flex min-h-12 items-center justify-center rounded-xl border border-neutral-300 px-3 py-3 text-sm font-medium aria-pressed:border-brand-black-500 aria-pressed:bg-brand-cream-50"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </fieldset>
   );
 }
