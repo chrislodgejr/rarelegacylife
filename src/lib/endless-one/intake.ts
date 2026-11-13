@@ -48,7 +48,17 @@ export type IntakePayload = {
     health: { tobaccoUse: boolean; healthRating: string; medicalConditions: string | null };
   };
   // amountTier: only the /protect page (Google Ads) sends it; /retirement never does.
-  retirement?: { meetingStyle: string; bestTimeToContact: string; question: string | null; amountTier?: string };
+  // estimate: only /protect, and only when the visitor picked a goal, an amount and an age band (income) or years (growth, indexed).
+  // Worked out on the site's server from those choices (src/lib/estimates/income-estimate.ts); the page never shows it, Endless One
+  // texts it (Chris, 2026-11-13). Income: low/high are monthly dollars and years is null. Growth and indexed: low/high are the total
+  // value after `years` years and amount is the starting amount. Whole dollars.
+  retirement?: {
+    meetingStyle: string;
+    bestTimeToContact: string;
+    question: string | null;
+    amountTier?: string;
+    estimate?: { goal: "income" | "growth" | "indexed"; amount: number; low: number; high: number; years: number | null };
+  };
   contact?: { inquiryType: string; message: string };
   consents: IntakeConsent[];
   page?: { url: string | null };

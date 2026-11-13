@@ -161,12 +161,26 @@ export const PROTECT_AMOUNT_TIERS = [
   ["under_150k", "Under $150K"],
 ] as const;
 
-export const PROTECT_BEST_TIMES = [
-  ["Weekday mornings", "Weekday mornings"],
-  ["Weekday afternoons", "Weekday afternoons"],
-  ["Weekday evenings", "Weekday evenings"],
-  ["Any time", "Any time"],
-] as const;
+// The estimate by text (Chris, 2026-11-13): the contact step is only name, phone, email and ZIP. "Best time to reach you" is gone from
+// the form; Endless One still requires it on a retirement request, so the server sends this fixed answer.
+export const PROTECT_BEST_TIME = "Ask on the call";
+
+// The consent the /protect form shows beside its checkbox, recorded word for word with the request and sent to Endless One.
+// Change the version whenever the words change.
+export const PROTECT_CONSENT_TEXT =
+  "I agree Rare Legacy Life Group and its licensed agents may call and text me at this number, including automated texts, about my request. Consent isn't required to buy. Msg & data rates may apply. Reply STOP to opt out.";
+export const PROTECT_CONSENT_VERSION = "protect-v2";
+
+/** The thank-you after a /protect request: never a figure, only that the estimate is coming by text (when there is one). */
+export function protectSuccessMessage(firstName: string | null | undefined, estimateSent: boolean) {
+  if (!estimateSent) return "Thank you. A licensed advisor will reach out shortly to set up your free review.";
+  const name = firstName?.trim();
+  return `${name ? `Thanks, ${name}.` : "Thanks."} Your estimate is on its way by text. We text between 8 a.m. and 9 p.m. your time, so if it's late it will arrive in the morning.`;
+}
+
+/** A hidden choice from the /protect form: absent or empty means not picked. */
+const optionalChoice = <T extends readonly [string, ...string[]]>(values: T) =>
+  z.preprocess((value) => (value === "" || value === null ? undefined : value), z.enum(values).optional());
 
 export const protectRequestSchema = z.object({
   full_name: requiredText
@@ -179,9 +193,10 @@ export const protectRequestSchema = z.object({
   amount_tier: z.enum(["150k_250k", "250k_500k", "500k_1m", "1m_plus", "under_150k"], {
     error: "Choose about how much you want to protect",
   }),
-  best_time_to_contact: z.enum(["Weekday mornings", "Weekday afternoons", "Weekday evenings", "Any time"], {
-    error: "Choose a good time to reach you",
-  }),
+  // The tap choices behind the estimate, as src/lib/estimates/income-estimate.ts accepts them; the server works the estimate out itself.
+  goal: optionalChoice(["income", "growth", "indexed"] as const),
+  age_band: optionalChoice(["55_59", "60_64", "65_69", "70_74", "75_plus"] as const),
+  term_years: optionalChoice(["5", "7", "10"] as const),
   consent_tcpa: checkbox.refine((value) => value, "Please review and accept the contact consent"),
   website: z.string().trim().max(200).optional().default(""),
   started_at: z.string().trim().max(32).optional().default(""),
