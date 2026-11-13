@@ -77,6 +77,9 @@ export const quoteFormSchema = z.object({
   utm_campaign: optionalText,
   utm_content: optionalText,
   utm_term: optionalText,
+  gclid: optionalAttribution,
+  gbraid: optionalAttribution,
+  wbraid: optionalAttribution,
   landing_page: optionalText,
   referrer: optionalText,
 });

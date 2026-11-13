@@ -14,6 +14,9 @@ type TrackingDefaults = {
   utm_campaign?: string;
   utm_content?: string;
   utm_term?: string;
+  gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
 };
 
 const initialState: FormState = { ok: false, message: "" };
@@ -94,6 +97,9 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
       <input name="utm_campaign" type="hidden" value={tracking.utm_campaign ?? ""} />
       <input name="utm_content" type="hidden" value={tracking.utm_content ?? ""} />
       <input name="utm_term" type="hidden" value={tracking.utm_term ?? ""} />
+      <input name="gclid" type="hidden" value={tracking.gclid ?? ""} />
+      <input name="gbraid" type="hidden" value={tracking.gbraid ?? ""} />
+      <input name="wbraid" type="hidden" value={tracking.wbraid ?? ""} />
       {/* Honeypot: invisible to people, bots fill it in and get silently dropped. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>

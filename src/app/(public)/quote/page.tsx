@@ -24,6 +24,9 @@ export default async function QuotePage({ searchParams }: QuotePageProps) {
     utm_campaign: getParam(params.utm_campaign),
     utm_content: getParam(params.utm_content),
     utm_term: getParam(params.utm_term),
+    gclid: getParam(params.gclid),
+    gbraid: getParam(params.gbraid),
+    wbraid: getParam(params.wbraid),
   };
 
   return (
