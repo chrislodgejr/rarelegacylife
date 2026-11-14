@@ -29,11 +29,20 @@ const stateSchema = z
   .pipe(z.enum(US_STATES));
 
 const emailSchema = z.string().trim().email("Enter a valid email").toLowerCase();
+/** A full US phone number: 10 digits, or 11 starting with the country code 1. */
+export function isFullUsPhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return digits.length === 10 || (digits.length === 11 && digits.startsWith("1"));
+}
+
+// 2026-11-14: a 9-digit number came through the /protect form, so its estimate text could never arrive. Every form that asks for a
+// phone now needs one that can be called and texted.
 const phoneSchema = z
   .string()
   .trim()
-  .min(7, "Enter a valid phone number")
-  .max(32, "Phone number is too long");
+  .min(7, "Enter your full 10-digit phone number")
+  .max(32, "Phone number is too long")
+  .refine(isFullUsPhone, "Enter your full 10-digit phone number");
 
 const optionalAttribution = z
   .string()
