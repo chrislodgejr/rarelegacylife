@@ -1,5 +1,6 @@
 "use client";
 
+import { keepValuesOnSubmit } from "@/lib/forms/keep-values";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Lock, MessageSquareText } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
@@ -95,7 +96,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
 
   return (
     <form
-      action={action}
+      onSubmit={keepValuesOnSubmit(action)}
       className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8"
       onFocusCapture={(event) => {
         const name = (event.target as EventTarget as HTMLInputElement).name;
@@ -199,7 +200,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         <Field label="First and last name" name="full_name" autoComplete="name" required error={error("full_name")} />
         <Field label="Phone" name="phone" type="tel" autoComplete="tel" required error={error("phone")} />
         <Field label="Email" name="email" type="email" autoComplete="email" required error={error("email")} />
-        <Field label="ZIP code" name="zip_code" inputMode="numeric" autoComplete="postal-code" required error={error("zip_code")} />
+        <Field label="ZIP code" name="zip_code" inputMode="numeric" autoComplete="postal-code" pattern="\d{5}(-\d{4})?" title="5-digit ZIP code" required error={error("zip_code")} />
       </div>
 
       <label className="flex gap-3 text-xs leading-5 text-neutral-600">

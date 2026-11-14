@@ -1,5 +1,6 @@
 "use client";
 
+import { keepValuesOnSubmit } from "@/lib/forms/keep-values";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
@@ -82,8 +83,7 @@ export function QuoteForm({ tracking }: { tracking: TrackingDefaults }) {
   return (
     <form
       ref={formRef}
-      action={action}
-      onSubmit={() => trackEvent("quote_submit", { step: steps.length })}
+      onSubmit={keepValuesOnSubmit(action, () => trackEvent("quote_submit", { step: steps.length }))}
       className="premium-card grid scroll-mt-24 gap-6 rounded-2xl p-5 text-[#050505] md:p-8"
     >
       <input ref={submissionIdRef} name="submission_id" type="hidden" defaultValue="" />

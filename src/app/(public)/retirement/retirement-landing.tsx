@@ -1,5 +1,6 @@
 "use client";
 
+import { keepValuesOnSubmit } from "@/lib/forms/keep-values";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -486,11 +487,10 @@ export function RetirementLanding() {
                 </div>
               ) : (
                 <form
-                  action={formAction}
                   className={styles.form}
                   noValidate
                   onFocusCapture={beginForm}
-                  onSubmit={handleSubmit}
+                  onSubmit={(event) => keepValuesOnSubmit(formAction, handleSubmit)(event)}
                 >
                   <div className={styles.field}>
                     <label htmlFor="full_name">First and last name</label>
