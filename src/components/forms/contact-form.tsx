@@ -1,5 +1,6 @@
 "use client";
 
+import { keepValuesOnSubmit } from "@/lib/forms/keep-values";
 import { useActionState, useState } from "react";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { submitContactForm, type FormState } from "@/server/actions/public-forms";
@@ -11,7 +12,7 @@ export function ContactForm() {
   const [startedAt] = useState(() => Date.now());
 
   return (
-    <form action={action} className="premium-card relative grid gap-4 rounded-2xl p-5 md:p-8">
+    <form onSubmit={keepValuesOnSubmit(action)} className="premium-card relative grid gap-4 rounded-2xl p-5 md:p-8">
       <input name="started_at" type="hidden" value={startedAt} />
       {/* Honeypot: invisible to people, bots fill it in and get silently dropped. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">

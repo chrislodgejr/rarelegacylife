@@ -1,5 +1,6 @@
 "use client";
 
+import { keepValuesOnSubmit } from "@/lib/forms/keep-values";
 import { useActionState } from "react";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { US_STATES } from "@/lib/constants/options";
@@ -11,7 +12,7 @@ export function AgentApplicationForm() {
   const [state, action] = useActionState(submitAgentApplication, initialState);
 
   return (
-    <form action={action} className="premium-card grid gap-4 rounded-2xl p-5 md:p-8">
+    <form onSubmit={keepValuesOnSubmit(action)} className="premium-card grid gap-4 rounded-2xl p-5 md:p-8">
       <div className="grid gap-4 md:grid-cols-2">
         <TextField label="First name" name="first_name" required />
         <TextField label="Last name" name="last_name" required />
