@@ -113,3 +113,14 @@ test("thank-you: by text and never a figure, or today's message without an estim
     "Thank you. A licensed advisor will reach out shortly to set up your free review.",
   );
 });
+
+// 2026-11-14: a 9-digit number came through, so its estimate text could never arrive. The form now needs a full US number.
+test("the phone must be a full US number: 10 digits, or 11 starting with 1", () => {
+  for (const phone of ["(215) 555-0134", "215-555-0134", "+1 215 555 0134", "12155550134"])
+    assert.equal(protectRequestSchema.safeParse({ ...contact, phone }).success, true, phone);
+  for (const phone of ["215-555-013", "555-0134", "22155550134", "215-555-01345"]) {
+    const parsed = protectRequestSchema.safeParse({ ...contact, phone });
+    assert.equal(parsed.success, false, phone);
+    assert.equal(parsed.error.issues[0].message, "Enter your full 10-digit phone number");
+  }
+});
