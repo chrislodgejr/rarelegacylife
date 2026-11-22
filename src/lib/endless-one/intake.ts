@@ -49,7 +49,7 @@ export type IntakePayload = {
   };
   // amountTier: only the /protect page (Google Ads) sends it; /retirement never does.
   // estimate: only /protect, and only when the visitor picked a goal, an amount and an age band (income) or years (growth, indexed).
-  // Worked out on the site's server from those choices (src/lib/estimates/income-estimate.ts); the page never shows it, Endless One
+  // Worked out on the site's server from those choices (src/lib/estimates/income-estimate.ts); the page shows only a broader range, Endless One
   // texts it (Chris, 2026-11-13). Income: low/high are monthly dollars and years is null. Growth and indexed: low/high are the total
   // value after `years` years and amount is the starting amount. Whole dollars.
   retirement?: {

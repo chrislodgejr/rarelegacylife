@@ -7,6 +7,8 @@ import {
   ESTIMATE_GOALS,
   GROWTH_TERMS,
   INDEXED_TERMS,
+  TIER_ESTIMATE_AMOUNTS,
+  broadEstimate,
   growthEstimate,
   indexedBonusEstimate,
   monthlyIncomeEstimate,
@@ -123,4 +125,23 @@ test("the phone must be a full US number: 10 digits, or 11 starting with 1", () 
     assert.equal(parsed.success, false, phone);
     assert.equal(parsed.error.issues[0].message, "Enter your full 10-digit phone number");
   }
+});
+
+// 2026-11-22: the page shows a broad range again. It may be looser than the text, never rosier.
+test("the page's broad range: looser than the text, never higher, for every choice", () => {
+  assert.deepEqual(broadEstimate(protectEstimate("income", "250k_500k", "65_69")), { low: 1800, high: 2300 });
+  const choices = [
+    ...ESTIMATE_AGE_BANDS.map(([age]) => ["income", age, null]),
+    ...GROWTH_TERMS.map(([term]) => ["growth", null, term]),
+    ...INDEXED_TERMS.map(([term]) => ["indexed", null, term]),
+  ];
+  for (const tier of Object.keys(TIER_ESTIMATE_AMOUNTS))
+    for (const [goal, age, term] of choices) {
+      const texted = protectEstimate(goal, tier, age, term);
+      const shown = broadEstimate(texted);
+      const name = [goal, tier, age ?? term].join(" ");
+      assert.ok(shown.low < texted.low, `${name}: low`);
+      assert.ok(shown.high <= texted.high, `${name}: high never above the text`);
+      assert.ok(shown.high >= texted.low && shown.high > shown.low, `${name}: overlaps`);
+    }
 });

@@ -110,7 +110,7 @@ export function indexedBonusEstimate(tier: string | null, term: string | null) {
 }
 
 // The estimate by text (Chris, 2026-11-13: "require people to click submit to get the quote ... lets just text them their estimate
-// in that initial text"): the page no longer shows any figure. The server works the estimate out again from the submitted choices
+// in that initial text"): since 2026-11-22 the page shows only a broad range (broadEstimate). The server works the estimate out again from the submitted choices
 // with the functions above (never a number from the browser) and sends it to Endless One, which texts it to the lead.
 
 export const ESTIMATE_GOALS = ["income", "growth", "indexed"] as const;
@@ -138,4 +138,14 @@ export function protectEstimate(
     return grown ? { goal, amount: grown.amount, low: grown.low, high: grown.high, years: grown.years } : null;
   }
   return null;
+}
+
+// The page's broad range (test from 2026-11-22; Chris: "Yes" to a rough range on the page with the closer figure still by text).
+// The low end is taken down about 10% and both ends are rounded down, so the page is looser than the text and its top is never
+// above the estimate: nobody is shown more than the ranges above allow.
+export function broadEstimate(estimate: ProtectEstimate) {
+  const step = estimate.goal === "income" ? 100 : 5000;
+  const low = Math.floor((estimate.low * 0.9) / step) * step;
+  const high = Math.floor(estimate.high / step) * step;
+  return { low, high: high >= estimate.low ? high : estimate.high };
 }

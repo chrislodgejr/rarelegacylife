@@ -5,7 +5,17 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Lock, MessageSquareText } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { formStepReporter, type FormStepReporter } from "@/lib/form-steps";
-import { ESTIMATE_AGE_BANDS, GROWTH_TERMS, INDEXED_TERMS, protectEstimate } from "@/lib/estimates/income-estimate";
+import {
+  ESTIMATE_AGE_BANDS,
+  GROWTH_TERMS,
+  INDEXED_ASSUMED_CREDITS,
+  INDEXED_TERMS,
+  broadEstimate,
+  formatDollars,
+  formatRate,
+  protectEstimate,
+  type ProtectEstimate,
+} from "@/lib/estimates/income-estimate";
 import { PROTECT_AMOUNT_TIERS, PROTECT_CONSENT_TEXT } from "@/lib/validation/forms";
 import { submitProtectRequest, type ProtectRequestState } from "@/server/actions/protect-request";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -27,7 +37,8 @@ const CONTACT_FIELDS = ["full_name", "phone", "email", "zip_code"];
 /**
  * The Google Ads page's one short form: the amount first (one tap) and an age band for a rough monthly income range (Chris,
  * 2026-11-10), or, for the two growth choices, a number of years for what the amount could grow to (2026-11-11); then how to reach you.
- * The estimate is texted, never shown (Chris, 2026-11-13, after 10 of 10 who saw it on the page left without their details: "require
+ * Test from 2026-11-22 (Chris: "Yes"): a broad range shows on the page and the closer estimate is still texted only. Before that,
+ * from 2026-11-13, nothing showed (Chris, 2026-11-13, after 10 of 10 who saw it on the page left without their details: "require
  * people to click submit to get the quote ... lets just text them their estimate in that initial text ... That way entering a fake phone
  * number will not get you a estimate"): once the choices are in, a card says it is ready and the button reads "Text me my estimate".
  * The goal, age band and years are sent as hidden fields; the server works the estimate out again and Endless One texts it. The contact
@@ -45,8 +56,9 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const [age, setAge] = useState<string | null>(null);
   const [goal, setGoal] = useState<"income" | "growth" | "indexed">("income");
   const [term, setTerm] = useState<string | null>(null);
-  // Only whether the estimate is ready: its figures are never shown, the server works them out again and Endless One texts them.
-  const estimate = protectEstimate(goal, tier, age, term) !== null;
+  // Shown only as a broad range; the server works the figures out again and Endless One texts them.
+  const figures = protectEstimate(goal, tier, age, term);
+  const estimate = figures !== null;
   const terms = goal === "indexed" ? INDEXED_TERMS : GROWTH_TERMS;
   const estimateShown = useRef(false);
   const reportRef = useRef<FormStepReporter | null>(null);
@@ -133,10 +145,10 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         <legend className="text-base font-semibold">About how much are you looking to protect?</legend>
         <p className="mt-1 text-sm text-neutral-600">
           {goal === "income"
-            ? "Pick an amount and your age for a rough monthly income estimate, sent by text."
+            ? "Pick an amount and your age for a rough monthly income range. We text you the closer estimate."
             : goal === "growth"
-              ? "Pick an amount and how long to lock in a rate for an estimate of what it could grow to, sent by text."
-              : "Pick an amount and how many years for an estimate of what it could grow to, sent by text."}
+              ? "Pick an amount and how long to lock in a rate for a rough range of what it could grow to. We text you the closer estimate."
+              : "Pick an amount and how many years for a rough range of what it could grow to. We text you the closer estimate."}
         </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {PROTECT_AMOUNT_TIERS.map(([value, label]) => (
@@ -185,15 +197,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       )}
 
       <div id="protect-estimate" aria-live="polite">
-        {estimate ? (
-          <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
-            <p className="font-premium flex items-center gap-2 text-lg font-semibold text-[#050505]">
-              <MessageSquareText aria-hidden="true" className="h-5 w-5 shrink-0 text-brand-black-500" />
-              Your estimate is ready
-            </p>
-            <p className="mt-1 text-sm leading-6 text-neutral-700">We&apos;ll text it to you. Enter your details below.</p>
-          </div>
-        ) : null}
+        {figures ? <RangeCard figures={figures} /> : null}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -243,6 +247,45 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         Free and no obligation. Your information is never sold.
       </p>
     </form>
+  );
+}
+
+/** The broad range, with the disclaimers the on-page estimate carried, then the closer estimate by text. */
+function RangeCard({ figures }: { figures: ProtectEstimate }) {
+  const { goal, amount, years } = figures;
+  const { low, high } = broadEstimate(figures);
+  const bonus = goal === "indexed" ? INDEXED_TERMS.find(([value]) => value === String(years)) : undefined;
+  const hasBonus = Boolean(bonus && bonus[3] > 0);
+  return (
+    <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
+      <p className="text-sm font-medium text-neutral-700">
+        {goal === "income"
+          ? `On about ${formatDollars(amount)}, guaranteed income for life could be roughly`
+          : `In ${years} years, about ${formatDollars(amount)} could grow to roughly`}
+      </p>
+      <p className="font-premium mt-1 text-2xl font-semibold text-[#050505]">
+        {formatDollars(low)} to {formatDollars(high)}
+        {goal === "income" ? " a month" : ""}
+      </p>
+      <p className="mt-2 flex items-start gap-2 text-sm font-medium leading-6 text-[#050505]">
+        <MessageSquareText aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-brand-black-500" />
+        Want a closer number? Enter your details below and we&apos;ll text your estimate.
+      </p>
+      <p className="mt-2 text-xs leading-5 text-neutral-600">
+        A rough illustration, not a quote or a guarantee:{" "}
+        {goal === "income"
+          ? "typical lifetime income for one person starting now. Your real amount depends on the carrier, the product, your age, and when income starts."
+          : goal === "growth"
+            ? "a fixed multi-year annuity, compounded, with no withdrawals. Real rates depend on the carrier, the amount, and the day you buy, and taking money out early can mean surrender charges."
+            : `a fixed indexed annuity${
+                hasBonus ? ` with an up-front bonus of about ${formatRate(bonus![2])} to ${formatRate(bonus![3])}` : ""
+              }, assuming average index credits of up to ${formatRate(INDEXED_ASSUMED_CREDITS[1])} a year, with no withdrawals. Index credits are not guaranteed and can be zero in a year, though your value never drops because the market falls. ${
+                hasBonus
+                  ? `The bonus becomes fully yours over the ${years} years, so leaving early can forfeit part of it and bring withdrawal charges. Bonus amounts vary by state and age.`
+                  : `Taking money out during the ${years} years beyond the yearly free amount can bring withdrawal charges.`
+              }`}
+      </p>
+    </div>
   );
 }
 
