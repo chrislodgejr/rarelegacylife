@@ -22,6 +22,7 @@ import { ADVISORS, SITE } from "@/lib/site";
 // The Google Ads landing page (Chris, 2026-11-07). Not indexed and not in the sitemap: it exists for paid traffic. No rates are
 // shown ("there's dozens of different products and they all have different rates"). /retirement, printed on a QR code, is
 // separate and unchanged.
+// v5 (2026-11-22, a test): a broad range shows on the page and the closer estimate is texted.
 // v4 (2026-11-13): the estimate is never shown on the page; the visitor submits and Endless One texts it (src/components/forms/
 // protect-form.tsx).
 // v3 (2026-11-10): the form shows a rough lifetime-income range once an amount and an age are picked (src/lib/estimates/
@@ -103,7 +104,7 @@ const faqs = [
   },
   {
     q: "Why don't you list rates?",
-    a: "Rates differ by carrier, product, term, and amount, and they change often. The estimate we text you is only a rough range; rather than advertise a rate that may not apply to you, we show you real options for your situation.",
+    a: "Rates differ by carrier, product, term, and amount, and they change often. The range on this page and the estimate we text you are only rough illustrations; rather than advertise a rate that may not apply to you, we show you real options for your situation.",
   },
   {
     q: "Who can you help?",
