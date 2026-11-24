@@ -23,8 +23,8 @@ import { SubmitButton } from "@/components/forms/submit-button";
 /**
  * The retirement quiz (Chris, 2026-11-24: "how the questions are laid out", then "yes build it"; src/lib/quiz.ts). One question a
  * screen, every answer a big tap that moves on by itself, a progress bar, and one line under each question, beside the advisor's photo, on why
- * it is asked. The last two screens are /protect's contact step, asking the same things under the same consent but split in two (name and
- * email, then phone and ZIP), a broad range on the page and the closer estimate by text (so a fake phone number gets no estimate). It submits through
+ * it is asked. The last two screens are /protect's contact step, asking the same things under the same consent but split in two (first name, last name
+ * and email, then phone and ZIP), a broad range on the page and the closer estimate by text (so a fake phone number gets no estimate). It submits through
  * /protect's action, which works the estimate out again on the server.
  * Steps are counted with trackEvent only (quiz_step, quiz_submit, quiz_error). They are not sent to Endless One's form-steps yet: that
  * feed is /protect's, and mixing the quiz into it would muddy its numbers until Endless One knows the quiz as its own page.
@@ -272,6 +272,12 @@ export function RetirementQuiz({
               const field = event.currentTarget.elements.namedItem(name);
               if (field instanceof HTMLInputElement) field.value = value;
             }
+            const typed = (name: string) => {
+              const field = event.currentTarget.elements.namedItem(name);
+              return field instanceof HTMLInputElement ? field.value.trim() : "";
+            };
+            const fullName = event.currentTarget.elements.namedItem("full_name");
+            if (fullName instanceof HTMLInputElement) fullName.value = `${typed("first_name")} ${typed("last_name")}`.trim();
             const data = new FormData(event.currentTarget);
             contactRef.current = { email: String(data.get("email") ?? ""), phone: String(data.get("phone") ?? "") };
             keepValuesOnSubmit(action)(event);
@@ -290,7 +296,13 @@ export function RetirementQuiz({
           {/* Both screens stay in the form so nothing typed is lost going back and forth; only one shows at a time. */}
           <div className={onPhone ? "hidden" : "space-y-5"}>
             <div aria-live="polite">{figures ? <RangeCard figures={figures} /> : null}</div>
-            <Field label="First and last name" name="full_name" autoComplete="name" required error={error("full_name")} />
+            {/* First and last name are their own boxes (Chris, 2026-11-24: "first and last name should be different fields"). The
+                request still carries one full_name, joined as the form is sent, so /protect's server check is unchanged. */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="First name" name="first_name" autoComplete="given-name" maxLength={80} required error={null} />
+              <Field label="Last name" name="last_name" autoComplete="family-name" maxLength={80} required error={error("full_name")} />
+            </div>
+            <input type="hidden" name="full_name" />
             <Field label="Email" name="email" type="email" autoComplete="email" required error={error("email")} />
             <button
               type="button"
@@ -298,7 +310,7 @@ export function RetirementQuiz({
               onClick={(event) => {
                 // The browser's own checks on this screen's two fields, since the form is not sent yet.
                 const form = event.currentTarget.form;
-                const fields = ["full_name", "email"].map((name) => form?.elements.namedItem(name));
+                const fields = ["first_name", "last_name", "email"].map((name) => form?.elements.namedItem(name));
                 for (const field of fields) if (field instanceof HTMLInputElement && !field.reportValidity()) return;
                 trackEvent("quiz_step", { page, step: "contact" });
                 go(index + 1);
