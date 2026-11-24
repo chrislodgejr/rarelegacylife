@@ -174,6 +174,8 @@ test("quiz: the request takes the quiz's taps, and /protect's request is unchang
   const fromRetirement = protectRequestSchema.parse({ ...contact, quiz_page: "retirement" });
   assert.equal(QUIZ_PAGES[fromRetirement.quiz_page].path, "/retirement");
   assert.equal(QUIZ_PAGES[fromRetirement.quiz_page].source, "retirement_page");
+  // /protect carries the quiz since 2026-11-24 and keeps the source its ad leads always had.
+  assert.equal(QUIZ_PAGES[protectRequestSchema.parse({ ...contact, quiz_page: "protect" }).quiz_page].source, "google_ads_protect");
   assert.deepEqual(quizTracking({ gclid: ["abc", "def"], utm_source: "google", other: "x", utm_term: "" }), { gclid: "abc", utm_source: "google" });
 });
 

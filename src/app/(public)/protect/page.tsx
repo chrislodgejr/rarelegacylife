@@ -13,15 +13,18 @@ import {
   ShieldCheck,
   Wallet,
 } from "lucide-react";
-import { ProtectForm, type ProtectTracking } from "@/components/forms/protect-form";
+import { RetirementQuiz } from "@/components/forms/retirement-quiz";
+import { type ProtectTracking } from "@/components/forms/protect-form";
 import { LandingShell } from "@/components/layout/landing-shell";
 import { Eyebrow } from "@/components/ui/section";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { ADVISORS, SITE } from "@/lib/site";
+import { ADVISORS, RETIREMENT_ADVISOR, SITE } from "@/lib/site";
 
 // The Google Ads landing page (Chris, 2026-11-07). Not indexed and not in the sitemap: it exists for paid traffic. No rates are
 // shown ("there's dozens of different products and they all have different rates"). /retirement, printed on a QR code, is
 // separate and unchanged.
+// v7 (2026-11-24, Chris: "it was suppose to be built out like the quiz ... not one single form"): the form is the retirement quiz,
+// one question a screen, with the same steps reported to Endless One, the same source and the same Google Ads conversion.
 // v6 (2026-11-24, Chris: "remove the on screen estimates. they need to enter information to get the information"): back to v4,
 // nothing on the page; the card says the estimate is ready and Endless One texts it.
 // v5 (2026-11-22, a test): a broad range shows on the page and the closer estimate is texted.
@@ -106,7 +109,7 @@ const faqs = [
   },
   {
     q: "Why don't you list rates?",
-    a: "Rates differ by carrier, product, term, and amount, and they change often. The range on this page and the estimate we text you are only rough illustrations; rather than advertise a rate that may not apply to you, we show you real options for your situation.",
+    a: "Rates differ by carrier, product, term, and amount, and they change often. The estimate we text you is only a rough illustration; rather than advertise a rate that may not apply to you, we show you real options for your situation.",
   },
   {
     q: "Who can you help?",
@@ -166,7 +169,13 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
               </a>
             </div>
             <div id={FORM_ID} className="scroll-mt-24">
-              <ProtectForm tracking={tracking} />
+              <RetirementQuiz
+                page="protect"
+                tracking={tracking}
+                title="See your options in about two minutes."
+                intro="Tap an answer to move on. There's nothing to type until the last step."
+                advisor={RETIREMENT_ADVISOR}
+              />
             </div>
           </div>
         </section>
