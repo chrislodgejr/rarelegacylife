@@ -123,7 +123,7 @@ export default async function AnnuityRatesPage({ searchParams }: PageProps) {
               tracking={tracking}
               goal="growth"
               title="See what your amount could grow to."
-              intro="A few taps, then a closer estimate for your amount and term by text."
+              intro="A few taps, then an estimate for your amount and term by text."
               advisor={RETIREMENT_ADVISOR}
             />
           </div>

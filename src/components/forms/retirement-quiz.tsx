@@ -18,14 +18,14 @@ import { RETIREMENT_SCHEDULER_URLS } from "@/lib/constants/retirement";
 import { PROTECT_AMOUNT_TIERS, PROTECT_CONSENT_TEXT } from "@/lib/validation/forms";
 import { submitProtectRequest, type ProtectRequestState } from "@/server/actions/protect-request";
 import { sendQuizProspect } from "@/server/actions/quiz-prospect";
-import { Field, RangeCard, type ProtectTracking } from "@/components/forms/protect-form";
+import { EstimateReadyCard, Field, type ProtectTracking } from "@/components/forms/protect-form";
 import { SubmitButton } from "@/components/forms/submit-button";
 
 /**
  * The retirement quiz (Chris, 2026-11-24: "how the questions are laid out", then "yes build it"; src/lib/quiz.ts). One question a
  * screen, every answer a big tap that moves on by itself, a progress bar, and one line under each question, beside the advisor's photo, on why
  * it is asked. The last two screens are /protect's contact step, asking the same things under the same consent but split in two (first name, last name
- * and email, then phone and ZIP), a broad range on the page and the closer estimate by text (so a fake phone number gets no estimate). It submits through
+ * and email, then phone and ZIP), no figure on the page and the estimate by text only (so a fake phone number gets no estimate). It submits through
  * /protect's action, which works the estimate out again on the server.
  * Steps are counted with trackEvent only (quiz_step, quiz_submit, quiz_error). They are not sent to Endless One's form-steps yet: that
  * feed is /protect's, and mixing the quiz into it would muddy its numbers until Endless One knows the quiz as its own page.
@@ -292,13 +292,13 @@ export function RetirementQuiz({
                 ? "Last step. Where should we text your estimate?"
                 : "Last step. What's the best number to reach you?"
               : figures
-                ? "Your estimate is ready. Who should we send it to?"
+                ? "Almost done. Who should we send your estimate to?"
                 : "Almost done. Who should the advisor ask for?"}
           </h2>
 
           {/* Both screens stay in the form so nothing typed is lost going back and forth; only one shows at a time. */}
           <div className={onPhone ? "hidden" : "space-y-5"}>
-            <div aria-live="polite">{figures ? <RangeCard figures={figures} /> : null}</div>
+            <div aria-live="polite">{figures ? <EstimateReadyCard /> : null}</div>
             {/* First and last name are their own boxes (Chris, 2026-11-24: "first and last name should be different fields"). The
                 request still carries one full_name, joined as the form is sent, so /protect's server check is unchanged. */}
             <div className="grid gap-4 sm:grid-cols-2">

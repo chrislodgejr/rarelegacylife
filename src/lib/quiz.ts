@@ -6,12 +6,15 @@
 /** The pages that carry the quiz, each with its address and the `source` its requests are saved under on the site. */
 export const QUIZ_PAGES = {
   quiz: { path: "/retirement/quiz", source: "retirement_quiz" },
+  // The QR code's page (Chris, 2026-11-24: "the retirement page can change. i just need it to be a live page because of a qr code
+  // attached to it"): the quiz is the first thing under its hero, saved under its own source so QR scans can be counted apart.
+  retirement: { path: "/retirement", source: "retirement_page" },
   calculator: { path: "/annuity-calculator", source: "annuity_calculator" },
   rates: { path: "/annuity-rates", source: "annuity_rates" },
 } as const;
 
 export type QuizPage = keyof typeof QUIZ_PAGES;
-export const QUIZ_PAGE_KEYS = ["quiz", "calculator", "rates"] as const satisfies readonly QuizPage[];
+export const QUIZ_PAGE_KEYS = ["quiz", "retirement", "calculator", "rates"] as const satisfies readonly QuizPage[];
 
 export const QUIZ_RETIRED = [
   ["retired", "Yes, I'm retired"],

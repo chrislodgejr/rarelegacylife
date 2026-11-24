@@ -23,6 +23,8 @@ import { ADVISORS, SITE } from "@/lib/site";
 // The Google Ads landing page (Chris, 2026-11-07). Not indexed and not in the sitemap: it exists for paid traffic. No rates are
 // shown ("there's dozens of different products and they all have different rates"). /retirement, printed on a QR code, is
 // separate and unchanged.
+// v6 (2026-11-24, Chris: "remove the on screen estimates. they need to enter information to get the information"): back to v4,
+// nothing on the page; the card says the estimate is ready and Endless One texts it.
 // v5 (2026-11-22, a test): a broad range shows on the page and the closer estimate is texted.
 // v4 (2026-11-13): the estimate is never shown on the page; the visitor submits and Endless One texts it (src/components/forms/
 // protect-form.tsx).
