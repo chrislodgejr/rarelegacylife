@@ -5,7 +5,8 @@ import type { Guide } from "@/content/guides";
  * pages"). The first batch: four product guides and eight of the questions people ask before they buy. Written from scratch for
  * Rare Legacy under the rules at the top of src/content/guides.ts: one question a guide, a short answer that stands on its own, a
  * named licensed author, and no carrier names, rates or guarantees. Each ends on the quiz (cta "quiz").
- * NOT YET REVIEWED: the advisors and compliance should read these before they go live, tax passages above all.
+ * Approved to go live by Chris, 2026-11-24 ("no we are good"). A new or changed guide, the tax passages above all, still goes
+ * past the advisors and compliance before it is merged.
  * To add a guide, add an entry here; the page, the sitemap and the guides index pick it up. Add its line to public/llms.txt too.
  */
 

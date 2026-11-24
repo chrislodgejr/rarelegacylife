@@ -16,7 +16,8 @@ import { RETIREMENT_ADVISOR } from "@/lib/site";
 // are the ones the estimate already uses (GROWTH_TERMS and GROWTH_RATES_AS_OF in src/lib/estimates/income-estimate.ts, read from the
 // rate card of the carrier the advisors use most), so there is one place to update and the page can never disagree with the texted
 // estimate. No carrier is named. Indexed and income products get no rate here because theirs is not a single number.
-// NOT YET REVIEWED BY COMPLIANCE: publishing a rate is an advertisement under state insurance rules. Review before merging to live.
+// Approved to go live by Chris, 2026-11-24 ("no we are good"). Publishing a rate is an advertisement under state insurance rules:
+// have compliance review any change to the ranges, their date or this wording.
 export const metadata = pageMetadata({
   title: "Fixed Annuity Rates: Recent Ranges by Term | Rare Legacy Life Group",
   description:
