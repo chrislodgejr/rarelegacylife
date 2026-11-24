@@ -7,6 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyAdmins } from "@/lib/notifications/db";
 import { clip, pageForIntake, phoneForIntake, sendToEndlessOne } from "@/lib/endless-one/intake";
 import { protectEstimate } from "@/lib/estimates/income-estimate";
+import { QUIZ_PAGES, quizNote } from "@/lib/quiz";
 import {
   PROTECT_AMOUNT_TIERS,
   PROTECT_BEST_TIME,
@@ -24,6 +25,9 @@ import {
  * The estimate by text (Chris, 2026-11-13: "lets just text them their estimate in that initial text ... That way entering a fake phone
  * number will not get you a estimate"): the page shows no figure. The estimate is worked out here again from the submitted goal, amount
  * tier and age band or years, never from a number the browser sends, and goes to Endless One as retirement.estimate for its first texts.
+ * The quiz pages (Chris, 2026-11-24: "yes build it"; src/lib/quiz.ts) send this same request: `quiz_page` says which page, the quiz's
+ * extra taps ride to Endless One as one line in `question`, and the site's copy is saved under that page's own `source`. A /protect
+ * request sends none of them and is handled exactly as before.
  */
 export type ProtectRequestState = {
   ok: boolean;
@@ -81,7 +85,9 @@ export async function submitProtectRequest(
   const nameParts = input.full_name.split(/\s+/);
   const firstName = nameParts.shift() ?? input.full_name;
   const lastName = nameParts.join(" ");
-  const landingPage = input.landing_page ?? `${getSiteUrl()}/protect`;
+  const quizPage = input.quiz_page ? QUIZ_PAGES[input.quiz_page] : null;
+  const note = quizPage ? quizNote(input) : null;
+  const landingPage = input.landing_page ?? `${getSiteUrl()}${quizPage?.path ?? "/protect"}`;
   const tierLabel = PROTECT_AMOUNT_TIERS.find(([value]) => value === input.amount_tier)?.[1] ?? input.amount_tier;
   const clickId = (value: string | null | undefined) => (value && CLICK_ID.test(value) ? value : null);
   const estimate = protectEstimate(input.goal, input.amount_tier, input.age_band, input.term_years);
@@ -102,7 +108,7 @@ export async function submitProtectRequest(
     retirement: {
       meetingStyle: "phone",
       bestTimeToContact: PROTECT_BEST_TIME,
-      question: null,
+      question: clip(note, 2500),
       amountTier: input.amount_tier,
       ...(estimate ? { estimate } : {}),
     },
@@ -130,10 +136,10 @@ export async function submitProtectRequest(
     zip_code: input.zip_code,
     meeting_style: "phone",
     best_time_to_contact: PROTECT_BEST_TIME,
-    question: `Amount to protect: ${tierLabel}`,
+    question: note ? `Amount to protect: ${tierLabel}. ${note}` : `Amount to protect: ${tierLabel}`,
     status: "new",
     assigned_agent_id: null,
-    source: "google_ads_protect",
+    source: quizPage?.source ?? "google_ads_protect",
     consent_tcpa: input.consent_tcpa,
     consent_text: consentText,
     consent_version: consentVersion,
@@ -154,7 +160,7 @@ export async function submitProtectRequest(
   if (insertError) console.error("Protect request site copy failed", insertError);
 
   await notifyAdmins({
-    title: "New Google Ads request",
+    title: quizPage ? "New retirement quiz request" : "New Google Ads request",
     body: `${input.full_name} requested a free retirement review.`,
     notificationType: "retirement_request",
     priority: "high",

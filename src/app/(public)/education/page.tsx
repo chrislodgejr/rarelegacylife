@@ -57,6 +57,11 @@ const educationSections = [
   },
 ];
 
+// With the annuity library (2026-11-24) the guides are too many for one grid, so they are grouped by subject.
+const guideGroups = (["Retirement & annuities", "Life insurance", "Business owners", "Local"] as const)
+  .map((category) => ({ category, guides: GUIDES.filter((guide) => guide.category === category) }))
+  .filter((group) => group.guides.length > 0);
+
 const planningQuestions = [
   "Who depends on your income, care, business role, or financial support?",
   "What debt, mortgage, rent, childcare, education, or final-expense obligations would remain?",
@@ -91,23 +96,39 @@ export default function EducationPage() {
         </Section>
 
         <Section>
-          <h2 className="font-premium text-3xl font-semibold text-[#050505]">Popular questions</h2>
-          <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {GUIDES.map((guide) => (
-              <Link
-                key={guide.slug}
-                className="premium-card group flex flex-col rounded-xl p-6 transition hover:-translate-y-0.5"
-                href={`/education/${guide.slug}`}
-              >
-                <span className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">{guide.category}</span>
-                <span className="font-premium mt-3 text-xl font-semibold leading-snug text-[#050505]">{guide.title}</span>
-                <span className="mt-3 flex-1 text-sm leading-6 text-neutral-600">{guide.description}</span>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#050505] group-hover:underline">
-                  Read the guide <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                </span>
-              </Link>
-            ))}
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <span className="font-semibold text-[#050505]">Tools:</span>
+            <Link className="rounded-full border border-neutral-300 px-4 py-2 font-semibold hover:border-brand-black-500" href="/annuity-calculator">
+              Annuity calculator
+            </Link>
+            <Link className="rounded-full border border-neutral-300 px-4 py-2 font-semibold hover:border-brand-black-500" href="/annuity-rates">
+              Fixed annuity rates
+            </Link>
+            <Link className="rounded-full border border-neutral-300 px-4 py-2 font-semibold hover:border-brand-black-500" href="/retirement/quiz">
+              Retirement quiz
+            </Link>
           </div>
+          {guideGroups.map((group) => (
+            <div key={group.category} className="mt-10">
+              <h2 className="font-premium text-3xl font-semibold text-[#050505]">{group.category}</h2>
+              <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {group.guides.map((guide) => (
+                  <Link
+                    key={guide.slug}
+                    className="premium-card group flex flex-col rounded-xl p-6 transition hover:-translate-y-0.5"
+                    href={`/education/${guide.slug}`}
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">{guide.category}</span>
+                    <span className="font-premium mt-3 text-xl font-semibold leading-snug text-[#050505]">{guide.title}</span>
+                    <span className="mt-3 flex-1 text-sm leading-6 text-neutral-600">{guide.description}</span>
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#050505] group-hover:underline">
+                      Read the guide <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
         </Section>
 
         <Section className="bg-[#F7F5EF] pb-6">

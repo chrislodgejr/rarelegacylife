@@ -145,3 +145,41 @@ test("the page's broad range: looser than the text, never higher, for every choi
       assert.ok(shown.high >= texted.low && shown.high > shown.low, `${name}: overlaps`);
     }
 });
+
+// The quiz pages (Chris, 2026-11-24): the same request with the quiz's taps and its page; a /protect request sends none of them.
+test("quiz: the request takes the quiz's taps, and /protect's request is unchanged without them", async () => {
+  const { QUIZ_PAGES, quizNote, quizTracking } = await import("@/lib/quiz");
+  const plain = protectRequestSchema.parse({ ...contact, goal: "income", age_band: "65_69" });
+  assert.equal(plain.quiz_page, undefined);
+  assert.equal(quizNote(plain), null);
+
+  const quiz = protectRequestSchema.parse({
+    ...contact,
+    goal: "growth",
+    term_years: "5",
+    quiz_page: "rates",
+    retired: "within_5",
+    worry: "market_loss",
+    money_location: "cd_savings",
+  });
+  assert.equal(QUIZ_PAGES[quiz.quiz_page].path, "/annuity-rates");
+  assert.equal(
+    quizNote(quiz),
+    "Quiz answers. Retired: Not yet, within 5 years. Biggest worry: Losing money in the market. Money is in: CDs or bank savings.",
+  );
+  // Empty hidden fields (a skipped question) mean not picked; an unknown page or answer is refused.
+  assert.equal(protectRequestSchema.parse({ ...contact, retired: "", worry: "", money_location: "", quiz_page: "quiz" }).retired, undefined);
+  assert.equal(protectRequestSchema.safeParse({ ...contact, quiz_page: "elsewhere" }).success, false);
+  assert.deepEqual(quizTracking({ gclid: ["abc", "def"], utm_source: "google", other: "x", utm_term: "" }), { gclid: "abc", utm_source: "google" });
+});
+
+test("guides: every slug is unique and every related guide exists", async () => {
+  const { GUIDES } = await import("@/content/guides");
+  const slugs = GUIDES.map((guide) => guide.slug);
+  assert.equal(new Set(slugs).size, slugs.length);
+  for (const guide of GUIDES) {
+    for (const related of guide.related) assert.ok(slugs.includes(related), `${guide.slug} links to missing guide ${related}`);
+    const words = guide.answer.split(/\s+/).length;
+    assert.ok(words >= 40 && words <= 75, `${guide.slug} short answer is ${words} words`);
+  }
+});

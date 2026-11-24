@@ -8,6 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/quote", priority: 0.9, changeFrequency: "monthly" },
     { path: "/retirement", priority: 0.9, changeFrequency: "monthly" },
     { path: "/education", priority: 0.8, changeFrequency: "weekly" },
+    { path: "/annuity-calculator", priority: 0.9, changeFrequency: "monthly" },
+    { path: "/annuity-rates", priority: 0.8, changeFrequency: "monthly" },
     { path: "/about", priority: 0.7, changeFrequency: "monthly" },
     { path: "/contact", priority: 0.6, changeFrequency: "yearly" },
     { path: "/apply-as-agent", priority: 0.4, changeFrequency: "yearly" },

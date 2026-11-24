@@ -8,6 +8,7 @@ import {
   TASK_TYPES,
   US_STATES,
 } from "@/lib/constants/options";
+import { QUIZ_MONEY_VALUES, QUIZ_PAGE_KEYS, QUIZ_RETIRED_VALUES, QUIZ_WORRY_VALUES } from "@/lib/quiz";
 
 const requiredText = z.string().trim().min(1, "This field is required");
 const optionalText = z
@@ -206,6 +207,11 @@ export const protectRequestSchema = z.object({
   goal: optionalChoice(["income", "growth", "indexed"] as const),
   age_band: optionalChoice(["55_59", "60_64", "65_69", "70_74", "75_plus"] as const),
   term_years: optionalChoice(["5", "7", "10"] as const),
+  // The quiz pages (src/lib/quiz.ts) send the same request with their extra taps and which page it came from; /protect sends none.
+  quiz_page: optionalChoice(QUIZ_PAGE_KEYS),
+  retired: optionalChoice(QUIZ_RETIRED_VALUES),
+  worry: optionalChoice(QUIZ_WORRY_VALUES),
+  money_location: optionalChoice(QUIZ_MONEY_VALUES),
   consent_tcpa: checkbox.refine((value) => value, "Please review and accept the contact consent"),
   website: z.string().trim().max(200).optional().default(""),
   started_at: z.string().trim().max(32).optional().default(""),

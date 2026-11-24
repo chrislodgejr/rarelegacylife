@@ -7,6 +7,8 @@
  *  - Educational only: no carrier names, rates, or guarantees without compliance review.
  */
 
+import { ANNUITY_GUIDES } from "@/content/annuity-guides";
+
 export type GuideTable = { caption: string; headers: string[]; rows: string[][] };
 
 export type GuideSection = {
@@ -31,7 +33,8 @@ export type Guide = {
   faqs: { question: string; answer: string }[];
   sources?: { label: string; url: string }[];
   related: string[];
-  cta: "quote" | "retirement";
+  /** Where the guide's closing button leads: the quote form, /retirement (the Blueprint request), or the retirement quiz. */
+  cta: "quote" | "retirement" | "quiz";
 };
 
 export const GUIDES: Guide[] = [
@@ -586,6 +589,8 @@ export const GUIDES: Guide[] = [
     related: ["retirement-income-planning-pennsylvania", "term-vs-whole-life-insurance", "how-much-life-insurance-do-i-need"],
     cta: "quote",
   },
+  // The annuity library (2026-11-24) lives in its own file so this one stays readable.
+  ...ANNUITY_GUIDES,
 ];
 
 export function getGuide(slug: string) {

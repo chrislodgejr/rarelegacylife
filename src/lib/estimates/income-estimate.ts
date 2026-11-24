@@ -45,6 +45,9 @@ export const formatDollars = (value: number) =>
 // advisors use most (rate card 76048, as of October 14, 2026): lowest is under $100,000 in the PA/NJ/DE/OH/SC/TX group,
 // highest is $100,000 and up elsewhere. The carrier is never named on the page.
 
+/** The day of the rate card the ranges below were read from. Change it with the ranges; /annuity-rates prints it beside them. */
+export const GROWTH_RATES_AS_OF = "2026-10-14";
+
 /** Guarantee periods and their yearly rate, low to high. */
 export const GROWTH_TERMS = [
   ["5", "5 years", 0.0575, 0.0605],
