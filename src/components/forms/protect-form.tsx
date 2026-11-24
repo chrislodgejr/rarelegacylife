@@ -4,6 +4,7 @@ import { keepValuesOnSubmit } from "@/lib/forms/keep-values";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Lock, MessageSquareText } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { reportFormSubmit } from "@/lib/google-ads";
 import { formStepReporter, type FormStepReporter } from "@/lib/form-steps";
 import {
   ESTIMATE_AGE_BANDS,
@@ -62,6 +63,8 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const terms = goal === "indexed" ? INDEXED_TERMS : GROWTH_TERMS;
   const estimateShown = useRef(false);
   const reportRef = useRef<FormStepReporter | null>(null);
+  // Kept in memory only from Submit until Endless One answers, for the Google tag's enhanced conversion (src/lib/google-ads.ts).
+  const contactRef = useRef<{ email: string; phone: string } | null>(null);
   const report: FormStepReporter = (step, detail) => reportRef.current?.(step, detail);
 
   useEffect(() => {
@@ -85,6 +88,8 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   useEffect(() => {
     if (state.ok) {
       trackEvent("protect_submit", {});
+      if (contactRef.current) reportFormSubmit(contactRef.current);
+      contactRef.current = null;
       reportRef.current?.("submitted");
     } else if (state.message) {
       trackEvent("protect_error", {});
@@ -108,7 +113,11 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
 
   return (
     <form
-      onSubmit={keepValuesOnSubmit(action)}
+      onSubmit={(event) => {
+        const data = new FormData(event.currentTarget);
+        contactRef.current = { email: String(data.get("email") ?? ""), phone: String(data.get("phone") ?? "") };
+        keepValuesOnSubmit(action)(event);
+      }}
       className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8"
       onFocusCapture={(event) => {
         const name = (event.target as EventTarget as HTMLInputElement).name;
