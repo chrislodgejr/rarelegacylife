@@ -15,7 +15,7 @@ import { RETIREMENT_ADVISOR } from "@/lib/site";
 export const metadata = pageMetadata({
   title: "Annuity Calculator: Estimate Your Income or Growth | Rare Legacy Life Group",
   description:
-    "A free annuity calculator. Answer a few questions for a rough range of lifetime income or growth, then get a closer estimate by text from a licensed advisor.",
+    "A free annuity calculator. Answer a few questions about lifetime income or growth and get your estimate by text from a licensed advisor.",
   path: "/annuity-calculator",
 });
 
@@ -30,7 +30,7 @@ const factors = [
 const faqs = [
   {
     question: "Is this annuity calculator free?",
-    answer: "Yes. The calculator and the closer estimate by text are free, and you are not committing to buy anything.",
+    answer: "Yes. The calculator and the estimate by text are free, and you are not committing to buy anything.",
   },
   {
     question: "How accurate is the estimate?",
@@ -38,9 +38,9 @@ const faqs = [
       "It is a rough illustration built from typical ranges, not a quote from an insurance company. A real figure depends on your exact age, state, the carrier and product, and the rates on the day you apply. An advisor can show you actual carrier illustrations.",
   },
   {
-    question: "Why do you text the closer estimate instead of showing it?",
+    question: "Why do you text the estimate instead of showing it?",
     answer:
-      "The page shows a broad range right away. The closer figure goes by text so it reaches a real person who asked for it, along with a licensed advisor who can explain what is behind the number.",
+      "The estimate goes by text so it reaches a real person who asked for it, along with a licensed advisor who can explain what is behind the number.",
   },
   {
     question: "Does using the calculator affect my credit or commit me to anything?",
@@ -74,8 +74,8 @@ export default async function AnnuityCalculatorPage({ searchParams }: PageProps)
                 What could your savings pay you?
               </h1>
               <p className="mt-4 text-lg leading-8 text-white/80">
-                Answer a few questions for a rough range of guaranteed lifetime income, or of what your money could grow to.
-                A licensed advisor then texts you a closer estimate.
+                Answer a few questions about guaranteed lifetime income, or what your money could grow to, and get your estimate by text.
+                A licensed advisor then texts you your estimate.
               </p>
               <p className="mt-3 text-sm leading-6 text-white/60">
                 Estimates are illustrations, not quotes or guarantees. Real figures depend on the carrier, the product, your

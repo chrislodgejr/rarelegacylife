@@ -741,7 +741,7 @@ export const ANNUITY_GUIDES: Guide[] = [
       {
         heading: "Getting a number for your situation",
         paragraphs: [
-          "Our annuity calculator gives a rough range in about two minutes, and a licensed advisor follows up with a closer estimate. For a firm figure you need carrier illustrations based on your exact age, state and options.",
+          "Our annuity calculator takes about two minutes, and a licensed advisor texts you an estimate. For a firm figure you need carrier illustrations based on your exact age, state and options.",
         ],
       },
     ],
