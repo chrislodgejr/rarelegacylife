@@ -170,6 +170,10 @@ test("quiz: the request takes the quiz's taps, and /protect's request is unchang
   // Empty hidden fields (a skipped question) mean not picked; an unknown page or answer is refused.
   assert.equal(protectRequestSchema.parse({ ...contact, retired: "", worry: "", money_location: "", quiz_page: "quiz" }).retired, undefined);
   assert.equal(protectRequestSchema.safeParse({ ...contact, quiz_page: "elsewhere" }).success, false);
+  // The QR code's page carries the quiz under its own source, so its requests are counted apart from /retirement/quiz's.
+  const fromRetirement = protectRequestSchema.parse({ ...contact, quiz_page: "retirement" });
+  assert.equal(QUIZ_PAGES[fromRetirement.quiz_page].path, "/retirement");
+  assert.equal(QUIZ_PAGES[fromRetirement.quiz_page].source, "retirement_page");
   assert.deepEqual(quizTracking({ gclid: ["abc", "def"], utm_source: "google", other: "x", utm_term: "" }), { gclid: "abc", utm_source: "google" });
 });
 

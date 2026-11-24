@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { PublicFooter, PublicHeader } from "@/components/layout/public-shell";
 import { SHARE_IMAGE } from "@/lib/brand";
+import { quizTracking } from "@/lib/quiz";
 import { absoluteUrl } from "@/lib/site";
 import { RetirementLanding } from "./retirement-landing";
 
@@ -45,11 +46,16 @@ export const viewport: Viewport = {
   themeColor: "#0C0B09",
 };
 
-export default function RetirementPage() {
+type RetirementPageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+// The address stays live for the QR code printed with it; what is on the page may change (Chris, 2026-11-24).
+export default async function RetirementPage({ searchParams }: RetirementPageProps) {
+  const tracking = quizTracking(await searchParams);
+
   return (
     <>
       <PublicHeader />
-      <RetirementLanding />
+      <RetirementLanding tracking={tracking} />
       <PublicFooter />
     </>
   );
