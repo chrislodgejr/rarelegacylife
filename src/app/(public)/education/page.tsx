@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Calculator, GraduationCap, MessageSquareText, Percent } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Eyebrow, Section } from "@/components/ui/section";
-import { GUIDES } from "@/content/guides";
+import { GuideFinder, type FinderTopic } from "@/components/guides/guide-finder";
+import { RETIREMENT_TOPICS, START_HERE } from "@/content/guide-topics";
+import { GUIDES, getGuide } from "@/content/guides";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { breadcrumbSchema } from "@/lib/seo/schema";
 
@@ -57,8 +59,23 @@ const educationSections = [
   },
 ];
 
-// With the annuity library (2026-11-24) the guides are too many for one grid, so they are grouped by subject.
-const guideGroups = (["Retirement & annuities", "Life insurance", "Business owners", "Local"] as const)
+// With the annuity library (2026-11-24) the guides are too many for one grid: retirement has a "Start here" path, topics and a search
+// (src/content/guide-topics.ts); the other subjects are few enough for a grid each.
+const finderGuide = (slug: string) => {
+  const guide = getGuide(slug);
+  return guide ? [{ slug: guide.slug, title: guide.title, description: guide.description }] : [];
+};
+const retirementTopics: FinderTopic[] = RETIREMENT_TOPICS.map((topic) => ({ ...topic, guides: topic.slugs.flatMap(finderGuide) }));
+const startHere = START_HERE.flatMap(finderGuide);
+
+const tools = [
+  { href: "/retirement/quiz", label: "Retirement quiz", note: "Your estimate by text", icon: MessageSquareText },
+  { href: "/annuity-calculator", label: "Annuity calculator", note: "Income or growth", icon: Calculator },
+  { href: "/annuity-rates", label: "Fixed annuity rates", note: "Recent ranges by term", icon: Percent },
+  { href: "/courses/annuities-101", label: "Free course", note: "Annuities 101, seven lessons", icon: GraduationCap },
+] as const;
+
+const guideGroups = (["Life insurance", "Business owners", "Local"] as const)
   .map((category) => ({ category, guides: GUIDES.filter((guide) => guide.category === category) }))
   .filter((group) => group.guides.length > 0);
 
@@ -96,18 +113,48 @@ export default function EducationPage() {
         </Section>
 
         <Section>
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <span className="font-semibold text-[#050505]">Tools:</span>
-            <Link className="rounded-full border border-neutral-300 px-4 py-2 font-semibold hover:border-brand-black-500" href="/annuity-calculator">
-              Annuity calculator
-            </Link>
-            <Link className="rounded-full border border-neutral-300 px-4 py-2 font-semibold hover:border-brand-black-500" href="/annuity-rates">
-              Fixed annuity rates
-            </Link>
-            <Link className="rounded-full border border-neutral-300 px-4 py-2 font-semibold hover:border-brand-black-500" href="/retirement/quiz">
-              Retirement quiz
-            </Link>
+          <div id="retirement" className="scroll-mt-28">
+            <h2 className="font-premium text-3xl font-semibold text-[#050505]">Retirement &amp; annuities</h2>
+            <p className="mt-2 max-w-2xl text-neutral-700">
+              New to annuities? Read these six in order, or take the free course. Have a question already? Search or pick a topic.
+            </p>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+              <div className="rounded-2xl bg-[#F7F5EF] p-6">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">Start here</p>
+                <ol className="mt-3 space-y-2">
+                  {startHere.map((guide, index) => (
+                    <li key={guide.slug}>
+                      <Link href={`/education/${guide.slug}`} className="group flex items-start gap-3 rounded-lg p-2 hover:bg-white">
+                        <span className="font-premium flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-[#050505]">
+                          {index + 1}
+                        </span>
+                        <span className="font-semibold text-[#050505] group-hover:underline">{guide.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div className="grid content-start gap-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-black-500">Tools</p>
+                {tools.map(({ href, label, note, icon: Icon }) => (
+                  <Link key={href} href={href} className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-4 hover:border-brand-black-500">
+                    <Icon aria-hidden="true" className="h-5 w-5 shrink-0 text-brand-black-500" />
+                    <span>
+                      <span className="block font-semibold text-[#050505]">{label}</span>
+                      <span className="block text-sm text-neutral-600">{note}</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <h3 className="font-premium mt-10 text-2xl font-semibold text-[#050505]">Browse by topic</h3>
+            <div className="mt-4">
+              <GuideFinder topics={retirementTopics} />
+            </div>
           </div>
+
           {guideGroups.map((group) => (
             <div key={group.category} className="mt-10">
               <h2 className="font-premium text-3xl font-semibold text-[#050505]">{group.category}</h2>

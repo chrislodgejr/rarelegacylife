@@ -218,3 +218,14 @@ test("course: every lesson has its narration, a slide start for each slide, and 
     for (const paragraph of lesson.narration) assert.doesNotMatch(paragraph, /[%$—–]|https?:/, `${lesson.slug}: ${paragraph.slice(0, 40)}`);
   });
 });
+
+test("guide topics: every retirement guide is in a topic, and every slug in the topics and Start here exists", async () => {
+  const { GUIDES } = await import("@/content/guides");
+  const { RETIREMENT_TOPICS, START_HERE } = await import("@/content/guide-topics");
+  const slugs = new Set(GUIDES.map((guide) => guide.slug));
+  const inTopics = new Set(RETIREMENT_TOPICS.flatMap((topic) => topic.slugs));
+  for (const slug of [...inTopics, ...START_HERE]) assert.ok(slugs.has(slug), `topics name a missing guide ${slug}`);
+  for (const guide of GUIDES.filter((item) => item.category === "Retirement & annuities")) {
+    assert.ok(inTopics.has(guide.slug), `${guide.slug} is in no topic: add it to src/content/guide-topics.ts`);
+  }
+});

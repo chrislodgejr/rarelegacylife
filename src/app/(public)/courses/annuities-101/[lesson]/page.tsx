@@ -1,23 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { CourseGate } from "@/components/course/course-gate";
+import { ArrowLeft, ArrowRight, MessageSquareText, Phone } from "lucide-react";
 import { LessonPlayer } from "@/components/course/lesson-player";
 import { PublicShell } from "@/components/layout/public-shell";
 import { Section } from "@/components/ui/section";
 import { ANNUITY_COURSE } from "@/content/annuity-course";
 import { ANNUITY_COURSE_MEDIA } from "@/content/annuity-course-media";
 import { getGuide } from "@/content/guides";
-import { COURSE_COOKIE, COURSE_PATH } from "@/lib/course";
-import { quizTracking } from "@/lib/quiz";
+import { COURSE_PATH } from "@/lib/course";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { SITE } from "@/lib/site";
 
-type LessonPageProps = {
-  params: Promise<{ lesson: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
+type LessonPageProps = { params: Promise<{ lesson: string }> };
 
 const lessonBySlug = (slug: string) => ANNUITY_COURSE.lessons.find((lesson) => lesson.slug === slug);
 
@@ -35,12 +30,10 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
   });
 }
 
-export default async function LessonPage({ params, searchParams }: LessonPageProps) {
+export default async function LessonPage({ params }: LessonPageProps) {
   const lesson = lessonBySlug((await params).lesson);
   const media = lesson ? ANNUITY_COURSE_MEDIA[lesson.slug] : undefined;
   if (!lesson || !media) notFound();
-  const unlocked = (await cookies()).get(COURSE_COOKIE)?.value === "1";
-  const tracking = quizTracking(await searchParams);
   const previous = ANNUITY_COURSE.lessons.find((item) => item.number === lesson.number - 1);
   const next = ANNUITY_COURSE.lessons.find((item) => item.number === lesson.number + 1);
   const related = lesson.related.map((slug) => getGuide(slug)).filter((guide) => guide !== undefined);
@@ -59,16 +52,12 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
           <p className="mt-3 text-lg leading-8 text-neutral-700">{lesson.summary}</p>
 
           <div className="mt-8">
-            {unlocked ? (
-              <LessonPlayer
-                slides={lesson.slides}
-                audio={media.audio}
-                slideStarts={media.slideStarts}
-                lessonLabel={`Lesson ${lesson.number}`}
-              />
-            ) : (
-              <CourseGate tracking={tracking} lessonCount={ANNUITY_COURSE.lessons.length} />
-            )}
+            <LessonPlayer
+              slides={lesson.slides}
+              audio={media.audio}
+              slideStarts={media.slideStarts}
+              lessonLabel={`Lesson ${lesson.number}`}
+            />
             <p className="mt-3 text-xs text-neutral-500">Narrated by a computer-generated voice. Educational only, not investment, tax or legal advice.</p>
           </div>
 
@@ -79,8 +68,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
             ))}
           </ul>
 
-          {unlocked ? (
-            <details className="mt-8 rounded-xl border border-neutral-200 bg-white p-5">
+          <details className="mt-8 rounded-xl border border-neutral-200 bg-white p-5">
               <summary className="cursor-pointer font-semibold text-[#050505]">Read the lesson</summary>
               <div className="mt-4 space-y-4 leading-7 text-neutral-800">
                 {lesson.narration.map((paragraph) => (
@@ -88,7 +76,26 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
                 ))}
               </div>
             </details>
-          ) : null}
+
+          {/* Every lesson ends on the two ways to go further: the quiz (a phone number for the estimate by text) and an advisor. */}
+          <div className="black-hero-bg mt-10 rounded-2xl p-6 text-white sm:p-8">
+            <h2 className="font-premium text-2xl font-semibold">Want to know what this means for you?</h2>
+            <p className="mt-2 text-white/80">
+              Answer a few quick questions and a licensed advisor will text you a personal estimate. Free, no obligation.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <Link href="/retirement/quiz" className="gold-gradient-button inline-flex h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold">
+                <MessageSquareText aria-hidden="true" className="h-5 w-5" /> Take the 2-minute quiz
+              </Link>
+              <a
+                href={SITE.phone.href}
+                data-track="phone_click"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/25 px-5 text-sm font-semibold hover:border-brand-cream-500"
+              >
+                <Phone aria-hidden="true" className="h-5 w-5" /> Talk to an advisor: {SITE.phone.display}
+              </a>
+            </div>
+          </div>
 
           {related.length ? (
             <div className="mt-10">

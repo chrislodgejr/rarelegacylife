@@ -1,12 +1,9 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
-import { CheckCircle2, Clock, PlayCircle } from "lucide-react";
-import { CourseGate } from "@/components/course/course-gate";
+import { Clock, MessageSquareText, PlayCircle } from "lucide-react";
 import { PublicShell } from "@/components/layout/public-shell";
 import { Eyebrow, Section } from "@/components/ui/section";
 import { ANNUITY_COURSE } from "@/content/annuity-course";
-import { COURSE_COOKIE, COURSE_PATH } from "@/lib/course";
-import { quizTracking } from "@/lib/quiz";
+import { COURSE_PATH } from "@/lib/course";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = pageMetadata({
@@ -15,11 +12,7 @@ export const metadata = pageMetadata({
   path: COURSE_PATH,
 });
 
-type CoursePageProps = { searchParams: Promise<Record<string, string | string[] | undefined>> };
-
-export default async function CoursePage({ searchParams }: CoursePageProps) {
-  const unlocked = (await cookies()).get(COURSE_COOKIE)?.value === "1";
-  const tracking = quizTracking(await searchParams);
+export default function CoursePage() {
   const first = ANNUITY_COURSE.lessons[0];
 
   return (
@@ -34,7 +27,7 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
               {ANNUITY_COURSE.lessons.map((lesson) => (
                 <li key={lesson.slug}>
                   <Link
-                    href={unlocked ? `${COURSE_PATH}/${lesson.slug}` : "#start"}
+                    href={`${COURSE_PATH}/${lesson.slug}`}
                     className="flex items-start gap-4 rounded-xl border border-neutral-200 bg-white p-4 hover:border-brand-black-500"
                   >
                     <span className="font-premium flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-cream-50 text-lg font-semibold text-[#050505]">
@@ -53,21 +46,22 @@ export default async function CoursePage({ searchParams }: CoursePageProps) {
             </ol>
           </div>
           <div id="start" className="order-1 scroll-mt-24 lg:sticky lg:top-24 lg:order-2">
-            {unlocked ? (
-              <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-7">
-                <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-800">
-                  <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> Your course is open
-                </p>
-                <Link
-                  href={`${COURSE_PATH}/${first.slug}`}
-                  className="gold-gradient-button mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold"
-                >
-                  <PlayCircle aria-hidden="true" className="h-5 w-5" /> Start lesson 1
-                </Link>
-              </div>
-            ) : (
-              <CourseGate tracking={tracking} lessonCount={ANNUITY_COURSE.lessons.length} />
-            )}
+            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 sm:p-7">
+              <h2 className="font-premium text-2xl font-semibold text-[#050505]">Free, no sign-up</h2>
+              <p className="mt-1 text-sm leading-6 text-neutral-600">Seven short lessons. Listen, read along, or both.</p>
+              <Link
+                href={`${COURSE_PATH}/${first.slug}`}
+                className="gold-gradient-button mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold"
+              >
+                <PlayCircle aria-hidden="true" className="h-5 w-5" /> Start lesson 1
+              </Link>
+              <Link
+                href="/retirement/quiz"
+                className="mt-3 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-neutral-300 px-5 text-sm font-semibold text-[#050505] hover:border-brand-black-500"
+              >
+                <MessageSquareText aria-hidden="true" className="h-5 w-5" /> Or get your own estimate in 2 minutes
+              </Link>
+            </div>
             <p className="mt-4 text-xs leading-5 text-neutral-500">
               Lessons are narrated by a computer-generated voice. Educational only, not investment, tax or legal advice.
             </p>

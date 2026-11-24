@@ -140,15 +140,43 @@ export function RetirementLanding({ tracking }: { tracking: ProtectTracking }) {
   const [pageContext, setPageContext] = useState({ landingPage: "", referrer: "" });
   const meetingSectionRef = useRef<HTMLElement>(null);
   const quizSectionRef = useRef<HTMLElement>(null);
+  // The quiz stays closed until the hero's button opens it (Chris, 2026-11-24: "the form should not be visible. clicking the 2 minute
+  // quiz should take you to the form"); an address ending in #quiz opens it too.
+  const [quizOpen, setQuizOpen] = useState(false);
+  const scrollToQuiz = useRef(false);
+  useEffect(() => {
+    const fromHash = () => {
+      if (window.location.hash === "#quiz") {
+        scrollToQuiz.current = true;
+        setQuizOpen(true);
+      }
+    };
+    const frame = requestAnimationFrame(fromHash);
+    window.addEventListener("hashchange", fromHash);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", fromHash);
+    };
+  }, []);
+  useEffect(() => {
+    if (!quizOpen || !scrollToQuiz.current) return;
+    scrollToQuiz.current = false;
+    quizSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [quizOpen]);
+  function openQuiz() {
+    scrollToQuiz.current = true;
+    if (quizOpen) quizSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    else setQuizOpen(true);
+  }
   // The sticky "Choose How to Meet" bar hides while the quiz is on screen, so it never covers an answer.
   const [quizInView, setQuizInView] = useState(false);
   useEffect(() => {
     const section = quizSectionRef.current;
-    if (!section || typeof IntersectionObserver === "undefined") return;
+    if (!quizOpen || !section || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(([entry]) => setQuizInView(entry.isIntersecting), { threshold: 0.05 });
     observer.observe(section);
     return () => observer.disconnect();
-  }, []);
+  }, [quizOpen]);
   const formSectionRef = useRef<HTMLElement>(null);
   const formStartedRef = useRef(false);
   const submittedRef = useRef(false);
@@ -336,9 +364,9 @@ export function RetirementLanding({ tracking }: { tracking: ProtectTracking }) {
               </p>
               <button
                 className={styles.primaryButton}
-                onClick={() =>
-                  quizSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-                }
+                aria-controls="quiz"
+                aria-expanded={quizOpen}
+                onClick={openQuiz}
                 type="button"
               >
                 Take the 2-Minute Quiz
@@ -365,6 +393,7 @@ export function RetirementLanding({ tracking }: { tracking: ProtectTracking }) {
         </section>
 
         {/* The quiz first (Chris, 2026-11-24): a few taps, then a licensed advisor texts a rough estimate. Booking a meeting stays below. */}
+        {quizOpen ? (
         <section
           aria-label="Retirement quiz"
           className="black-hero-bg scroll-mt-20 px-4 py-12 text-white sm:px-6 lg:px-8"
@@ -381,6 +410,7 @@ export function RetirementLanding({ tracking }: { tracking: ProtectTracking }) {
             />
           </div>
         </section>
+        ) : null}
 
         <section
           aria-labelledby="meeting-title"

@@ -314,21 +314,3 @@ export type QuoteFormInput = z.infer<typeof quoteFormSchema>;
 export type ContactFormInput = z.infer<typeof contactFormSchema>;
 export type AgentApplicationInput = z.infer<typeof agentApplicationSchema>;
 export type RetirementBlueprintInput = z.infer<typeof retirementBlueprintSchema>;
-
-/** The free course's unlock (Chris, 2026-11-24: "yes build the free annuities course too"): a name and an email open every lesson. */
-export const courseSignupSchema = z.object({
-  first_name: requiredText.max(80, "Name is too long"),
-  last_name: requiredText.max(80, "Name is too long"),
-  email: emailSchema,
-  website: z.string().trim().max(200).optional().default(""),
-  started_at: z.string().trim().max(32).optional().default(""),
-  utm_source: optionalAttribution,
-  utm_medium: optionalAttribution,
-  utm_campaign: optionalAttribution,
-  utm_content: optionalAttribution,
-  utm_term: optionalAttribution,
-  gclid: optionalAttribution,
-  gbraid: optionalAttribution,
-  wbraid: optionalAttribution,
-  landing_page: optionalAttribution,
-});

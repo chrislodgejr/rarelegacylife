@@ -116,13 +116,27 @@ export const US_STATES = [
 
 // Consumer-facing navigation only. Agent recruiting and CRM login live in the
 // footer so they don't compete with the quote button.
-export const PUBLIC_NAV = [
+export type NavItem = { href: string; label: string; description?: string; children?: readonly NavItem[] };
+
+// Retirement opens a menu of every retirement tool (Chris, 2026-11-24, of the calculator, rates page and quiz: "Look lost. should we
+// create a drop down within the navigation").
+export const PUBLIC_NAV: readonly NavItem[] = [
   { href: "/education", label: "Guides" },
-  { href: "/retirement", label: "Retirement" },
-  { href: "/courses/annuities-101", label: "Free Course" },
+  {
+    href: "/retirement",
+    label: "Retirement",
+    children: [
+      { href: "/retirement", label: "Free retirement review", description: "Meet with a licensed advisor" },
+      { href: "/retirement/quiz", label: "Retirement quiz", description: "Two minutes, your estimate by text" },
+      { href: "/annuity-calculator", label: "Annuity calculator", description: "Income or growth for your amount" },
+      { href: "/annuity-rates", label: "Fixed annuity rates", description: "Recent ranges by term" },
+      { href: "/courses/annuities-101", label: "Free course: Annuities 101", description: "Seven short narrated lessons" },
+      { href: "/education#retirement", label: "Annuity guides", description: "Answers to common questions" },
+    ],
+  },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-] as const;
+];
 
 export const ROLE_LABELS: Record<(typeof APP_ROLES)[number], string> = {
   pending: "Pending",

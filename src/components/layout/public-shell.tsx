@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Menu, Phone } from "lucide-react";
+import { ChevronDown, Menu, Phone } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
 import { JsonLd } from "@/components/seo/json-ld";
 import { PUBLIC_NAV } from "@/lib/constants/options";
@@ -21,16 +21,44 @@ export function PublicHeader() {
           aria-label="Main"
           className="hidden items-center rounded-full border border-white/10 bg-white/[0.045] p-1 text-sm text-white/72 shadow-2xl shadow-black/20 backdrop-blur lg:flex"
         >
-          {PUBLIC_NAV.map((item) => (
-            <Link
-              key={item.href}
-              className="group relative overflow-hidden whitespace-nowrap rounded-full px-4 py-2 font-medium transition hover:bg-white/[0.075] hover:text-white"
-              href={item.href}
-            >
-              <span className="relative z-10">{item.label}</span>
-              <span className="gold-gradient-subtle absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 rounded-full transition duration-300 group-hover:scale-x-100" />
-            </Link>
-          ))}
+          {PUBLIC_NAV.map((item) =>
+            item.children ? (
+              <div key={item.href} className="group/menu relative">
+                <Link
+                  className="group relative inline-flex items-center gap-1 overflow-hidden whitespace-nowrap rounded-full px-4 py-2 font-medium transition hover:bg-white/[0.075] hover:text-white"
+                  href={item.href}
+                  aria-haspopup="true"
+                >
+                  <span className="relative z-10">{item.label}</span>
+                  <ChevronDown aria-hidden="true" className="relative z-10 h-3.5 w-3.5 transition group-hover/menu:rotate-180" />
+                </Link>
+                {/* Opens on hover or keyboard focus; the padding bridges the gap so the pointer can reach it. */}
+                <div className="invisible absolute left-1/2 top-full z-50 w-80 -translate-x-1/2 pt-3 opacity-0 transition group-focus-within/menu:visible group-focus-within/menu:opacity-100 group-hover/menu:visible group-hover/menu:opacity-100">
+                  <div className="grid gap-1 rounded-2xl border border-white/12 bg-brand-black-950/97 p-2 shadow-2xl shadow-black/40 backdrop-blur">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href + child.label}
+                        className="rounded-xl px-4 py-3 transition hover:bg-white/[0.08] focus-visible:bg-white/[0.08]"
+                        href={child.href}
+                      >
+                        <span className="block font-semibold text-white">{child.label}</span>
+                        {child.description ? <span className="mt-0.5 block text-xs text-white/60">{child.description}</span> : null}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link
+                key={item.href}
+                className="group relative overflow-hidden whitespace-nowrap rounded-full px-4 py-2 font-medium transition hover:bg-white/[0.075] hover:text-white"
+                href={item.href}
+              >
+                <span className="relative z-10">{item.label}</span>
+                <span className="gold-gradient-subtle absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 rounded-full transition duration-300 group-hover:scale-x-100" />
+              </Link>
+            ),
+          )}
         </nav>
         <div className="flex items-center gap-2">
           <a
@@ -66,15 +94,30 @@ export function PublicHeader() {
                 <Link className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-brand-cream-300" href="/">
                   Home
                 </Link>
-                {PUBLIC_NAV.map((item) => (
-                  <Link
-                    key={item.href}
-                    className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-brand-cream-300"
-                    href={item.href}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {PUBLIC_NAV.map((item) =>
+                  item.children ? (
+                    <div key={item.href} className="rounded-xl bg-white/[0.04] py-1">
+                      <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-brand-cream-500">{item.label}</p>
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.href + child.label}
+                          className="block rounded-xl px-4 py-2.5 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-brand-cream-300"
+                          href={child.href}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <Link
+                      key={item.href}
+                      className="rounded-xl px-4 py-3 font-semibold text-white/76 transition hover:bg-white/[0.08] hover:text-brand-cream-300"
+                      href={item.href}
+                    >
+                      {item.label}
+                    </Link>
+                  ),
+                )}
               </nav>
               <div className="mt-3 grid gap-2 border-t border-white/10 pt-3">
                 <a
@@ -124,8 +167,8 @@ export function PublicFooter() {
             <Link className="hover:text-brand-cream-300" href="/quote">
               Get a free quote
             </Link>
-            {PUBLIC_NAV.map((item) => (
-              <Link key={item.href} className="hover:text-brand-cream-300" href={item.href}>
+            {PUBLIC_NAV.flatMap((item) => item.children ?? [item]).map((item) => (
+              <Link key={item.href + item.label} className="hover:text-brand-cream-300" href={item.href}>
                 {item.label}
               </Link>
             ))}

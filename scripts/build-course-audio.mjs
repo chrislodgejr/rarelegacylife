@@ -4,11 +4,11 @@
 // public/courses/annuities-101/, and writes src/content/annuity-course-media.ts with each lesson's file and the second each slide
 // starts, so the lesson page can turn its slides in time with the voice. Change a lesson's text and run this again.
 //
-// Needs, on the machine that runs it: piper (pip install piper-tts), ffmpeg and ffprobe, and a Piper voice model. The default voice
-// is "kristin" (en_US-kristin-medium), whose training data is public domain, so commercial use is allowed. Other public-domain voices:
-// norman, john, ljspeech. Avoid voices whose data is CC BY-NC (hfc_female, hfc_male, ryan): non-commercial only.
+// The voice is Kokoro's "af_heart" (Chris, 2026-11-24, of four samples: "use new-1-heart-female ... but needs a little tweek to sound
+// normal"), through scripts/tts-kokoro.py: Kokoro is open source (Apache 2.0), so commercial use is allowed. Needs python with
+// kokoro-onnx and soundfile, the two Kokoro model files, and ffmpeg and ffprobe. Piper (--engine piper) still works but sounds robotic.
 //
-//   node scripts/build-course-audio.mjs --model /path/en_US-kristin-medium.onnx [--piper piper] [--only what-is-an-annuity]
+//   node scripts/build-course-audio.mjs --engine kokoro --kokoro-dir /path/to/kokoro [--voice af_heart] [--speed 1.0] [--only slug]
 
 import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -20,11 +20,19 @@ const flag = (name, fallback) => {
   const index = args.indexOf(`--${name}`);
   return index >= 0 ? args[index + 1] : fallback;
 };
+const engine = flag("engine", "kokoro");
 const model = flag("model");
 const piper = flag("piper", "piper");
+const python = flag("python", "python3");
+const kokoroDir = flag("kokoro-dir");
+const voiceName = flag("voice", "af_heart");
+const speed = flag("speed", "1.0");
 const only = flag("only");
-if (!model) {
-  console.error("Usage: node scripts/build-course-audio.mjs --model /path/to/voice.onnx [--piper piper] [--only lesson-slug]");
+if ((engine === "piper" && !model) || (engine === "kokoro" && !kokoroDir)) {
+  console.error(
+    "Usage: node scripts/build-course-audio.mjs --engine kokoro --kokoro-dir DIR [--voice af_heart] [--speed 1.0] [--python python3] [--only slug]\n" +
+      "   or: node scripts/build-course-audio.mjs --engine piper --model /path/voice.onnx [--piper piper] [--only slug]",
+  );
   process.exit(1);
 }
 
@@ -53,8 +61,14 @@ try {
     let at = 0;
     groups.forEach((group, index) => {
       const wav = join(work, `${lesson.slug}-${index}.wav`);
-      // A short pause between paragraphs and after each slide reads more naturally than Piper's default run-on.
-      execFileSync(piper, ["--model", model, "--output_file", wav, "--sentence_silence", "0.35"], { input: group.join("\n\n") });
+      // A short pause between paragraphs and after each slide reads more naturally than one long run.
+      if (engine === "kokoro") {
+        execFileSync(python, ["scripts/tts-kokoro.py", "--model-dir", kokoroDir, "--voice", voiceName, "--speed", speed, "--out", wav], {
+          input: group.join("\n\n"),
+        });
+      } else {
+        execFileSync(piper, ["--model", model, "--output_file", wav, "--sentence_silence", "0.35"], { input: group.join("\n\n") });
+      }
       const padded = join(work, `${lesson.slug}-${index}-p.wav`);
       execFileSync("ffmpeg", ["-loglevel", "error", "-y", "-i", wav, "-af", "apad=pad_dur=0.8", padded]);
       slideStarts.push(Math.round(at * 10) / 10);
@@ -74,7 +88,7 @@ try {
 }
 
 if (!only) {
-  const voice = model.split("/").pop().replace(/\.onnx$/, "");
+  const voice = engine === "kokoro" ? `kokoro-${voiceName}` : model.split("/").pop().replace(/\.onnx$/, "");
   const file = `// Written by scripts/build-course-audio.mjs (voice ${voice}). Do not edit by hand: change the lesson text and run the script.
 export type LessonMedia = { audio: string; seconds: number; slideStarts: number[] };
 
