@@ -1,7 +1,6 @@
 import { BadgeCheck, Landmark, ShieldCheck } from "lucide-react";
 import { RetirementQuiz } from "@/components/forms/retirement-quiz";
 import { LandingShell } from "@/components/layout/landing-shell";
-import { GoogleAdsTag } from "@/components/seo/google-ads-tag";
 import { Eyebrow } from "@/components/ui/section";
 import { quizTracking } from "@/lib/quiz";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -26,7 +25,6 @@ export default async function RetirementQuizPage({ searchParams }: QuizPageProps
 
   return (
     <LandingShell>
-      <GoogleAdsTag />
       <main className="black-hero-bg min-h-[80vh] px-4 pb-16 pt-8 text-white sm:px-6 sm:pt-12 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <div className="text-center">

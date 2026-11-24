@@ -9,12 +9,15 @@ export const QUIZ_PAGES = {
   // The QR code's page (Chris, 2026-11-24: "the retirement page can change. i just need it to be a live page because of a qr code
   // attached to it"): the quiz is the first thing under its hero, saved under its own source so QR scans can be counted apart.
   retirement: { path: "/retirement", source: "retirement_page" },
+  // The Google Ads landing page, the quiz since 2026-11-24 (Chris: "it was suppose to be built out like the quiz ... not one single
+  // form"). Its requests keep the source the ads have always used.
+  protect: { path: "/protect", source: "google_ads_protect" },
   calculator: { path: "/annuity-calculator", source: "annuity_calculator" },
   rates: { path: "/annuity-rates", source: "annuity_rates" },
 } as const;
 
 export type QuizPage = keyof typeof QUIZ_PAGES;
-export const QUIZ_PAGE_KEYS = ["quiz", "retirement", "calculator", "rates"] as const satisfies readonly QuizPage[];
+export const QUIZ_PAGE_KEYS = ["quiz", "retirement", "protect", "calculator", "rates"] as const satisfies readonly QuizPage[];
 
 export const QUIZ_RETIRED = [
   ["retired", "Yes, I'm retired"],

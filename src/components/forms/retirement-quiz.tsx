@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { ArrowLeft, CalendarCheck, CheckCircle2, Lock } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { formStepReporter, type FormStepReporter } from "@/lib/form-steps";
 import { reportFormSubmit } from "@/lib/google-ads";
 import { keepValuesOnSubmit } from "@/lib/forms/keep-values";
 import {
@@ -30,6 +31,12 @@ import { SubmitButton } from "@/components/forms/submit-button";
  * Steps are counted with trackEvent only (quiz_step, quiz_submit, quiz_error). They are not sent to Endless One's form-steps yet: that
  * feed is /protect's, and mixing the quiz into it would muddy its numbers until Endless One knows the quiz as its own page.
  */
+
+// The contact fields, and how a quiz field is named in /protect's step report (Endless One accepts only its fixed list).
+const CONTACT_FIELDS = new Set(["first_name", "last_name", "email", "phone", "zip_code"]);
+const STEP_FIELDS = new Set(["amount_tier", "full_name", "phone", "email", "zip_code", "best_time_to_contact", "consent_tcpa"]);
+const stepField = (name: string) =>
+  name === "first_name" || name === "last_name" ? "full_name" : STEP_FIELDS.has(name) ? name : "form";
 
 type Choice = readonly [string, string, ...unknown[]];
 
@@ -69,6 +76,11 @@ export function RetirementQuiz({
   const [index, setIndex] = useState(0);
   // Read once in the browser when the quiz opens, and written into the form's hidden fields as it is sent.
   const meta = useRef({ started_at: "", landing_page: "", referrer: "" });
+  // On /protect the quiz reports the same steps the old one-screen form did (Chris, 2026-11-24, of /protect: "it was suppose to be
+  // built out like the quiz ... not one single form"), so Endless One's ad drop-off report keeps counting the same way.
+  const reportRef = useRef<FormStepReporter | null>(null);
+  const report: FormStepReporter = (stepName, detail) => reportRef.current?.(stepName, detail);
+  const estimateReported = useRef(false);
   const contactRef = useRef<{ email: string; phone: string } | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -98,15 +110,31 @@ export function RetirementQuiz({
   useEffect(() => {
     meta.current = { started_at: String(Date.now()), landing_page: window.location.href, referrer: document.referrer };
     trackEvent("quiz_start", { page });
+    if (page === "protect") {
+      reportRef.current = formStepReporter(Boolean(tracking.gclid || tracking.gbraid || tracking.wbraid));
+      reportRef.current("view");
+    }
+    // Only on load: the click ids do not change during the visit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  const hasEstimate = figures !== null;
+  useEffect(() => {
+    if (!hasEstimate || estimateReported.current) return;
+    estimateReported.current = true;
+    reportRef.current?.("estimate", goal);
+  }, [hasEstimate, goal]);
 
   useEffect(() => {
     if (state.ok) {
       trackEvent("quiz_submit", { page });
       if (contactRef.current) reportFormSubmit(contactRef.current);
       contactRef.current = null;
+      reportRef.current?.("submitted");
     } else if (state.message) {
       trackEvent("quiz_error", { page });
+      const fields = Object.keys(state.fieldErrors ?? {}).map(stepField);
+      for (const field of fields.length ? fields : ["form"]) reportRef.current?.("server_error", field);
     }
   }, [state, page]);
 
@@ -137,6 +165,9 @@ export function RetirementQuiz({
       return next;
     });
     trackEvent("quiz_step", { page, step: key });
+    if (key === "goal") report("goal_change", value);
+    if (key === "amount_tier") report("amount", value);
+    if (key === "age_or_term") report("age_or_term");
     go(index + 1);
   };
 
@@ -270,6 +301,20 @@ export function RetirementQuiz({
       ) : (
         <form
           className="mt-6 space-y-5"
+          onFocusCapture={(event) => {
+            if (CONTACT_FIELDS.has((event.target as EventTarget as HTMLInputElement).name)) report("contact_start");
+          }}
+          onChangeCapture={(event) => {
+            const field = event.target as EventTarget as HTMLInputElement;
+            if (field.name === "consent_tcpa" && field.checked) report("consent");
+          }}
+          onClickCapture={(event) => {
+            if ((event.target as HTMLElement).closest('button[type="submit"]')) report("submit_click");
+          }}
+          onInvalidCapture={(event) => {
+            // The browser's own required check stops the send without telling the server; keep which field, never its value.
+            report("blocked", stepField((event.target as EventTarget as HTMLInputElement).name || "form"));
+          }}
           onSubmit={(event) => {
             for (const [name, value] of Object.entries(meta.current)) {
               const field = event.currentTarget.elements.namedItem(name);
