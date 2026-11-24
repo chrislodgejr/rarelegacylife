@@ -260,7 +260,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
 }
 
 /** The broad range, with the disclaimers the on-page estimate carried, then the closer estimate by text. */
-function RangeCard({ figures }: { figures: ProtectEstimate }) {
+export function RangeCard({ figures }: { figures: ProtectEstimate }) {
   const { goal, amount, years } = figures;
   const { low, high } = broadEstimate(figures);
   const bonus = goal === "indexed" ? INDEXED_TERMS.find(([value]) => value === String(years)) : undefined;
@@ -298,7 +298,7 @@ function RangeCard({ figures }: { figures: ProtectEstimate }) {
   );
 }
 
-function Field({
+export function Field({
   label,
   name,
   error,
@@ -323,7 +323,7 @@ function Field({
  * Age or years as big tap buttons like the amounts (Chris, 2026-11-13: "Yes. Make the taps"): on phones 6 of the first 7 ad visitors who
  * picked an amount stopped at the old "Select" drop-down. Buttons, not radios; the form sends the pick as a hidden field (2026-11-13).
  */
-function TapChoices({
+export function TapChoices({
   legend,
   choices,
   value,

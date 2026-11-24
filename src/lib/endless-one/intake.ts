@@ -57,6 +57,9 @@ export type IntakePayload = {
     bestTimeToContact: string;
     question: string | null;
     amountTier?: string;
+    // partial: only the quiz's name and email screen sends it (true): a prospect, with no phone, ZIP or consent. Endless One keeps
+    // it without sending or counting anything, and makes it a lead when the finished request arrives for the same email.
+    partial?: boolean;
     estimate?: { goal: "income" | "growth" | "indexed"; amount: number; low: number; high: number; years: number | null };
   };
   contact?: { inquiryType: string; message: string };

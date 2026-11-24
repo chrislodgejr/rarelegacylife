@@ -255,28 +255,51 @@ function GuideBlock({ section }: { section: GuideSection }) {
   );
 }
 
-function InlineCta({ kind }: { kind: "quote" | "retirement" }) {
-  const isRetirement = kind === "retirement";
+// "quiz" (the annuity library, 2026-11-24) closes on the retirement quiz; the two older kinds are unchanged.
+const CTA_COPY = {
+  quote: {
+    eyebrow: "Free, no-pressure quote",
+    heading: "See what coverage would cost you.",
+    body: "Answer a few quick questions and a licensed advisor will follow up with options that fit your family and budget.",
+    href: "/quote",
+    button: "Get my free quote",
+  },
+  retirement: {
+    eyebrow: "Complimentary review",
+    heading: "Get a Retirement Income Blueprint.",
+    body: "A licensed advisor organizes your income sources, timing, and annuity trade-offs into one clear picture. No obligation.",
+    href: "/retirement",
+    button: "Request my Blueprint",
+  },
+  quiz: {
+    eyebrow: "Free, about two minutes",
+    heading: "See which options fit you.",
+    body: "Answer a few quick questions for a rough estimate, and a licensed advisor will compare options from highly rated carriers. No obligation.",
+    href: "/retirement/quiz",
+    button: "Take the retirement quiz",
+  },
+} as const;
+
+function InlineCta({ kind }: { kind: keyof typeof CTA_COPY }) {
+  const copy = CTA_COPY[kind];
 
   return (
     <section className="black-hero-bg mt-12 rounded-2xl p-7 text-white">
       <p className="gold-gradient-text text-xs font-bold uppercase tracking-[0.18em]">
-        {isRetirement ? "Complimentary review" : "Free, no-pressure quote"}
+        {copy.eyebrow}
       </p>
       <h2 className="font-premium mt-2 text-3xl font-semibold">
-        {isRetirement ? "Get a Retirement Income Blueprint." : "See what coverage would cost you."}
+        {copy.heading}
       </h2>
       <p className="mt-3 text-sm leading-6 text-white/72">
-        {isRetirement
-          ? "A licensed advisor organizes your income sources, timing, and annuity trade-offs into one clear picture. No obligation."
-          : "Answer a few quick questions and a licensed advisor will follow up with options that fit your family and budget."}
+        {copy.body}
       </p>
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <Link
           className="gold-gradient-button inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-bold"
-          href={isRetirement ? "/retirement" : "/quote"}
+          href={copy.href}
         >
-          {isRetirement ? "Request my Blueprint" : "Get my free quote"} <ArrowRight aria-hidden="true" className="h-4 w-4" />
+          {copy.button} <ArrowRight aria-hidden="true" className="h-4 w-4" />
         </Link>
         <a
           className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-6 text-sm font-semibold"
