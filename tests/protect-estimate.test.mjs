@@ -200,3 +200,32 @@ test("quiz prospect: a name, an email and the quiz's taps are enough; a missing 
   assert.equal(quizProspectSchema.safeParse({ first_name: "Pat", last_name: "Example", email: "pat@", ...taps }).success, false);
   assert.equal(quizProspectSchema.safeParse({ first_name: "Pat", last_name: "Example", email: "pat@example.com", ...taps, quiz_page: undefined }).success, false);
 });
+
+test("course: every lesson has its narration, a slide start for each slide, and related guides that exist", async () => {
+  const { ANNUITY_COURSE } = await import("@/content/annuity-course");
+  const { ANNUITY_COURSE_MEDIA } = await import("@/content/annuity-course-media");
+  const { GUIDES } = await import("@/content/guides");
+  const slugs = new Set(GUIDES.map((guide) => guide.slug));
+  assert.equal(ANNUITY_COURSE.lessons.length, 7);
+  ANNUITY_COURSE.lessons.forEach((lesson, index) => {
+    assert.equal(lesson.number, index + 1);
+    const media = ANNUITY_COURSE_MEDIA[lesson.slug];
+    assert.ok(media, `${lesson.slug} has no audio: run scripts/build-course-audio.mjs`);
+    assert.equal(media.slideStarts.length, lesson.slides.length, `${lesson.slug} slide timings are stale: run the script again`);
+    assert.equal(media.slideStarts[0], 0);
+    for (const slug of lesson.related) assert.ok(slugs.has(slug), `${lesson.slug} links a missing guide ${slug}`);
+    // Spoken text: no symbols a voice reads badly.
+    for (const paragraph of lesson.narration) assert.doesNotMatch(paragraph, /[%$—–]|https?:/, `${lesson.slug}: ${paragraph.slice(0, 40)}`);
+  });
+});
+
+test("guide topics: every retirement guide is in a topic, and every slug in the topics and Start here exists", async () => {
+  const { GUIDES } = await import("@/content/guides");
+  const { RETIREMENT_TOPICS, START_HERE } = await import("@/content/guide-topics");
+  const slugs = new Set(GUIDES.map((guide) => guide.slug));
+  const inTopics = new Set(RETIREMENT_TOPICS.flatMap((topic) => topic.slugs));
+  for (const slug of [...inTopics, ...START_HERE]) assert.ok(slugs.has(slug), `topics name a missing guide ${slug}`);
+  for (const guide of GUIDES.filter((item) => item.category === "Retirement & annuities")) {
+    assert.ok(inTopics.has(guide.slug), `${guide.slug} is in no topic: add it to src/content/guide-topics.ts`);
+  }
+});

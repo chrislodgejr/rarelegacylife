@@ -8,6 +8,11 @@
  */
 
 import { ANNUITY_GUIDES } from "@/content/annuity-guides";
+import { ANNUITY_GUIDES_A } from "@/content/annuity-guides-a";
+import { ANNUITY_GUIDES_B } from "@/content/annuity-guides-b";
+import { ANNUITY_GUIDES_C } from "@/content/annuity-guides-c";
+import { ANNUITY_GUIDES_D } from "@/content/annuity-guides-d";
+import { ANNUITY_GUIDES_E } from "@/content/annuity-guides-e";
 
 export type GuideTable = { caption: string; headers: string[]; rows: string[][] };
 
@@ -591,6 +596,11 @@ export const GUIDES: Guide[] = [
   },
   // The annuity library (2026-11-24) lives in its own file so this one stays readable.
   ...ANNUITY_GUIDES,
+  ...ANNUITY_GUIDES_A,
+  ...ANNUITY_GUIDES_B,
+  ...ANNUITY_GUIDES_C,
+  ...ANNUITY_GUIDES_D,
+  ...ANNUITY_GUIDES_E,
 ];
 
 export function getGuide(slug: string) {
