@@ -23,8 +23,8 @@ import { SubmitButton } from "@/components/forms/submit-button";
 /**
  * The retirement quiz (Chris, 2026-11-24: "how the questions are laid out", then "yes build it"; src/lib/quiz.ts). One question a
  * screen, every answer a big tap that moves on by itself, a progress bar, and one line under each question, beside the advisor's photo, on why
- * it is asked. The last screen is /protect's own contact step, unchanged in what it asks and why: name, phone, email and ZIP under the
- * same consent, a broad range on the page and the closer estimate by text (so a fake phone number gets no estimate). It submits through
+ * it is asked. The last two screens are /protect's contact step, asking the same things under the same consent but split in two (name and
+ * email, then phone and ZIP), a broad range on the page and the closer estimate by text (so a fake phone number gets no estimate). It submits through
  * /protect's action, which works the estimate out again on the server.
  * Steps are counted with trackEvent only (quiz_step, quiz_submit, quiz_error). They are not sent to Endless One's form-steps yet: that
  * feed is /protect's, and mixing the quiz into it would muddy its numbers until Endless One knows the quiz as its own page.
@@ -38,7 +38,8 @@ const GOALS = [
   ["indexed", "Growing my money with no market losses"],
 ] as const;
 
-type StepKey = "retired" | "worry" | "goal" | "money_location" | "amount_tier" | "age_or_term" | "contact";
+type StepKey = "retired" | "worry" | "goal" | "money_location" | "amount_tier" | "age_or_term" | "contact" | "phone";
+type QuestionKey = Exclude<StepKey, "contact" | "phone">;
 
 const initialState: ProtectRequestState = { ok: false, message: "" };
 
@@ -75,7 +76,10 @@ export function RetirementQuiz({
     "money_location",
     "amount_tier",
     "age_or_term",
+    // Two contact screens (Chris, 2026-11-24: "i thought we were not going to ask for the email and phone in the same form"): name and
+    // email first, then phone, ZIP and the consent. One form and one send, at the end of the second screen.
     "contact",
+    "phone",
   ];
   const step = order[Math.min(index, order.length - 1)];
   const age = goal === "income" ? answers.age_or_term : undefined;
@@ -103,7 +107,7 @@ export function RetirementQuiz({
     requestAnimationFrame(() => headingRef.current?.focus());
   };
 
-  const pick = (key: StepKey, value: string) => {
+  const pick = (key: QuestionKey, value: string) => {
     setAnswers((current) => {
       // A different goal asks a different last question (age, or years), so an old answer to it no longer fits.
       const next = { ...current, [key]: value };
@@ -140,7 +144,7 @@ export function RetirementQuiz({
   const error = (name: string) =>
     state.fieldErrors?.[name] ? <span className="mt-1 block text-xs text-red-700">{state.fieldErrors[name]}</span> : null;
 
-  const questions: Record<Exclude<StepKey, "contact">, { question: string; why: string; choices: readonly Choice[] }> = {
+  const questions: Record<QuestionKey, { question: string; why: string; choices: readonly Choice[] }> = {
     retired: {
       question: "Are you retired?",
       why: "Your timeline changes which options are worth comparing.",
@@ -181,7 +185,8 @@ export function RetirementQuiz({
   };
 
   const total = order.length;
-  const current = step === "contact" ? null : questions[step];
+  const current = step === "contact" || step === "phone" ? null : questions[step];
+  const onPhone = step === "phone";
 
   return (
     <div className="rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8">
@@ -231,7 +236,7 @@ export function RetirementQuiz({
                 key={value}
                 type="button"
                 aria-pressed={answers[step] === value}
-                onClick={() => pick(step, value)}
+                onClick={() => pick(step as QuestionKey, value)}
                 className="flex min-h-14 items-center rounded-xl border border-neutral-300 px-4 py-3 text-left text-base font-medium transition hover:border-brand-black-500 aria-pressed:border-brand-black-500 aria-pressed:bg-brand-cream-50"
               >
                 {label}
@@ -254,23 +259,51 @@ export function RetirementQuiz({
           }}
         >
           <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold leading-snug outline-none sm:text-2xl">
-            {figures ? "Your estimate is ready. Where should we text it?" : "Last step. How can an advisor reach you?"}
+            {onPhone
+              ? figures
+                ? "Last step. Where should we text your estimate?"
+                : "Last step. What's the best number to reach you?"
+              : figures
+                ? "Your estimate is ready. Who should we send it to?"
+                : "Almost done. Who should the advisor ask for?"}
           </h2>
-          <div aria-live="polite">{figures ? <RangeCard figures={figures} /> : null}</div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          {/* Both screens stay in the form so nothing typed is lost going back and forth; only one shows at a time. */}
+          <div className={onPhone ? "hidden" : "space-y-5"}>
+            <div aria-live="polite">{figures ? <RangeCard figures={figures} /> : null}</div>
             <Field label="First and last name" name="full_name" autoComplete="name" required error={error("full_name")} />
-            <Field label="Phone" name="phone" type="tel" autoComplete="tel" required error={error("phone")} />
             <Field label="Email" name="email" type="email" autoComplete="email" required error={error("email")} />
-            <Field label="ZIP code" name="zip_code" inputMode="numeric" autoComplete="postal-code" pattern="\d{5}(-\d{4})?" title="5-digit ZIP code" required error={error("zip_code")} />
+            <button
+              type="button"
+              className="gold-gradient-button h-12 w-full rounded-xl px-5 text-sm font-semibold"
+              onClick={(event) => {
+                // The browser's own checks on this screen's two fields, since the form is not sent yet.
+                const form = event.currentTarget.form;
+                const fields = ["full_name", "email"].map((name) => form?.elements.namedItem(name));
+                for (const field of fields) if (field instanceof HTMLInputElement && !field.reportValidity()) return;
+                trackEvent("quiz_step", { page, step: "contact" });
+                go(index + 1);
+              }}
+            >
+              Continue
+            </button>
           </div>
 
-          <label className="flex gap-3 text-xs leading-5 text-neutral-600">
-            <input className="mt-0.5 h-4 w-4 shrink-0 accent-brand-black-500" name="consent_tcpa" type="checkbox" required />
-            <span>{PROTECT_CONSENT_TEXT}</span>
-          </label>
-          {error("consent_tcpa")}
-          {error("amount_tier")}
+          <div className={onPhone ? "space-y-5" : "hidden"}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Mobile phone" name="phone" type="tel" autoComplete="tel" required error={error("phone")} />
+              <Field label="ZIP code" name="zip_code" inputMode="numeric" autoComplete="postal-code" pattern="\d{5}(-\d{4})?" title="5-digit ZIP code" required error={error("zip_code")} />
+            </div>
+            <label className="flex gap-3 text-xs leading-5 text-neutral-600">
+              <input className="mt-0.5 h-4 w-4 shrink-0 accent-brand-black-500" name="consent_tcpa" type="checkbox" required />
+              <span>{PROTECT_CONSENT_TEXT}</span>
+            </label>
+            {error("consent_tcpa")}
+            {error("amount_tier")}
+            {/* A name or email the server refuses is on the screen before this one, so its message shows here too (Back fixes it). */}
+            {error("full_name")}
+            {error("email")}
+          </div>
 
           <input type="hidden" name="quiz_page" value={page} />
           <input type="hidden" name="started_at" />
@@ -298,7 +331,9 @@ export function RetirementQuiz({
             </p>
           ) : null}
 
-          <SubmitButton>{figures ? "Text me my estimate" : "Request my free review"}</SubmitButton>
+          <div className={onPhone ? "space-y-5" : "hidden"}>
+            <SubmitButton>{figures ? "Text me my estimate" : "Request my free review"}</SubmitButton>
+          </div>
           <p className="flex items-center gap-2 text-xs text-neutral-500">
             <Lock aria-hidden="true" className="h-3.5 w-3.5" />
             Free and no obligation. Your information is never sold.
