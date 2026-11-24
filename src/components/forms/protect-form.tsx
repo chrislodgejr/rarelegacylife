@@ -18,14 +18,8 @@ import {
   protectEstimate,
   type ProtectEstimate,
 } from "@/lib/estimates/income-estimate";
-import {
-  PROTECT_AMOUNT_TIERS,
-  PROTECT_CONSENT_TEXT,
-} from "@/lib/validation/forms";
-import {
-  submitProtectRequest,
-  type ProtectRequestState,
-} from "@/server/actions/protect-request";
+import { PROTECT_AMOUNT_TIERS, PROTECT_CONSENT_TEXT } from "@/lib/validation/forms";
+import { submitProtectRequest, type ProtectRequestState } from "@/server/actions/protect-request";
 import { SubmitButton } from "@/components/forms/submit-button";
 
 export type ProtectTracking = {
@@ -76,18 +70,14 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
   const reportRef = useRef<FormStepReporter | null>(null);
   // Kept in memory only from Submit until Endless One answers, for the Google tag's enhanced conversion (src/lib/google-ads.ts).
   const contactRef = useRef<{ email: string; phone: string } | null>(null);
-  const report: FormStepReporter = (step, detail) =>
-    reportRef.current?.(step, detail);
+  const report: FormStepReporter = (step, detail) => reportRef.current?.(step, detail);
 
   useEffect(() => {
     if (startedAtRef.current) startedAtRef.current.value = String(Date.now());
-    if (landingPageRef.current)
-      landingPageRef.current.value = window.location.href;
+    if (landingPageRef.current) landingPageRef.current.value = window.location.href;
     if (referrerRef.current) referrerRef.current.value = document.referrer;
     trackEvent("protect_start", {});
-    reportRef.current = formStepReporter(
-      Boolean(tracking.gclid || tracking.gbraid || tracking.wbraid),
-    );
+    reportRef.current = formStepReporter(Boolean(tracking.gclid || tracking.gbraid || tracking.wbraid));
     reportRef.current("view");
     // Only on load: the click ids do not change during the visit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,13 +89,8 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
     trackEvent("protect_estimate_view", { goal });
     reportRef.current?.("estimate", goal);
     // On a phone the range and the next step sat below the fold: bring them into view once, when the range first appears.
-    const reduceMotion = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    estimateRef.current?.scrollIntoView({
-      behavior: reduceMotion ? "auto" : "smooth",
-      block: "start",
-    });
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    estimateRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
   }, [estimate, goal]);
 
   useEffect(() => {
@@ -117,46 +102,28 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
     } else if (state.message) {
       trackEvent("protect_error", {});
       const fields = Object.keys(state.fieldErrors ?? {});
-      for (const field of fields.length ? fields : ["form"])
-        reportRef.current?.("server_error", field);
+      for (const field of fields.length ? fields : ["form"]) reportRef.current?.("server_error", field);
     }
   }, [state]);
 
   if (state.ok) {
     return (
-      <div
-        className="rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8"
-        role="status"
-      >
-        <CheckCircle2
-          aria-hidden="true"
-          className="h-10 w-10 text-brand-black-500"
-        />
-        <h2 className="font-premium mt-4 text-2xl font-semibold">
-          Request received
-        </h2>
-        <p className="mt-2 text-base leading-7 text-neutral-700">
-          {state.message}
-        </p>
+      <div className="rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8" role="status">
+        <CheckCircle2 aria-hidden="true" className="h-10 w-10 text-brand-black-500" />
+        <h2 className="font-premium mt-4 text-2xl font-semibold">Request received</h2>
+        <p className="mt-2 text-base leading-7 text-neutral-700">{state.message}</p>
       </div>
     );
   }
 
   const error = (name: string) =>
-    state.fieldErrors?.[name] ? (
-      <span className="mt-1 block text-xs text-red-700">
-        {state.fieldErrors[name]}
-      </span>
-    ) : null;
+    state.fieldErrors?.[name] ? <span className="mt-1 block text-xs text-red-700">{state.fieldErrors[name]}</span> : null;
 
   return (
     <form
       onSubmit={(event) => {
         const data = new FormData(event.currentTarget);
-        contactRef.current = {
-          email: String(data.get("email") ?? ""),
-          phone: String(data.get("phone") ?? ""),
-        };
+        contactRef.current = { email: String(data.get("email") ?? ""), phone: String(data.get("phone") ?? "") };
         keepValuesOnSubmit(action)(event);
       }}
       className="space-y-5 rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8"
@@ -165,21 +132,15 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         if (CONTACT_FIELDS.includes(name)) report("contact_start");
       }}
       onClickCapture={(event) => {
-        if ((event.target as HTMLElement).closest('button[type="submit"]'))
-          report("submit_click");
+        if ((event.target as HTMLElement).closest('button[type="submit"]')) report("submit_click");
       }}
       onInvalidCapture={(event) => {
         // The browser's own required check stops the submit without telling the server; keep which field, never its value.
-        report(
-          "blocked",
-          (event.target as EventTarget as HTMLInputElement).name || "form",
-        );
+        report("blocked", (event.target as EventTarget as HTMLInputElement).name || "form");
       }}
     >
       <label className="block">
-        <span className="text-base font-semibold">
-          What are you looking for?
-        </span>
+        <span className="text-base font-semibold">What are you looking for?</span>
         <select
           className="mt-2 h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-brand-black-500 sm:text-sm"
           value={goal}
@@ -198,9 +159,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       </label>
 
       <fieldset>
-        <legend className="text-base font-semibold">
-          About how much are you looking to protect?
-        </legend>
+        <legend className="text-base font-semibold">About how much are you looking to protect?</legend>
         <p className="mt-1 text-sm text-neutral-600">
           {goal === "income"
             ? "Pick an amount and your age for a rough monthly income range. We text you the closer estimate."
@@ -254,20 +213,13 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         />
       )}
 
-      <div
-        id="protect-estimate"
-        ref={estimateRef}
-        aria-live="polite"
-        className="scroll-mt-4"
-      >
+      <div id="protect-estimate" ref={estimateRef} aria-live="polite" className="scroll-mt-4">
         {figures ? <RangeCard figures={figures} /> : null}
       </div>
 
       <fieldset className="space-y-4">
         <legend className="text-base font-semibold">
-          {estimate
-            ? "Last step: where should we text your closer estimate?"
-            : "Last step: how can we reach you?"}
+          {estimate ? "Last step: where should we text your closer estimate?" : "Last step: how can we reach you?"}
         </legend>
         <Field
           label="Mobile phone"
@@ -276,41 +228,13 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
           inputMode="tel"
           autoComplete="tel"
           required
-          hint={
-            estimate
-              ? "Your estimate comes by text, usually within minutes (8 a.m. to 9 p.m. your time)."
-              : undefined
-          }
+          hint={estimate ? "Your estimate comes by text, usually within minutes (8 a.m. to 9 p.m. your time)." : undefined}
           error={error("phone")}
         />
-        <Field
-          label="First and last name"
-          name="full_name"
-          autoComplete="name"
-          required
-          error={error("full_name")}
-        />
+        <Field label="First and last name" name="full_name" autoComplete="name" required error={error("full_name")} />
         <div className="grid grid-cols-[1fr_8rem] gap-3">
-          <Field
-            label="Email"
-            name="email"
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            required
-            error={error("email")}
-          />
-          <Field
-            label="ZIP code"
-            name="zip_code"
-            inputMode="numeric"
-            autoComplete="postal-code"
-            maxLength={10}
-            pattern="\d{5}(-\d{4})?"
-            title="5-digit ZIP code"
-            required
-            error={error("zip_code")}
-          />
+          <Field label="Email" name="email" type="email" inputMode="email" autoComplete="email" required error={error("email")} />
+          <Field label="ZIP code" name="zip_code" inputMode="numeric" autoComplete="postal-code" maxLength={10} pattern="\d{5}(-\d{4})?" title="5-digit ZIP code" required error={error("zip_code")} />
         </div>
       </fieldset>
 
@@ -332,21 +256,10 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       <input ref={landingPageRef} type="hidden" name="landing_page" />
       <input ref={referrerRef} type="hidden" name="referrer" />
       <input type="hidden" name="goal" value={goal} />
-      {goal === "income" && age ? (
-        <input type="hidden" name="age_band" value={age} />
-      ) : null}
-      {goal !== "income" && term ? (
-        <input type="hidden" name="term_years" value={term} />
-      ) : null}
-      {Object.entries(tracking).map(([name, value]) =>
-        value ? (
-          <input key={name} type="hidden" name={name} value={value} />
-        ) : null,
-      )}
-      <div
-        aria-hidden="true"
-        className="absolute left-[-10000px] h-px w-px overflow-hidden"
-      >
+      {goal === "income" && age ? <input type="hidden" name="age_band" value={age} /> : null}
+      {goal !== "income" && term ? <input type="hidden" name="term_years" value={term} /> : null}
+      {Object.entries(tracking).map(([name, value]) => (value ? <input key={name} type="hidden" name={name} value={value} /> : null))}
+      <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
         <label>
           Website
           <input name="website" tabIndex={-1} autoComplete="off" />
@@ -354,17 +267,12 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
       </div>
 
       {state.message && !state.ok ? (
-        <p
-          className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800"
-          role="alert"
-        >
+        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
           {state.message}
         </p>
       ) : null}
 
-      <SubmitButton>
-        {estimate ? "Text me my estimate" : "Request my free review"}
-      </SubmitButton>
+      <SubmitButton>{estimate ? "Text me my estimate" : "Request my free review"}</SubmitButton>
       <p className="flex items-center gap-2 text-xs text-neutral-500">
         <Lock aria-hidden="true" className="h-3.5 w-3.5" />
         Free and no obligation. Your information is never sold.
@@ -389,10 +297,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
 function RangeCard({ figures }: { figures: ProtectEstimate }) {
   const { goal, amount, years } = figures;
   const { low, high } = broadEstimate(figures);
-  const bonus =
-    goal === "indexed"
-      ? INDEXED_TERMS.find(([value]) => value === String(years))
-      : undefined;
+  const bonus = goal === "indexed" ? INDEXED_TERMS.find(([value]) => value === String(years)) : undefined;
   const hasBonus = Boolean(bonus && bonus[3] > 0);
   return (
     <div className="rounded-xl bg-brand-cream-50 px-4 py-4">
@@ -406,34 +311,24 @@ function RangeCard({ figures }: { figures: ProtectEstimate }) {
         {goal === "income" ? " a month" : ""}
       </p>
       <p className="mt-2 flex items-start gap-2 text-sm font-medium leading-6 text-[#050505]">
-        <MessageSquareText
-          aria-hidden="true"
-          className="mt-0.5 h-5 w-5 shrink-0 text-brand-black-500"
-        />
-        Want a closer number? Enter your mobile below and we&apos;ll text your
-        estimate.
+        <MessageSquareText aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-brand-black-500" />
+        Want a closer number? Enter your mobile below and we&apos;ll text your estimate.
       </p>
-      <p className="mt-2 text-xs leading-5 text-neutral-600">
-        A rough illustration, not a quote or a guarantee.
-      </p>
+      <p className="mt-2 text-xs leading-5 text-neutral-600">A rough illustration, not a quote or a guarantee.</p>
       <details className="mt-1 text-xs leading-5 text-neutral-600">
-        <summary className="cursor-pointer font-medium underline underline-offset-2">
-          What this assumes
-        </summary>
+        <summary className="cursor-pointer font-medium underline underline-offset-2">What this assumes</summary>
         <p className="mt-1">
-          {goal === "income"
-            ? "typical lifetime income for one person starting now. Your real amount depends on the carrier, the product, your age, and when income starts."
-            : goal === "growth"
-              ? "a fixed multi-year annuity, compounded, with no withdrawals. Real rates depend on the carrier, the amount, and the day you buy, and taking money out early can mean surrender charges."
-              : `a fixed indexed annuity${
-                  hasBonus
-                    ? ` with an up-front bonus of about ${formatRate(bonus![2])} to ${formatRate(bonus![3])}`
-                    : ""
-                }, assuming average index credits of up to ${formatRate(INDEXED_ASSUMED_CREDITS[1])} a year, with no withdrawals. Index credits are not guaranteed and can be zero in a year, though your value never drops because the market falls. ${
-                  hasBonus
-                    ? `The bonus becomes fully yours over the ${years} years, so leaving early can forfeit part of it and bring withdrawal charges. Bonus amounts vary by state and age.`
-                    : `Taking money out during the ${years} years beyond the yearly free amount can bring withdrawal charges.`
-                }`}
+        {goal === "income"
+          ? "typical lifetime income for one person starting now. Your real amount depends on the carrier, the product, your age, and when income starts."
+          : goal === "growth"
+            ? "a fixed multi-year annuity, compounded, with no withdrawals. Real rates depend on the carrier, the amount, and the day you buy, and taking money out early can mean surrender charges."
+            : `a fixed indexed annuity${
+                hasBonus ? ` with an up-front bonus of about ${formatRate(bonus![2])} to ${formatRate(bonus![3])}` : ""
+              }, assuming average index credits of up to ${formatRate(INDEXED_ASSUMED_CREDITS[1])} a year, with no withdrawals. Index credits are not guaranteed and can be zero in a year, though your value never drops because the market falls. ${
+                hasBonus
+                  ? `The bonus becomes fully yours over the ${years} years, so leaving early can forfeit part of it and bring withdrawal charges. Bonus amounts vary by state and age.`
+                  : `Taking money out during the ${years} years beyond the yearly free amount can bring withdrawal charges.`
+              }`}
         </p>
       </details>
     </div>
@@ -447,12 +342,7 @@ function Field({
   hint,
   type = "text",
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
-  name: string;
-  error: React.ReactNode;
-  hint?: string;
-}) {
+}: React.InputHTMLAttributes<HTMLInputElement> & { label: string; name: string; error: React.ReactNode; hint?: string }) {
   return (
     <label className="block">
       <span className="text-sm font-medium text-neutral-700">{label}</span>
@@ -462,9 +352,7 @@ function Field({
         type={type}
         {...props}
       />
-      {hint ? (
-        <span className="mt-1 block text-xs text-neutral-500">{hint}</span>
-      ) : null}
+      {hint ? <span className="mt-1 block text-xs text-neutral-500">{hint}</span> : null}
       {error}
     </label>
   );
