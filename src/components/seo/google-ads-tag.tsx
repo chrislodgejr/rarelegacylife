@@ -1,7 +1,7 @@
 import Script from "next/script";
 import { GOOGLE_ADS_ID } from "@/lib/google-ads";
 
-/** The Google tag for Google Ads, on /protect only (see src/lib/google-ads.ts). */
+/** The Google tag for Google Ads, on every public page through src/app/(public)/layout.tsx (see src/lib/google-ads.ts). */
 export function GoogleAdsTag() {
   return (
     <>

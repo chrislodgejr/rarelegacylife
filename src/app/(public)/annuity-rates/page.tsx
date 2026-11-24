@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { RetirementQuiz } from "@/components/forms/retirement-quiz";
 import { PublicShell } from "@/components/layout/public-shell";
-import { GoogleAdsTag } from "@/components/seo/google-ads-tag";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Eyebrow, Section } from "@/components/ui/section";
 import { GROWTH_RATES_AS_OF, GROWTH_TERMS } from "@/lib/estimates/income-estimate";
@@ -62,7 +61,6 @@ export default async function AnnuityRatesPage({ searchParams }: PageProps) {
 
   return (
     <PublicShell>
-      <GoogleAdsTag />
       <JsonLd
         data={[
           faqSchema(faqs),

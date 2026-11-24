@@ -1,4 +1,5 @@
-// The Google tag on /protect (Chris, 2026-11-23: "Shouldn't their be a google tag?" then "Yes"). It tells Google Ads the moment a
+// The Google tag, first on /protect (Chris, 2026-11-23: "Shouldn't their be a google tag?" then "Yes"), on every public page since
+// 2026-11-24 for remarketing and landing-page measurement. It tells Google Ads the moment a
 // visitor sends the form ("RL Form Submit", a SECONDARY conversion: reported, never bid on), with the visitor's email and phone for
 // enhanced conversions. gtag hashes them (SHA-256) in the browser before anything is sent; Google never receives them in plain text.
 // The conversion Google bids on stays "RL Qualified Lead" ($150K and up), uploaded daily from Endless One.

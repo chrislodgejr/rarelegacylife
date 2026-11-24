@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { RetirementQuiz } from "@/components/forms/retirement-quiz";
 import { PublicShell } from "@/components/layout/public-shell";
-import { GoogleAdsTag } from "@/components/seo/google-ads-tag";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Eyebrow, Section } from "@/components/ui/section";
 import { quizTracking } from "@/lib/quiz";
@@ -55,7 +54,6 @@ export default async function AnnuityCalculatorPage({ searchParams }: PageProps)
 
   return (
     <PublicShell>
-      <GoogleAdsTag />
       <JsonLd
         data={[
           faqSchema(faqs),

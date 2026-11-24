@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { ProtectForm, type ProtectTracking } from "@/components/forms/protect-form";
 import { LandingShell } from "@/components/layout/landing-shell";
-import { GoogleAdsTag } from "@/components/seo/google-ads-tag";
 import { Eyebrow } from "@/components/ui/section";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { ADVISORS, SITE } from "@/lib/site";
@@ -130,7 +129,6 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
 
   return (
     <LandingShell>
-      <GoogleAdsTag />
       <main className="bg-[#F7F5EF]">
         {/* Hero + form: people ready now never have to scroll. */}
         <section className="black-hero-bg px-4 pb-14 pt-8 text-white sm:px-6 sm:pt-14 lg:px-8">

@@ -33,7 +33,7 @@ const sections = [
   },
   {
     title: "Advertising and Google Ads",
-    copy: "Some pages, such as our retirement review page, use the Google tag to measure whether our Google ads lead to requests. When you submit a request on those pages, your email address and phone number are hashed (converted into a one-way code) in your browser and shared with Google so it can match the request to an ad click; Google does not receive them in readable form. Google may also use cookies to measure ad performance. You can manage Google ad settings at adssettings.google.com or use your browser's privacy controls to block these cookies.",
+    copy: "Our website uses the Google tag to measure whether our Google ads lead to requests, and Google may use cookies to show our ads to people who have visited our site (remarketing). When you submit a request, your email address and phone number are hashed (converted into a one-way code) in your browser and shared with Google so it can match the request to an ad click; Google does not receive them in readable form. Google may also use cookies to measure ad performance. You can manage Google ad settings at adssettings.google.com or use your browser's privacy controls to block these cookies.",
   },
   {
     title: "Security",
