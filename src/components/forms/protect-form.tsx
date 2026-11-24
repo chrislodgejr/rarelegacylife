@@ -213,7 +213,7 @@ export function ProtectForm({ tracking }: { tracking: ProtectTracking }) {
         />
       )}
 
-      <div id="protect-estimate" ref={estimateRef} aria-live="polite" className="scroll-mt-4">
+      <div id="protect-estimate" ref={estimateRef} aria-live="polite" className="scroll-mt-24">
         {figures ? <RangeCard figures={figures} /> : null}
       </div>
 
