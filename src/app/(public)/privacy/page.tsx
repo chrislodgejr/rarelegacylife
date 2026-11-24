@@ -60,7 +60,7 @@ export default function PrivacyPage() {
             title="Privacy Policy"
             copy="Rare Legacy Life treats quote requests and personal information with care, restraint, and security."
           />
-          <p className="mt-8 text-sm text-white/58">Effective date: November 23, 2026</p>
+          <p className="mt-8 text-sm text-white/58">Effective date: November 24, 2026</p>
         </Section>
         <Section className="bg-[#F7F5EF]">
           <div className="grid gap-4">
