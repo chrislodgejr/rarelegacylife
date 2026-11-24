@@ -41,6 +41,9 @@ const GOALS = [
 type StepKey = "retired" | "worry" | "goal" | "money_location" | "amount_tier" | "age_or_term" | "contact" | "phone";
 type QuestionKey = Exclude<StepKey, "contact" | "phone">;
 
+/** Room kept above the card for the sticky header (about 65px on phones, 81px on desktop). */
+const HEADER_CLEARANCE = 96;
+
 const initialState: ProtectRequestState = { ok: false, message: "" };
 
 export function RetirementQuiz({
@@ -67,6 +70,9 @@ export function RetirementQuiz({
   const meta = useRef({ started_at: "", landing_page: "", referrer: "" });
   const contactRef = useRef<{ email: string; phone: string } | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  // False until the visitor moves between screens, so opening the page never scrolls or takes focus.
+  const moved = useRef(false);
 
   const goal: EstimateGoal = answers.goal === "growth" || answers.goal === "indexed" ? answers.goal : "income";
   const order: StepKey[] = [
@@ -102,10 +108,23 @@ export function RetirementQuiz({
   }, [state, page]);
 
   const go = (next: number) => {
+    moved.current = true;
     setIndex(next);
-    // Each screen replaces the last, so move focus to its question for screen readers and keyboards.
-    requestAnimationFrame(() => headingRef.current?.focus());
   };
+
+  // After a new screen is on the page, move focus to its question for screen readers and keyboards. The focus must not scroll: the
+  // browser would put the question at the very top, under the sticky header (Chris, 2026-11-24: "rare legacy and phone number seem to
+  // be cutting into the form"). Instead the card is brought just below the header, and only when it is not already in view there.
+  useEffect(() => {
+    if (!moved.current) return;
+    headingRef.current?.focus({ preventScroll: true });
+    const card = cardRef.current;
+    if (!card) return;
+    const top = card.getBoundingClientRect().top;
+    if (top < HEADER_CLEARANCE || top > window.innerHeight / 2) {
+      window.scrollTo({ top: Math.max(0, window.scrollY + top - HEADER_CLEARANCE) });
+    }
+  }, [index]);
 
   const pick = (key: QuestionKey, value: string) => {
     setAnswers((current) => {
@@ -189,7 +208,7 @@ export function RetirementQuiz({
   const onPhone = step === "phone";
 
   return (
-    <div className="rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8">
+    <div ref={cardRef} data-quiz-card className="rounded-2xl bg-white p-6 text-[#050505] shadow-xl sm:p-8">
       <div className="flex items-center gap-3">
         {index > 0 ? (
           <button
