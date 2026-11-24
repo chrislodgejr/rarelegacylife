@@ -17,6 +17,7 @@ import { QUIZ_MONEY_LOCATIONS, QUIZ_RETIRED, QUIZ_WORRIES, type QuizPage } from 
 import { RETIREMENT_SCHEDULER_URLS } from "@/lib/constants/retirement";
 import { PROTECT_AMOUNT_TIERS, PROTECT_CONSENT_TEXT } from "@/lib/validation/forms";
 import { submitProtectRequest, type ProtectRequestState } from "@/server/actions/protect-request";
+import { sendQuizProspect } from "@/server/actions/quiz-prospect";
 import { Field, RangeCard, type ProtectTracking } from "@/components/forms/protect-form";
 import { SubmitButton } from "@/components/forms/submit-button";
 
@@ -71,6 +72,8 @@ export function RetirementQuiz({
   const contactRef = useRef<{ email: string; phone: string } | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  // The email the prospect was last sent for, so Back and Continue again does not send the same person twice.
+  const prospectFor = useRef("");
   // False until the visitor moves between screens, so opening the page never scrolls or takes focus.
   const moved = useRef(false);
 
@@ -312,12 +315,29 @@ export function RetirementQuiz({
                 const form = event.currentTarget.form;
                 const fields = ["first_name", "last_name", "email"].map((name) => form?.elements.namedItem(name));
                 for (const field of fields) if (field instanceof HTMLInputElement && !field.reportValidity()) return;
+                // A name and an email are enough to keep them as a prospect if they stop here (src/server/actions/quiz-prospect.ts).
+                // Sent once for an email, never waited on, and it does nothing unless the server has it switched on.
+                if (form) {
+                  for (const [name, value] of Object.entries(meta.current)) {
+                    const field = form.elements.namedItem(name);
+                    if (field instanceof HTMLInputElement) field.value = value;
+                  }
+                  const data = new FormData(form);
+                  const email = String(data.get("email") ?? "").trim().toLowerCase();
+                  if (email && prospectFor.current !== email) {
+                    prospectFor.current = email;
+                    void sendQuizProspect(data).catch(() => {});
+                  }
+                }
                 trackEvent("quiz_step", { page, step: "contact" });
                 go(index + 1);
               }}
             >
               Continue
             </button>
+            <p className="text-xs leading-5 text-neutral-500">
+              Continue saves your name and email, so an advisor can follow up by email if you stop here.
+            </p>
           </div>
 
           <div className={onPhone ? "space-y-5" : "hidden"}>

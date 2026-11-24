@@ -183,3 +183,16 @@ test("guides: every slug is unique and every related guide exists", async () => 
     assert.ok(words >= 40 && words <= 75, `${guide.slug} short answer is ${words} words`);
   }
 });
+
+// Quiz prospects (Chris, 2026-11-24: "an email only drop off should be classified as a prospect"): the name and email screen's own
+// check. No phone, ZIP or consent is asked there, and none is needed.
+test("quiz prospect: a name, an email and the quiz's taps are enough; a missing name or a bad email is refused", async () => {
+  const { quizProspectSchema } = await import("@/lib/validation/forms");
+  const taps = { amount_tier: "250k_500k", quiz_page: "quiz", goal: "income", age_band: "65_69", retired: "retired", started_at: "1" };
+  const prospect = quizProspectSchema.parse({ first_name: " Pat ", last_name: "Example", email: "Pat@Example.com", ...taps });
+  assert.deepEqual([prospect.first_name, prospect.last_name, prospect.email], ["Pat", "Example", "pat@example.com"]);
+  assert.equal("phone" in prospect, false);
+  assert.equal(quizProspectSchema.safeParse({ first_name: "Pat", last_name: "", email: "pat@example.com", ...taps }).success, false);
+  assert.equal(quizProspectSchema.safeParse({ first_name: "Pat", last_name: "Example", email: "pat@", ...taps }).success, false);
+  assert.equal(quizProspectSchema.safeParse({ first_name: "Pat", last_name: "Example", email: "pat@example.com", ...taps, quiz_page: undefined }).success, false);
+});

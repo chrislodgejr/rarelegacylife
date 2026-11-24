@@ -227,6 +227,34 @@ export const protectRequestSchema = z.object({
   referrer: optionalAttribution,
 });
 
+// The quiz's name and email screen (Chris, 2026-11-24: "i think an email only drop off should be classified as a prospect"): what
+// goes to Endless One when someone taps Continue there, before any phone, ZIP or consent is asked. The same taps as the finished
+// request; the server works the estimate out itself.
+export const quizProspectSchema = z.object({
+  first_name: requiredText.max(80, "Name is too long"),
+  last_name: requiredText.max(80, "Name is too long"),
+  email: emailSchema,
+  amount_tier: protectRequestSchema.shape.amount_tier,
+  quiz_page: z.enum(QUIZ_PAGE_KEYS),
+  goal: protectRequestSchema.shape.goal,
+  age_band: protectRequestSchema.shape.age_band,
+  term_years: protectRequestSchema.shape.term_years,
+  retired: protectRequestSchema.shape.retired,
+  worry: protectRequestSchema.shape.worry,
+  money_location: protectRequestSchema.shape.money_location,
+  website: z.string().trim().max(200).optional().default(""),
+  started_at: z.string().trim().max(32).optional().default(""),
+  utm_source: optionalAttribution,
+  utm_medium: optionalAttribution,
+  utm_campaign: optionalAttribution,
+  utm_content: optionalAttribution,
+  utm_term: optionalAttribution,
+  gclid: optionalAttribution,
+  gbraid: optionalAttribution,
+  wbraid: optionalAttribution,
+  landing_page: optionalAttribution,
+});
+
 export const leadStatusSchema = z.object({
   lead_id: z.string().uuid(),
   status: z.enum(LEAD_STATUSES),
