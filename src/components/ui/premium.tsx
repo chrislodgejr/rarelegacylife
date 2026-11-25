@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export function GoldText({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <span className={`gold-gradient-text ${className}`}>{children}</span>;
+  return <span className={`text-brand-black-500 ${className}`}>{children}</span>;
 }
 
 export function GoldDivider({ className = "" }: { className?: string }) {
@@ -31,7 +31,7 @@ export function PremiumBadge({
     tone === "gold"
       ? "gold-gradient-subtle text-black"
       : tone === "dark"
-        ? "border border-white/[0.14] bg-white/[0.06] text-white/78"
+        ? "border border-neutral-200 bg-neutral-50 text-neutral-700"
         : "border border-neutral-200 bg-white text-[#050505]";
 
   return (
@@ -72,14 +72,14 @@ export function PremiumSectionHeader({
 }) {
   return (
     <div className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
-      <p className={`${dark ? "gold-gradient-text" : "text-brand-black-500"} text-xs font-semibold uppercase tracking-[0.22em]`}>
+      <p className={`${dark ? "text-brand-black-500" : "text-brand-black-500"} text-xs font-semibold uppercase tracking-[0.22em]`}>
         {eyebrow}
       </p>
-      <h2 className={`font-premium mt-4 text-4xl font-semibold leading-tight sm:text-5xl ${dark ? "text-white" : "text-[#050505]"}`}>
+      <h2 className={`font-premium mt-4 text-4xl font-semibold leading-tight sm:text-5xl ${dark ? "text-[#050505]" : "text-[#050505]"}`}>
         {title}
       </h2>
       {copy ? (
-        <p className={`mt-5 text-base leading-8 ${dark ? "text-white/68" : "text-neutral-600"}`}>{copy}</p>
+        <p className={`mt-5 text-base leading-8 ${dark ? "text-neutral-600" : "text-neutral-600"}`}>{copy}</p>
       ) : null}
     </div>
   );

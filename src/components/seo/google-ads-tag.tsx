@@ -5,8 +5,8 @@ import { GOOGLE_ADS_ID } from "@/lib/google-ads";
 export function GoogleAdsTag() {
   return (
     <>
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`} strategy="afterInteractive" />
-      <Script id="google-ads-tag" strategy="afterInteractive">
+      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`} strategy="lazyOnload" />
+      <Script id="google-ads-tag" strategy="lazyOnload">
         {`window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config','${GOOGLE_ADS_ID}',{allow_enhanced_conversions:true});`}
       </Script>
     </>

@@ -65,37 +65,37 @@ export default async function GuidePage({ params }: GuidePageProps) {
         ]}
       />
       <main className="bg-white">
-        <header className="black-hero-bg px-4 pb-12 pt-10 text-white sm:px-6 lg:px-8">
+        <header className="light-hero-bg px-4 pb-12 pt-10 text-[#050505] sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <nav aria-label="Breadcrumb" className="text-xs text-white/55">
-              <Link className="hover:text-brand-cream-300" href="/">
+            <nav aria-label="Breadcrumb" className="text-xs text-neutral-600">
+              <Link className="hover:text-brand-black-500" href="/">
                 Home
               </Link>
               <span className="mx-2">/</span>
-              <Link className="hover:text-brand-cream-300" href="/education">
+              <Link className="hover:text-brand-black-500" href="/education">
                 Guides
               </Link>
               <span className="mx-2">/</span>
-              <span className="text-white/75">{guide.category}</span>
+              <span className="text-neutral-700">{guide.category}</span>
             </nav>
             <h1 className="font-premium mt-5 text-4xl font-semibold leading-tight sm:text-5xl">{guide.title}</h1>
-            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/70">
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-neutral-700">
               <span className="inline-flex items-center gap-2">
-                <BadgeCheck aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <BadgeCheck aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 <span>
                   By{" "}
-                  <Link className="font-semibold text-white hover:text-brand-cream-300" href={`/about#${author.slug}`}>
+                  <Link className="font-semibold text-[#050505] hover:text-brand-black-500" href={`/about#${author.slug}`}>
                     {author.name}
                   </Link>
                   , {author.title}
                 </span>
               </span>
               <span className="inline-flex items-center gap-2">
-                <CalendarDays aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <CalendarDays aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 Updated <time dateTime={guide.updated}>{dateFormat.format(new Date(guide.updated))}</time>
               </span>
               <span className="inline-flex items-center gap-2">
-                <Clock aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <Clock aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 {guide.readMinutes} min read
               </span>
             </div>
@@ -212,7 +212,7 @@ function GuideBlock({ section }: { section: GuideSection }) {
         </p>
       ))}
       {section.bullets ? (
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-7 text-neutral-700 marker:text-brand-cream-600">
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-base leading-7 text-neutral-700 marker:text-brand-black-500">
           {section.bullets.map((bullet) => (
             <li key={bullet}>{bullet}</li>
           ))}
@@ -222,7 +222,7 @@ function GuideBlock({ section }: { section: GuideSection }) {
         <div className="mt-5 overflow-x-auto rounded-xl border border-neutral-200">
           <table className="w-full min-w-[520px] text-left text-sm">
             <caption className="sr-only">{section.table.caption}</caption>
-            <thead className="bg-black text-white">
+            <thead className="bg-white text-[#050505]">
               <tr>
                 {section.table.headers.map((header, index) => (
                   <th key={`${header}-${index}`} className="px-4 py-3 font-semibold" scope="col">
@@ -284,14 +284,14 @@ function InlineCta({ kind }: { kind: keyof typeof CTA_COPY }) {
   const copy = CTA_COPY[kind];
 
   return (
-    <section className="black-hero-bg mt-12 rounded-2xl p-7 text-white">
-      <p className="gold-gradient-text text-xs font-bold uppercase tracking-[0.18em]">
+    <section className="light-hero-bg mt-12 rounded-2xl p-7 text-[#050505]">
+      <p className="text-brand-black-500 text-xs font-bold uppercase tracking-[0.18em]">
         {copy.eyebrow}
       </p>
       <h2 className="font-premium mt-2 text-3xl font-semibold">
         {copy.heading}
       </h2>
-      <p className="mt-3 text-sm leading-6 text-white/72">
+      <p className="mt-3 text-sm leading-6 text-neutral-700">
         {copy.body}
       </p>
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -302,11 +302,11 @@ function InlineCta({ kind }: { kind: keyof typeof CTA_COPY }) {
           {copy.button} <ArrowRight aria-hidden="true" className="h-4 w-4" />
         </Link>
         <a
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-6 text-sm font-semibold"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-neutral-300 px-6 text-sm font-semibold"
           href={SITE.phone.href}
           data-track="phone_click"
         >
-          <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+          <Phone aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
           {SITE.phone.display}
         </a>
       </div>

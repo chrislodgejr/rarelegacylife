@@ -89,7 +89,7 @@ export function FloatingQuoteCard() {
 
   return (
     <motion.aside
-      className="gold-border dark-premium-card relative overflow-hidden rounded-[1.75rem] p-6 text-white shadow-2xl backdrop-blur-xl"
+      className="gold-border premium-card relative overflow-hidden rounded-[1.75rem] p-6 text-[#050505] shadow-2xl backdrop-blur-xl"
       animate={reduceMotion ? undefined : { y: [0, -12, 0] }}
       transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
     >
@@ -101,7 +101,7 @@ export function FloatingQuoteCard() {
       />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="gold-gradient-text text-xs font-semibold uppercase tracking-[0.22em]">
+          <p className="text-brand-black-500 text-xs font-semibold uppercase tracking-[0.22em]">
             Coverage Preview
           </p>
           <h2 className="font-premium mt-3 max-w-[17rem] text-3xl font-semibold leading-tight">
@@ -116,23 +116,23 @@ export function FloatingQuoteCard() {
         {checklist.map(([label, meta], index) => (
           <motion.div
             key={label}
-            className="rounded-2xl border border-white/12 bg-white/[0.055] p-4"
+            className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4"
             initial={reduceMotion ? false : { opacity: 0, x: 18 }}
             animate={reduceMotion ? undefined : { opacity: 1, x: 0 }}
             transition={{ duration: 0.58, delay: 0.35 + index * 0.12 }}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className="flex items-center gap-2 text-sm font-medium text-white">
-                <CheckCircle2 className="h-4 w-4 text-brand-cream-300" />
+              <span className="flex items-center gap-2 text-sm font-medium text-[#050505]">
+                <CheckCircle2 className="h-4 w-4 text-brand-black-500" />
                 {label}
               </span>
-              <span className="text-xs text-white/50">{meta}</span>
+              <span className="text-xs text-neutral-500">{meta}</span>
             </div>
           </motion.div>
         ))}
       </div>
-      <div className="mt-6 rounded-2xl bg-black/35 p-5">
-        <p className="text-xs uppercase tracking-[0.18em] text-white/45">Estimated range</p>
+      <div className="mt-6 rounded-2xl bg-brand-cream-100 p-5">
+        <p className="text-xs uppercase tracking-[0.18em] text-neutral-600">Estimated range</p>
         <p className="font-premium mt-2 text-4xl font-semibold">$250K-$1M</p>
       </div>
       <Link
@@ -142,8 +142,8 @@ export function FloatingQuoteCard() {
         Start the guided quote
         <ArrowRight className="h-4 w-4" />
       </Link>
-      <div className="mt-5 flex items-center gap-2 text-xs text-white/55">
-        <ShieldCheck className="h-4 w-4 text-brand-cream-300" />
+      <div className="mt-5 flex items-center gap-2 text-xs text-neutral-600">
+        <ShieldCheck className="h-4 w-4 text-brand-black-500" />
         Private. Secure. Built around your goals.
       </div>
     </motion.aside>

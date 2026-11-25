@@ -25,7 +25,7 @@ export default async function RetirementQuizPage({ searchParams }: QuizPageProps
 
   return (
     <LandingShell>
-      <main className="black-hero-bg min-h-[80vh] px-4 pb-16 pt-8 text-white sm:px-6 sm:pt-12 lg:px-8">
+      <main className="light-hero-bg min-h-[80vh] px-4 pb-16 pt-8 text-[#050505] sm:px-6 sm:pt-12 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <div className="text-center">
             <Eyebrow>Free retirement savings review</Eyebrow>
@@ -42,14 +42,14 @@ export default async function RetirementQuizPage({ searchParams }: QuizPageProps
               advisor={RETIREMENT_ADVISOR}
             />
           </div>
-          <ul className="mt-7 grid gap-3 text-sm text-white/80 sm:grid-cols-3">
+          <ul className="mt-7 grid gap-3 text-sm text-neutral-700 sm:grid-cols-3">
             {[
               { icon: ShieldCheck, label: "Principal-protection options" },
               { icon: Landmark, label: "Independent: many carriers" },
               { icon: BadgeCheck, label: "Licensed advisors, 49 states" },
             ].map(({ icon: Icon, label }) => (
               <li key={label} className="flex items-center justify-center gap-2">
-                <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-brand-cream-500" />
+                <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-brand-black-500" />
                 {label}
               </li>
             ))}

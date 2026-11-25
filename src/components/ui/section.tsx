@@ -14,10 +14,11 @@ export function Section({
   );
 }
 
-/** tone: "dark" for dark backgrounds (cream), "light" for light backgrounds (warm black). */
-export function Eyebrow({ children, tone = "dark" }: { children: React.ReactNode; tone?: "dark" | "light" }) {
+/** The small label above a heading. The site is light throughout (2026-11-25), so both tones are the warm bronze; `tone` is kept
+ *  so existing callers need no change. */
+export function Eyebrow({ children }: { children: React.ReactNode; tone?: "dark" | "light" }) {
   return (
-    <p className={cn(tone === "dark" ? "gold-gradient-text" : "text-brand-black-500", "text-sm font-semibold uppercase")}>
+    <p className={cn("text-brand-black-500", "text-sm font-semibold uppercase")}>
       {children}
     </p>
   );

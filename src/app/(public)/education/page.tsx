@@ -98,13 +98,13 @@ export default function EducationPage() {
         ])}
       />
       <main>
-        <Section className="black-hero-bg text-white">
+        <Section className="light-hero-bg text-[#050505]">
           <div className="max-w-4xl">
             <Eyebrow>Life insurance &amp; retirement guides</Eyebrow>
-            <h1 className="font-premium mt-4 text-4xl font-semibold text-white sm:text-6xl">
+            <h1 className="font-premium mt-4 text-4xl font-semibold text-[#050505] sm:text-6xl">
               Understand the protection before you choose the policy.
             </h1>
-            <p className="mt-6 text-base leading-8 text-white/72">
+            <p className="mt-6 text-base leading-8 text-neutral-700">
               Straight answers from licensed advisors. Your best path depends on your family,
               income, health, debt, business responsibilities, budget, and long-term goals — start
               with the question you have right now.
@@ -218,11 +218,11 @@ export default function EducationPage() {
         </Section>
 
         <Section>
-          <div className="black-section rounded-2xl p-6 text-white md:p-8">
+          <div className="light-section rounded-2xl p-6 text-[#050505] md:p-8">
             <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <h2 className="font-premium text-3xl font-semibold">Ready to compare your options?</h2>
-                <p className="mt-3 max-w-3xl text-sm leading-7 text-white/72">
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-neutral-700">
                   A few quick questions help a licensed advisor understand your goals. Requesting a
                   quote is free and you are not committing to buy a policy.
                 </p>

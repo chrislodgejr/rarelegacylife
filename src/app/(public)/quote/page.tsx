@@ -29,23 +29,23 @@ export default async function QuotePage({ searchParams }: QuotePageProps) {
   return (
     <PublicShell showMobileBar={false}>
       <main className="bg-[#F7F5EF]">
-        <section className="black-hero-bg px-4 pb-14 pt-8 text-white sm:px-6 sm:pt-14 lg:px-8">
+        <section className="light-hero-bg px-4 pb-14 pt-8 text-[#050505] sm:px-6 sm:pt-14 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:gap-8">
             <div className="flex flex-col justify-center">
               <Eyebrow>Free quote</Eyebrow>
-              <h1 className="font-premium mt-3 text-4xl font-semibold leading-tight text-white sm:text-5xl">
+              <h1 className="font-premium mt-3 text-4xl font-semibold leading-tight text-[#050505] sm:text-5xl">
                 Check your coverage options.
               </h1>
-              <p className="mt-4 text-base leading-7 text-white/72">
+              <p className="mt-4 text-base leading-7 text-neutral-700">
                 About two minutes. No obligation. A licensed advisor reviews your answers and follows
                 up with options that fit your family and budget.
               </p>
               <a
-                className="mt-5 hidden items-center gap-2 text-sm font-semibold text-white/80 hover:text-brand-cream-300 lg:inline-flex"
+                className="mt-5 hidden items-center gap-2 text-sm font-semibold text-neutral-700 hover:text-brand-black-500 lg:inline-flex"
                 href={SITE.phone.href}
                 data-track="phone_click"
               >
-                <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <Phone aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 Rather talk it through? Call {SITE.phone.display}
               </a>
             </div>

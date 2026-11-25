@@ -134,39 +134,43 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
     <LandingShell>
       <main className="bg-[#F7F5EF]">
         {/* Hero + form: people ready now never have to scroll. */}
-        <section className="black-hero-bg px-4 pb-14 pt-8 text-white sm:px-6 sm:pt-14 lg:px-8">
-          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+        {/* On a phone the first question must be on the first screen (2026-11-25 audit: it started 203 px below it, and 76% of
+            ad visitors left without a tap), so below lg the hero is the label and headline only; the rest follows the quiz. */}
+        <section className="light-hero-bg px-4 pb-14 pt-5 text-[#050505] sm:px-6 sm:pt-14 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
             <div className="flex flex-col justify-center">
               <Eyebrow>Free retirement savings review</Eyebrow>
-              <h1 className="font-premium mt-3 text-4xl font-semibold leading-tight text-white sm:text-5xl">
+              <h1 className="font-premium mt-2 text-3xl font-semibold leading-tight text-[#050505] sm:mt-3 sm:text-5xl">
                 Protect what you&apos;ve built.
               </h1>
-              <p className="mt-4 text-lg leading-8 text-white/80">
+              <div className="order-last hidden lg:block">
+              <p className="mt-4 text-lg leading-8 text-neutral-700">
                 Keep your principal safe from market drops, leave room for it to grow, and see your options from dozens of
                 top-rated insurers side by side.
               </p>
-              <p className="mt-3 text-base leading-7 text-white/65">
+              <p className="mt-3 text-base leading-7 text-neutral-600">
                 One licensed local advisor. Free, and no obligation.
               </p>
-              <ul className="mt-6 grid gap-3 text-sm text-white/80 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              <ul className="mt-6 grid gap-3 text-sm text-neutral-700 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
                 {[
                   { icon: ShieldCheck, label: "Principal-protection options" },
                   { icon: Landmark, label: "Independent: many carriers" },
                   { icon: BadgeCheck, label: "Serving 49 states" },
                 ].map(({ icon: Icon, label }) => (
                   <li key={label} className="flex items-center gap-2">
-                    <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-brand-cream-500" />
+                    <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-brand-black-500" />
                     {label}
                   </li>
                 ))}
               </ul>
               <a
-                className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-brand-cream-300"
+                className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-neutral-700 hover:text-brand-black-500"
                 href="#how-it-works"
               >
-                <ArrowDown aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <ArrowDown aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 Not ready yet? See how it works
               </a>
+              </div>
             </div>
             <div id={FORM_ID} className="scroll-mt-24">
               <RetirementQuiz
@@ -176,6 +180,17 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
                 intro="Tap an answer to move on. There's nothing to type until the last step."
                 advisor={RETIREMENT_ADVISOR}
               />
+              {/* Below lg, the reassurance the hero carries on wide screens, after the first question. */}
+              <div className="mt-6 lg:hidden">
+                <p className="text-base leading-7 text-neutral-700">
+                  Keep your principal safe from market drops, leave room for it to grow, and see options from dozens of top-rated
+                  insurers side by side. One licensed local advisor. Free, and no obligation.
+                </p>
+                <a className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-neutral-700 hover:text-brand-black-500" href="#how-it-works">
+                  <ArrowDown aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
+                  Not ready yet? See how it works
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -220,7 +235,7 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
               {steps.map(({ icon: Icon, title, copy }, index) => (
                 <li key={title} className="rounded-2xl border border-neutral-200 p-6">
                   <div className="flex items-center gap-3">
-                    <span className="font-premium text-3xl font-semibold text-brand-cream-600">{index + 1}</span>
+                    <span className="font-premium text-3xl font-semibold text-brand-black-500">{index + 1}</span>
                     <Icon aria-hidden="true" className="h-5 w-5 text-brand-black-500" />
                   </div>
                   <h3 className="mt-3 text-lg font-semibold text-[#050505]">{title}</h3>
@@ -255,27 +270,27 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
                 </p>
               </div>
             </div>
-            <div className="rounded-2xl bg-brand-black-950 p-7 text-white">
-              <h3 className="text-lg font-semibold text-brand-cream-300">The tradeoffs we&apos;ll walk you through</h3>
-              <ul className="mt-4 space-y-4 text-sm leading-6 text-white/80">
+            <div className="rounded-2xl bg-white p-7 text-[#050505]">
+              <h3 className="text-lg font-semibold text-brand-black-500">The tradeoffs we&apos;ll walk you through</h3>
+              <ul className="mt-4 space-y-4 text-sm leading-6 text-neutral-700">
                 <li>
-                  <span className="font-semibold text-white">Your money is committed for a term.</span>{" "}Most contracts run
+                  <span className="font-semibold text-[#050505]">Your money is committed for a term.</span>{" "}Most contracts run
                   several years, so they&apos;re for money you won&apos;t need right away.
                 </li>
                 <li>
-                  <span className="font-semibold text-white">Early withdrawals can cost you.</span>{" "}Taking out more than the
+                  <span className="font-semibold text-[#050505]">Early withdrawals can cost you.</span>{" "}Taking out more than the
                   contract allows during the surrender period can mean charges and tax consequences.
                 </li>
                 <li>
-                  <span className="font-semibold text-white">Upside is limited.</span>{" "}Protection from losses comes with caps
+                  <span className="font-semibold text-[#050505]">Upside is limited.</span>{" "}Protection from losses comes with caps
                   on how much you can earn.
                 </li>
                 <li>
-                  <span className="font-semibold text-white">Guarantees depend on the insurer.</span>{" "}That&apos;s why we compare
+                  <span className="font-semibold text-[#050505]">Guarantees depend on the insurer.</span>{" "}That&apos;s why we compare
                   highly rated carriers, not just one.
                 </li>
               </ul>
-              <p className="mt-5 text-xs leading-5 text-white/50">
+              <p className="mt-5 text-xs leading-5 text-neutral-500">
                 Annuities aren&apos;t right for everyone. Part of the review is figuring out whether one fits you at all.
               </p>
             </div>
@@ -335,10 +350,10 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
         </section>
 
         {/* Closing CTA */}
-        <section className="black-hero-bg px-4 py-16 text-center text-white sm:px-6 lg:px-8">
+        <section className="light-hero-bg px-4 py-16 text-center text-[#050505] sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl">
             <h2 className="font-premium text-3xl font-semibold sm:text-4xl">See your options before you decide.</h2>
-            <p className="mt-3 text-base leading-7 text-white/70">
+            <p className="mt-3 text-base leading-7 text-neutral-700">
               It takes about a minute to request, and the review is free.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -350,11 +365,11 @@ export default async function ProtectPage({ searchParams }: ProtectPageProps) {
                 Request my free review
               </a>
               <a
-                className="inline-flex h-12 items-center gap-2 rounded-full border border-white/20 px-6 text-sm font-semibold text-white/85 hover:text-brand-cream-300"
+                className="inline-flex h-12 items-center gap-2 rounded-full border border-neutral-300 px-6 text-sm font-semibold text-neutral-800 hover:text-brand-black-500"
                 href={SITE.phone.href}
                 data-track="phone_click"
               >
-                <PhoneCall aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <PhoneCall aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 Call {SITE.phone.display}
               </a>
             </div>

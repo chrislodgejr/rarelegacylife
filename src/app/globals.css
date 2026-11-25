@@ -200,6 +200,24 @@ textarea {
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
 }
 
+/* The site is light throughout (Chris, 2026-11-25: "Switch the entire site to light mode"; research: dark text on a light background
+   reads better for most people, older adults included, NN/g "Dark Mode vs. Light Mode", 2020). The light surfaces below replace
+   the dark ones on every public page; the dark ones stay for the agents' dashboard. */
+.light-hero-bg {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(201, 192, 168, 0.28), transparent 38%),
+    radial-gradient(circle at 12% 0%, rgba(230, 222, 201, 0.35), transparent 32%),
+    linear-gradient(180deg, #fffdf6 0%, #f7f5ef 100%);
+  color: #050505;
+}
+
+.light-section {
+  background:
+    radial-gradient(circle at top left, rgba(230, 222, 201, 0.35), transparent 36%),
+    #f7f5ef;
+  color: #050505;
+}
+
 .black-hero-bg {
   background:
     radial-gradient(circle at 78% 18%, rgba(230, 222, 201, 0.12), transparent 32%),
@@ -222,8 +240,8 @@ textarea {
 
 .signal-grid {
   background-image:
-    linear-gradient(rgba(243, 238, 226, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(243, 238, 226, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(90, 83, 69, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 83, 69, 0.06) 1px, transparent 1px);
   background-size: 42px 42px;
 }
 

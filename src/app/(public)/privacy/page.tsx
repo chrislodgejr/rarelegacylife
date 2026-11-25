@@ -53,14 +53,14 @@ export default function PrivacyPage() {
   return (
     <PublicShell>
       <main>
-        <Section className="black-hero-bg text-white">
+        <Section className="light-hero-bg text-[#050505]">
           <PremiumSectionHeader
             dark
             eyebrow="Privacy"
             title="Privacy Policy"
             copy="Rare Legacy Life treats quote requests and personal information with care, restraint, and security."
           />
-          <p className="mt-8 text-sm text-white/58">Effective date: November 24, 2026</p>
+          <p className="mt-8 text-sm text-neutral-600">Effective date: November 24, 2026</p>
         </Section>
         <Section className="bg-[#F7F5EF]">
           <div className="grid gap-4">

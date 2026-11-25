@@ -128,7 +128,7 @@ export function RetirementLanding({ tracking }: { tracking: ProtectTracking }) {
                 fill
                 priority
                 sizes="(max-width: 767px) 100vw, 44vw"
-                src="https://images.pexels.com/photos/8972326/pexels-photo-8972326.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                src="/images/retirement-couple.jpg"
               />
               <div aria-hidden="true" className={styles.imageVeil} />
               <p className={styles.photoNote}>A clearer plan for what comes next.</p>

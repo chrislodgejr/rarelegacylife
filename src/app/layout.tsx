@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { Analytics } from "@/components/seo/analytics";
 import { ClickTracker } from "@/components/seo/click-tracker";
 import { SITE } from "@/lib/site";
@@ -47,6 +48,9 @@ export default function RootLayout({
       <body className="min-h-full bg-white text-[#050505]">
         {children}
         <Analytics />
+        {/* Page views for Vercel Web Analytics (2026-11-25 audit: the site had no traffic analytics). It reports nothing until
+            Analytics is enabled for the project in Vercel; then visits, pages, referrers and devices show there. */}
+        <VercelAnalytics />
         <ClickTracker />
       </body>
     </html>

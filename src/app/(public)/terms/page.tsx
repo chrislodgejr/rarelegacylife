@@ -53,14 +53,14 @@ export default function TermsPage() {
   return (
     <PublicShell>
       <main>
-        <Section className="black-hero-bg text-white">
+        <Section className="light-hero-bg text-[#050505]">
           <PremiumSectionHeader
             dark
             eyebrow="Terms"
             title="Terms and Conditions"
             copy="These terms explain how visitors, clients, agents, and portal users may use the Rare Legacy Life website and platform."
           />
-          <p className="mt-8 text-sm text-white/58">Effective date: September 1, 2026</p>
+          <p className="mt-8 text-sm text-neutral-600">Effective date: September 1, 2026</p>
         </Section>
         <Section className="bg-[#F7F5EF]">
           <div className="grid gap-4">
