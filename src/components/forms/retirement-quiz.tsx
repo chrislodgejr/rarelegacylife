@@ -38,6 +38,34 @@ const STEP_FIELDS = new Set(["amount_tier", "full_name", "phone", "email", "zip_
 const stepField = (name: string) =>
   name === "first_name" || name === "last_name" ? "full_name" : STEP_FIELDS.has(name) ? name : "form";
 
+// The calendar link after a request (PR 30 review, 2026-11-25): it carries the request's id in utm_content, as the old embedded
+// scheduler on /retirement did, and the tap is logged against the request, so a booking can be tied to its lead.
+function schedulerUrl(requestId: string | undefined, page: QuizPage) {
+  const url = new URL(RETIREMENT_SCHEDULER_URLS.phone);
+  url.searchParams.set("utm_source", "rare_legacy_website");
+  url.searchParams.set("utm_medium", "quiz");
+  url.searchParams.set("utm_campaign", page);
+  if (requestId) url.searchParams.set("utm_content", requestId);
+  return url.toString();
+}
+
+function logScheduleClick(requestId: string | undefined, page: QuizPage) {
+  if (!requestId) return;
+  const body = JSON.stringify({
+    event_name: "schedule_click",
+    request_id: requestId,
+    session_id: `quiz:${requestId}`,
+    page_url: window.location.href.slice(0, 500),
+    metadata: { page },
+  });
+  try {
+    if (navigator.sendBeacon?.("/api/retirement/events", new Blob([body], { type: "application/json" }))) return;
+  } catch {
+    // Fall through to fetch.
+  }
+  fetch("/api/retirement/events", { method: "POST", body, headers: { "content-type": "application/json" }, keepalive: true }).catch(() => {});
+}
+
 type Choice = readonly [string, string, ...unknown[]];
 
 const GOALS = [
@@ -182,10 +210,11 @@ export function RetirementQuiz({
         </p>
         <a
           className="gold-gradient-button mt-4 inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-bold"
-          href={RETIREMENT_SCHEDULER_URLS.phone}
+          href={schedulerUrl(state.requestId, page)}
           rel="noopener"
           target="_blank"
           data-track="quiz_schedule_click"
+          onClick={() => logScheduleClick(state.requestId, page)}
         >
           <CalendarCheck aria-hidden="true" className="h-4 w-4" />
           Pick a time for my call

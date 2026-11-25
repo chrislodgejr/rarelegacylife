@@ -33,6 +33,8 @@ export type ProtectRequestState = {
   ok: boolean;
   message: string;
   fieldErrors?: Record<string, string>;
+  /** The request's id, so a booking made from the thank-you screen can be tied back to it. */
+  requestId?: string;
 };
 
 const consentText = PROTECT_CONSENT_TEXT;
@@ -167,7 +169,7 @@ export async function submitProtectRequest(
     metadata: { request_id: requestId, path: `/admin/retirement/${requestId}` },
   }).catch((error: unknown) => console.error("Protect request admin notice failed", error));
 
-  return { ok: true, message: protectSuccessMessage(firstName, Boolean(estimate)) };
+  return { ok: true, message: protectSuccessMessage(firstName, Boolean(estimate)), requestId };
 }
 
 function getIpAddress(headerStore: Headers) {

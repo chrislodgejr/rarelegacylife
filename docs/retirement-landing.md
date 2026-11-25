@@ -1,116 +1,44 @@
-# Retirement Income Blueprint landing page
+# /retirement (the QR page) and the retirement quiz
 
-The QR landing page is available at `/retirement`. Its form is handled by a Next.js Server Action, stored in Supabase, and optionally routed to email and a CRM webhook. No routing secret or destination is shipped to the browser.
+`/retirement` was printed on a mailer's QR code, so its address must stay live. Since 2026-11-25 its only form is the retirement
+quiz (Chris: "has conflicting forms now ... the blueprint form isnt connected to any adds"). The Blueprint request form, its
+meeting-style picker and the embedded Zoom Scheduler were removed. The quiz is the same one on `/protect` (the Google Ads landing
+page), `/retirement/quiz`, `/annuity-calculator` and `/annuity-rates` (`src/components/forms/retirement-quiz.tsx`).
 
-## Recommended QR destination
+## What a quiz request does
 
-Use this URL in the final direct-mail QR code:
+1. The visitor answers one question a screen, then gives first and last name and email, then phone, ZIP and consent.
+2. Name-and-email drop-offs are sent to Endless One as `partial` prospects (`src/server/actions/quiz-prospect.ts`, only while
+   `QUIZ_PROSPECTS` is `on`).
+3. A finished request goes through `src/server/actions/protect-request.ts`: it is stored in `retirement_blueprint_requests` (the
+   table keeps its old name and holds every retirement request from the site), sent to Endless One with the page's source
+   (`src/lib/quiz.ts` `QUIZ_PAGES`), and reported to Google Ads as RL Form Submit (`src/lib/google-ads.ts`).
+4. On `/protect`, each step of the visit is sent to Endless One's form-step report (`src/lib/form-steps.ts`).
+5. The thank-you screen links to Christian's Zoom Scheduler. The link carries the request id in `utm_content`, and the tap is
+   logged as `schedule_click` in `retirement_landing_events` with the request id, so a booking can be tied to its lead.
 
-```text
-https://rarelegacylife.com/retirement?utm_source=eddm&utm_medium=direct_mail&utm_campaign=retirement_blueprint&qr_source=retirement_mailer
-```
+## Appointment confirmation
 
-UTM parameters, supported ad click IDs, the landing URL, and the referrer are preserved with each submission.
-
-## Required deployment configuration
-
-The existing Supabase and Resend variables continue to power the integration. Configure the retirement-specific values in Vercel as server-side environment variables.
-
-| Environment variable | Purpose | Required |
-| --- | --- | --- |
-| `RETIREMENT_LEAD_NOTIFICATION_EMAIL` | Mailbox for new-request notifications. Multiple addresses may be comma-separated. Defaults to `christian@rarelegacylife.com`. | Recommended; Christian remains the server-side fallback |
-| `RETIREMENT_SPECIALIST_AGENT_ID` | UUID of the active specialist in `public.agents`; assigns the request and adds the agent email to notifications. | Optional |
-| `RETIREMENT_CRM_WEBHOOK_URL` | HTTPS endpoint that receives a `retirement_blueprint.requested` JSON payload. | Optional |
-| `RETIREMENT_CRM_WEBHOOK_BEARER_TOKEN` | Bearer token attached only to the outbound CRM webhook. | Recommended with webhook |
-| `RETIREMENT_APPOINTMENT_WEBHOOK_SECRET` | Bearer secret protecting the successful-appointment endpoint. | Required for appointment webhook |
-| `BUSINESS_PHONE` | Business phone included in the confirmation email when configured. | Optional |
-| `RETIREMENT_PRIVACY_POLICY_URL` | Privacy-policy URL used in the confirmation email. | Yes |
-
-The shared variables `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and `NEXT_PUBLIC_SITE_URL` must also remain configured. The Supabase service-role key, email API key, webhook URL, notification address, and webhook tokens must never use a `NEXT_PUBLIC_` prefix.
-
-## Supabase
-
-Apply `supabase/migrations/202608270001_retirement_blueprint.sql`. It creates:
-
-- `retirement_blueprint_requests` for form submissions, consent evidence, routing, and attribution.
-- `retirement_landing_events` for funnel analytics.
-
-Both tables have Row Level Security enabled, deny browser roles, and grant access only to the server-side service role.
-
-## CRM webhook
-
-When `RETIREMENT_CRM_WEBHOOK_URL` is set, the server posts this event after the Supabase insert succeeds:
+`POST /api/retirement/appointment-confirmed` (bearer `RETIREMENT_APPOINTMENT_WEBHOOK_SECRET`) marks a request `scheduled` and
+records `successful_appointment`. As of 2026-11-25 the secret is not set in Vercel and no scheduler calls it, so no booking has
+ever been recorded this way; bookings are seen on Christian's Zoom calendar.
 
 ```json
-{
-  "event": "retirement_blueprint.requested",
-  "requestId": "uuid",
-  "name": "Prospect Name",
-  "email": "prospect@example.com",
-  "phone": "+1 215 555 0123",
-  "zipCode": "19403",
-  "meetingStyle": "virtual",
-  "bestTime": "Weekdays after 4 p.m.",
-  "question": null,
-  "assignedAgentId": null,
-  "attribution": {
-    "utm_source": "eddm",
-    "utm_medium": "direct_mail",
-    "utm_campaign": "retirement_blueprint",
-    "utm_content": null,
-    "utm_term": null,
-    "qr_source": "retirement_mailer"
-  },
-  "submittedAt": "ISO-8601 timestamp"
-}
+{ "request_id": "uuid of the request", "appointment_id": "scheduler-event-id", "scheduled_at": "2026-09-15T14:00:00-04:00" }
 ```
 
-Webhook delivery is best-effort: Supabase remains the source of truth if the downstream CRM is unavailable.
+## Configuration
 
-## Successful appointment tracking
+| Environment variable | Purpose |
+| --- | --- |
+| `QUIZ_PROSPECTS` | `on` sends name-and-email drop-offs to Endless One as prospects. |
+| `ENDLESS_ONE_INTAKE_URL`, `ENDLESS_ONE_INTAKE_SECRET` | Where finished requests and prospects are sent, and the signing secret. |
+| `RETIREMENT_APPOINTMENT_WEBHOOK_SECRET` | Protects the appointment-confirmation endpoint (not set today). |
 
-The funnel records these events in Supabase and also pushes them to `window.dataLayer`:
+`NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL` and `NEXT_PUBLIC_SITE_URL` must stay
+configured. Server secrets never use a `NEXT_PUBLIC_` prefix.
 
-- `qr_landing_visit`
-- `meeting_option_click`
-- `form_start`
-- `form_submission`
-- `form_submission_success`
-- `form_validation_error`
-- `form_submission_error`
-- `successful_appointment`
+## Spam controls
 
-For a scheduler or CRM, send a server-to-server request after an appointment is confirmed:
-
-```http
-POST /api/retirement/appointment-confirmed
-Authorization: Bearer [RETIREMENT_APPOINTMENT_WEBHOOK_SECRET]
-Content-Type: application/json
-```
-
-```json
-{
-  "request_id": "uuid returned with the lead",
-  "appointment_id": "scheduler-event-id",
-  "scheduled_at": "2026-09-15T14:00:00-04:00",
-  "meeting_style": "virtual"
-}
-```
-
-The endpoint marks the request `scheduled` and records `successful_appointment`. After the Rare Legacy lead form is submitted, every visitor sees the appropriate Zoom Scheduler embedded in the branded success state, with a secure fallback link if their browser blocks the frame:
-
-- Virtual and phone: `https://scheduler.zoom.us/christian-pennachietti/30-minute-meeting-with-christian`
-- Home and office: `https://scheduler.zoom.us/christian-pennachietti/in-person-meeting-with-christian`
-
-Both embedded URLs include `embed=true` plus campaign UTMs. In Zoom Scheduler, configure **Share > Add to Website > Origin** with the production Rare Legacy domain so the page can receive the validated `bookingForm` postMessage and record `successful_appointment`. A server-to-server Scheduler/CRM webhook to `/api/retirement/appointment-confirmed` remains the authoritative appointment-status signal.
-
-## Form behavior and spam controls
-
-- Server-side Zod validation
-- Consent text, version, timestamp, IP, and user agent retained with the submission
-- Honeypot and minimum-completion-time checks
-- Per-email submission throttling in Supabase
-- Event-endpoint rate limiting and payload limits
-- Branded confirmation email through the existing Resend integration
-
-The on-page consent, privacy policy, terms, and disclosures were approved for public launch on September 1, 2026.
+Server-side validation, consent text and version kept with each request, a honeypot and a minimum completion time, per-email
+throttling, and rate limits on the event endpoint.
