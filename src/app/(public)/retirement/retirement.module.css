@@ -96,11 +96,12 @@
 }
 
 .hero {
+  /* Light (Chris, 2026-11-25: "Switch the entire site to light mode"). */
   background:
-    radial-gradient(circle at 78% 18%, rgba(230, 222, 201, 0.12), transparent 32%),
-    radial-gradient(circle at 18% 8%, rgba(255, 253, 246, 0.06), transparent 26%),
-    linear-gradient(180deg, #14120e 0%, #0c0b09 100%);
-  color: #fff;
+    radial-gradient(circle at 82% 12%, rgba(201, 192, 168, 0.28), transparent 38%),
+    radial-gradient(circle at 12% 0%, rgba(230, 222, 201, 0.35), transparent 32%),
+    linear-gradient(180deg, #fffdf6 0%, #f7f5ef 100%);
+  color: var(--charcoal);
   overflow: hidden;
 }
 
@@ -142,7 +143,7 @@
 
 .eyebrow,
 .valueSection .sectionEyebrow {
-  color: var(--accent-on-dark);
+  color: var(--accent-on-light);
 }
 
 .hero h1 {
@@ -152,7 +153,7 @@
 }
 
 .heroSupporting {
-  color: #dddddd;
+  color: #3f3f3f;
   font-size: 17px;
   line-height: 1.6;
   margin: 20px 0 24px;
@@ -198,7 +199,7 @@
 
 .trustLine {
   align-items: flex-start;
-  color: #d9d9d9;
+  color: #4a4a4a;
   display: flex;
   font-size: 13px;
   gap: 8px;
@@ -206,7 +207,7 @@
 }
 
 .trustLine svg {
-  color: var(--accent-on-dark);
+  color: var(--accent-on-light);
   flex: 0 0 auto;
   margin-top: 1px;
 }
@@ -378,9 +379,9 @@
 
 .valueSection {
   background:
-    radial-gradient(circle at top left, rgba(230, 222, 201, 0.08), transparent 32%),
-    linear-gradient(180deg, #14120e 0%, #0c0b09 100%);
-  color: #fff;
+    radial-gradient(circle at top left, rgba(230, 222, 201, 0.35), transparent 36%),
+    #ffffff;
+  color: var(--charcoal);
   padding: 72px 20px;
   position: relative;
 }
@@ -401,7 +402,7 @@
 }
 
 .valueHeading > p:last-child {
-  color: #c5c5c5;
+  color: #4a4a4a;
   line-height: 1.7;
 }
 
@@ -415,7 +416,7 @@
 
 .coverageList li {
   align-items: flex-start;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(12, 11, 9, 0.1);
   display: grid;
   font-size: 15px;
   gap: 12px;
@@ -424,14 +425,14 @@
 }
 
 .coverageList li:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(12, 11, 9, 0.1);
 }
 
 .coverageList li > span {
   align-items: center;
-  background: rgba(230, 222, 201, 0.12);
+  background: rgba(90, 83, 69, 0.1);
   border-radius: 50%;
-  color: var(--accent-on-dark);
+  color: var(--accent-on-light);
   display: inline-flex;
   height: 26px;
   justify-content: center;

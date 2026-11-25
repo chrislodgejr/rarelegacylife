@@ -10,49 +10,49 @@ export function LegacySignalScene() {
   ];
 
   return (
-    <div className="gold-border gold-glow relative min-h-[520px] overflow-hidden rounded-2xl bg-brand-black-950">
+    <div className="gold-border gold-glow relative min-h-[520px] overflow-hidden rounded-2xl bg-white">
       <div className="signal-grid absolute inset-0 opacity-70" />
       <div className="scan-line gold-gradient-subtle absolute inset-x-0 top-0 h-px" />
 
       <div className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand-cream-300/28">
         <div className="pulse-ring absolute inset-0 rounded-full border border-brand-cream-300/45" />
-        <div className="absolute inset-6 rounded-full border border-brand-cream-500/45" />
-        <div className="absolute inset-14 flex items-center justify-center rounded-full bg-brand-black-950 text-brand-cream-300 shadow-2xl shadow-brand-cream-500/20">
+        <div className="absolute inset-6 rounded-full border border-brand-black-500" />
+        <div className="absolute inset-14 flex items-center justify-center rounded-full bg-white text-brand-black-500 shadow-2xl shadow-brand-cream-500/20">
           <Gem className="h-10 w-10" />
         </div>
       </div>
 
-      <div className="float-panel absolute left-5 top-6 w-[230px] rounded-lg border border-white/12 bg-white/10 p-4 backdrop-blur">
+      <div className="float-panel absolute left-5 top-6 w-[230px] rounded-lg border border-neutral-200 bg-neutral-100 p-4 backdrop-blur">
         <div className="flex items-center justify-between">
-          <span className="gold-gradient-text text-xs font-semibold uppercase">Protection score</span>
-          <Sparkles className="h-4 w-4 text-brand-cream-300" />
+          <span className="text-brand-black-500 text-xs font-semibold uppercase">Protection score</span>
+          <Sparkles className="h-4 w-4 text-brand-black-500" />
         </div>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15">
           <div className="gold-gradient-subtle h-full w-[82%] rounded-full" />
         </div>
-        <p className="mt-3 text-2xl font-semibold text-white">82 hot</p>
+        <p className="mt-3 text-2xl font-semibold text-[#050505]">82 hot</p>
       </div>
 
-      <div className="float-panel-delayed absolute bottom-24 right-5 w-[250px] rounded-lg border border-white/12 bg-white/10 p-4 backdrop-blur">
+      <div className="float-panel-delayed absolute bottom-24 right-5 w-[250px] rounded-lg border border-neutral-200 bg-neutral-100 p-4 backdrop-blur">
         <div className="flex items-center gap-3">
           <span className="gold-gradient-button flex h-9 w-9 items-center justify-center rounded-md">
             <BellRing className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-sm font-semibold text-white">Advisor alerted</p>
-            <p className="text-xs text-white/62">Speed-to-lead workflow</p>
+            <p className="text-sm font-semibold text-[#050505]">Advisor alerted</p>
+            <p className="text-xs text-neutral-600">Speed-to-lead workflow</p>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-6 left-5 right-5 overflow-hidden rounded-lg border border-white/12 bg-black/25 py-3">
+      <div className="absolute bottom-6 left-5 right-5 overflow-hidden rounded-lg border border-neutral-200 bg-brand-cream-100 py-3">
         <div className="ticker-track flex w-max gap-3 px-3">
           {[...tickerItems, ...tickerItems].map((item, index) => (
             <span
               key={`${item}-${index}`}
               className="inline-flex items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-semibold text-black"
             >
-              <Zap className="h-3.5 w-3.5 text-brand-cream-500" />
+              <Zap className="h-3.5 w-3.5 text-brand-black-500" />
               {item}
             </span>
           ))}
@@ -65,7 +65,7 @@ export function LegacySignalScene() {
             <span className="w-2 rounded-t bg-brand-cream-300/80" style={{ height: `${height}%` }} />
             <span className="w-2 rounded-t bg-brand-cream-500/80" style={{ height: `${Math.max(24, height - 18)}%` }} />
             <span className="w-2 rounded-t bg-white/50" style={{ height: `${Math.max(18, height - 28)}%` }} />
-            {index === 2 ? <Activity className="ml-2 h-4 w-4 self-center text-brand-cream-300" /> : null}
+            {index === 2 ? <Activity className="ml-2 h-4 w-4 self-center text-brand-black-500" /> : null}
           </div>
         ))}
       </div>

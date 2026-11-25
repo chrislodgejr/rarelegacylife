@@ -14,29 +14,29 @@ export default function ApplyAsAgentPage() {
   return (
     <PublicShell>
       <main className="bg-[#F7F5EF]">
-        <Section className="black-hero-bg text-white">
+        <Section className="light-hero-bg text-[#050505]">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div>
               <Eyebrow>Apply as agent</Eyebrow>
-              <h1 className="font-premium mt-4 text-4xl font-semibold leading-tight text-white sm:text-6xl">
+              <h1 className="font-premium mt-4 text-4xl font-semibold leading-tight text-[#050505] sm:text-6xl">
                 Submit your Rare Legacy Life agent application.
               </h1>
-              <p className="mt-5 text-base leading-8 text-white/72">
+              <p className="mt-5 text-base leading-8 text-neutral-700">
                 Complete the application form so the team can review your license status,
                 state availability, experience, and fit for the Rare Legacy Life platform.
               </p>
-              <div className="mt-8 grid gap-3 text-sm text-white/76 sm:grid-cols-2">
+              <div className="mt-8 grid gap-3 text-sm text-neutral-700 sm:grid-cols-2">
                 {["Licensed agent review", "CRM access approval", "Carrier and state setup", "Lead workflow readiness"].map((item) => (
-                  <div key={item} className="dark-premium-card rounded-xl px-4 py-3">
+                  <div key={item} className="premium-card rounded-xl px-4 py-3">
                     {item}
                   </div>
                 ))}
               </div>
             </div>
             <div>
-              <div className="mb-4 rounded-2xl border border-white/12 bg-white/[0.06] p-4 text-white">
-                <p className="text-sm font-semibold text-brand-cream-300">Agent Application Form</p>
-                <p className="mt-1 text-xs leading-5 text-white/62">
+              <div className="mb-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-[#050505]">
+                <p className="text-sm font-semibold text-brand-black-500">Agent Application Form</p>
+                <p className="mt-1 text-xs leading-5 text-neutral-600">
                   This form is for agents applying to join or access the Rare Legacy Life platform.
                 </p>
               </div>

@@ -71,21 +71,21 @@ export default async function AnnuityRatesPage({ searchParams }: PageProps) {
         ]}
       />
       <main>
-        <section className="black-hero-bg px-4 pb-14 pt-10 text-white sm:px-6 lg:px-8">
+        <section className="light-hero-bg px-4 pb-14 pt-10 text-[#050505] sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-12">
             <div className="flex flex-col justify-center">
               <Eyebrow>Fixed annuity rates</Eyebrow>
               <h1 className="font-premium mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
                 Recent fixed annuity rates, by term.
               </h1>
-              <p className="mt-4 text-lg leading-8 text-white/80">
+              <p className="mt-4 text-lg leading-8 text-neutral-700">
                 Ranges for fixed multi-year guaranteed annuities from a highly rated carrier our advisors use often, as of{" "}
                 <time dateTime={GROWTH_RATES_AS_OF}>{asOf}</time>.
               </p>
-              <div className="mt-6 overflow-hidden rounded-2xl border border-white/15">
+              <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-200">
                 <table className="w-full text-left text-sm">
                   <caption className="sr-only">Fixed annuity rate ranges by guarantee period</caption>
-                  <thead className="bg-white/[0.06] text-white/70">
+                  <thead className="bg-neutral-50 text-neutral-700">
                     <tr>
                       <th className="px-4 py-3 font-semibold" scope="col">
                         Guarantee period
@@ -95,13 +95,13 @@ export default async function AnnuityRatesPage({ searchParams }: PageProps) {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10">
+                  <tbody className="divide-y divide-neutral-200">
                     {GROWTH_TERMS.map(([years, label, low, high]) => (
                       <tr key={years}>
-                        <th className="px-4 py-4 font-semibold text-white" scope="row">
+                        <th className="px-4 py-4 font-semibold text-[#050505]" scope="row">
                           {label}
                         </th>
-                        <td className="font-premium px-4 py-4 text-2xl font-semibold text-brand-cream-300">
+                        <td className="font-premium px-4 py-4 text-2xl font-semibold text-brand-black-500">
                           {formatRate(low)} to {formatRate(high)}
                         </td>
                       </tr>
@@ -109,7 +109,7 @@ export default async function AnnuityRatesPage({ searchParams }: PageProps) {
                   </tbody>
                 </table>
               </div>
-              <p className="mt-4 text-xs leading-5 text-white/55">
+              <p className="mt-4 text-xs leading-5 text-neutral-600">
                 Not an offer or a quote. Rates vary by carrier, state and amount, and can change without notice; the low end
                 generally applies to smaller amounts. Withdrawals beyond the contract&apos;s free amount during the guarantee
                 period can bring surrender charges and a market value adjustment. Guarantees depend on the issuing
@@ -131,7 +131,7 @@ export default async function AnnuityRatesPage({ searchParams }: PageProps) {
           <div className="mx-auto max-w-3xl">
             <Eyebrow tone="light">Reading the table</Eyebrow>
             <h2 className="font-premium mt-2 text-3xl font-semibold text-[#050505] sm:text-4xl">What decides your rate.</h2>
-            <ul className="mt-6 list-disc space-y-3 pl-5 text-base leading-7 text-neutral-700 marker:text-brand-cream-600">
+            <ul className="mt-6 list-disc space-y-3 pl-5 text-base leading-7 text-neutral-700 marker:text-brand-black-500">
               <li>
                 <strong className="text-[#050505]">The term.</strong> Longer guarantee periods usually pay more, and your
                 money is committed for that long.

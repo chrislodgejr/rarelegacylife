@@ -20,41 +20,41 @@ export default function ContactPage() {
   return (
     <PublicShell>
       <main className="bg-[#F7F5EF]">
-        <section className="black-hero-bg px-4 py-14 text-white sm:px-6 lg:px-8">
+        <section className="light-hero-bg px-4 py-14 text-[#050505] sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div className="flex flex-col justify-center">
               <Eyebrow>Contact</Eyebrow>
-              <h1 className="font-premium mt-3 text-5xl font-semibold leading-tight text-white">
+              <h1 className="font-premium mt-3 text-5xl font-semibold leading-tight text-[#050505]">
                 Talk with a licensed advisor.
               </h1>
-              <p className="mt-5 text-base leading-8 text-white/72">
+              <p className="mt-5 text-base leading-8 text-neutral-700">
                 Call, stop by, or send a secure message about coverage, existing client support,
                 partnerships, or agent opportunities.
               </p>
               <div className="mt-8 grid gap-3 text-sm">
                 <a
-                  className="dark-premium-card flex items-center gap-3 rounded-xl p-4 font-semibold text-white hover:border-brand-cream-500/70"
+                  className="premium-card flex items-center gap-3 rounded-xl p-4 font-semibold text-[#050505] hover:border-brand-black-500"
                   href={SITE.phone.href}
                   data-track="phone_click"
                 >
-                  <Phone aria-hidden="true" className="h-5 w-5 text-brand-cream-500" />
+                  <Phone aria-hidden="true" className="h-5 w-5 text-brand-black-500" />
                   {SITE.phone.display}
                 </a>
                 <a
-                  className="dark-premium-card flex items-center gap-3 rounded-xl p-4 text-white/85 hover:border-brand-cream-500/70"
+                  className="premium-card flex items-center gap-3 rounded-xl p-4 text-neutral-800 hover:border-brand-black-500"
                   href={mapsUrl}
                   rel="noopener"
                   target="_blank"
                 >
-                  <MapPin aria-hidden="true" className="h-5 w-5 shrink-0 text-brand-cream-500" />
+                  <MapPin aria-hidden="true" className="h-5 w-5 shrink-0 text-brand-black-500" />
                   <span>
                     {SITE.address.street}
                     <br />
                     {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}
                   </span>
                 </a>
-                <div className="dark-premium-card flex items-center gap-3 rounded-xl p-4 text-white/85">
-                  <Video aria-hidden="true" className="h-5 w-5 text-brand-cream-500" />
+                <div className="premium-card flex items-center gap-3 rounded-xl p-4 text-neutral-800">
+                  <Video aria-hidden="true" className="h-5 w-5 text-brand-black-500" />
                   Office, in-home, phone, or video meetings
                 </div>
               </div>

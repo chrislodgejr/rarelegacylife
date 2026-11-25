@@ -72,14 +72,14 @@ export default function HomePage() {
     <PublicShell beforeHeader={<HomeSplash />}>
       <JsonLd data={[websiteSchema(), faqSchema(HOME_FAQS)]} />
       <main>
-        <section className="black-hero-bg relative overflow-hidden text-white">
+        <section className="light-hero-bg relative overflow-hidden text-[#050505]">
           <div className="signal-grid absolute inset-0 opacity-25" aria-hidden="true" />
-          <div className="absolute right-[-12rem] top-12 h-[34rem] w-[34rem] rounded-full border border-brand-cream-500/[0.18]" aria-hidden="true" />
+          <div className="absolute right-[-12rem] top-12 h-[34rem] w-[34rem] rounded-full border border-brand-black-500/[0.18]" aria-hidden="true" />
           <div className="absolute right-[-5rem] top-32 h-[21rem] w-[21rem] rounded-full border border-brand-cream-50/10" aria-hidden="true" />
-          <div className="home-hero-grid relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.92fr_0.88fr] lg:px-8">
+          <div className="home-hero-grid relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl gap-10 px-4 pb-14 pt-8 sm:px-6 sm:py-14 lg:grid-cols-[0.92fr_0.88fr] lg:px-8">
             <div className="flex flex-col justify-center">
               <HeroReveal>
-                <p className="gold-gradient-text text-sm font-semibold uppercase tracking-[0.28em]">
+                <p className="text-brand-black-500 text-sm font-semibold uppercase tracking-[0.28em]">
                   Life insurance &amp; retirement guidance
                 </p>
               </HeroReveal>
@@ -87,25 +87,26 @@ export default function HomePage() {
                 <GoldDivider className="mt-4 w-24" />
               </HeroReveal>
               <HeroReveal delay={0.16}>
-                <h1 className="home-hero-title font-premium mt-5 max-w-3xl text-5xl font-semibold leading-[0.94] sm:text-7xl lg:text-8xl">
+                <h1 className="home-hero-title font-premium mt-5 max-w-3xl text-4xl font-semibold leading-[0.98] sm:text-7xl lg:text-8xl">
                   Protect today. Plan what comes next.
                 </h1>
               </HeroReveal>
               <HeroReveal delay={0.24}>
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
+                <p className="mt-4 max-w-2xl text-base leading-7 text-neutral-700 sm:mt-6 sm:text-lg sm:leading-8">
                   Licensed advisors in East Norriton, PA helping families nationwide with life
                   insurance, retirement income reviews, and annuity decisions—built around the
                   people, plans, and legacy that matter most.
                 </p>
               </HeroReveal>
               <HeroReveal delay={0.32}>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <GoldButton href="/quote">Get My Free Quote</GoldButton>
+                {/* Both paths on the first screen (2026-11-25 audit: the home page had no way into the retirement quiz). */}
+                <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row">
+                  <GoldButton href="/quote">Get My Free Life Quote</GoldButton>
                   <Link
-                    className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:border-brand-cream-300 hover:text-brand-cream-300"
-                    href="/retirement"
+                    className="inline-flex h-12 items-center justify-center rounded-full border border-neutral-300 bg-white px-6 text-sm font-semibold text-[#050505] transition hover:border-brand-black-500 hover:text-brand-black-500"
+                    href="/retirement/quiz"
                   >
-                    Explore Retirement Planning
+                    Retirement income? Take the 2-minute quiz
                   </Link>
                 </div>
               </HeroReveal>
@@ -113,11 +114,11 @@ export default function HomePage() {
                 <div className="mt-6">
                   <TrustBar items={["Licensed advisors", "Free quotes & reviews", "No-pressure guidance"]} />
                   <a
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-brand-cream-300"
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-neutral-700 hover:text-brand-black-500"
                     href={SITE.phone.href}
                     data-track="phone_click"
                   >
-                    <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                    <Phone aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                     Prefer to talk? Call {SITE.phone.display}
                   </a>
                 </div>
@@ -129,9 +130,9 @@ export default function HomePage() {
                     ["2 min", "Quote request"],
                     ["$0", "Consultation"],
                   ].map(([value, label]) => (
-                    <div key={label} className="dark-premium-card rounded-2xl p-4">
+                    <div key={label} className="premium-card rounded-2xl p-4">
                       <p className="font-premium text-2xl font-semibold">{value}</p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/45">{label}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.18em] text-neutral-500">{label}</p>
                     </div>
                   ))}
                 </div>
@@ -153,7 +154,7 @@ export default function HomePage() {
                 className="object-cover object-[center_40%]"
                 fill
                 sizes="(max-width: 1023px) 100vw, 40vw"
-                src="https://images.pexels.com/photos/8972326/pexels-photo-8972326.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                src="/images/retirement-couple.jpg"
               />
               <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
               <p className="font-premium absolute bottom-5 left-5 right-5 text-xl italic text-white">
@@ -193,7 +194,7 @@ export default function HomePage() {
           </MotionReveal>
         </Section>
 
-        <Section className="black-section">
+        <Section className="light-section">
           <MotionReveal className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
             <div>
               <PremiumSectionHeader
@@ -209,9 +210,9 @@ export default function HomePage() {
                 "Prepare for business and ownership responsibilities.",
                 "Make legacy decisions before life forces them.",
               ].map((item) => (
-                <div key={item} className="dark-premium-card rounded-xl p-5">
+                <div key={item} className="premium-card rounded-xl p-5">
                   <div className="gold-divider mb-4 w-16" />
-                  <p className="text-sm leading-6 text-white/76">{item}</p>
+                  <p className="text-sm leading-6 text-neutral-700">{item}</p>
                 </div>
               ))}
             </div>
@@ -239,7 +240,7 @@ export default function HomePage() {
           </MotionReveal>
         </Section>
 
-        <Section className="black-section">
+        <Section className="light-section">
           <MotionReveal>
             <PremiumSectionHeader
               align="center"
@@ -331,13 +332,13 @@ export default function HomePage() {
           </MotionReveal>
         </Section>
 
-        <Section className="black-section">
+        <Section className="light-section">
           <MotionReveal className="mx-auto max-w-3xl text-center">
-            <p className="gold-gradient-text text-xs font-semibold uppercase tracking-[0.22em]">Start with clarity</p>
-            <h2 className="font-premium mt-4 text-4xl font-semibold leading-tight text-white">
+            <p className="text-brand-black-500 text-xs font-semibold uppercase tracking-[0.22em]">Start with clarity</p>
+            <h2 className="font-premium mt-4 text-4xl font-semibold leading-tight text-[#050505]">
               Secure your family. Build your legacy.
             </h2>
-            <p className="mt-4 text-sm leading-6 text-white/66">
+            <p className="mt-4 text-sm leading-6 text-neutral-600">
               A free, private quote request is the first step toward coverage that fits your life.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -348,11 +349,11 @@ export default function HomePage() {
                 Start My Quote
               </Link>
               <a
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-7 text-sm font-semibold text-white hover:border-brand-cream-300"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-neutral-300 px-7 text-sm font-semibold text-[#050505] hover:border-brand-cream-300"
                 href={SITE.phone.href}
                 data-track="phone_click"
               >
-                <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+                <Phone aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 {SITE.phone.display}
               </a>
             </div>
@@ -376,15 +377,15 @@ function DarkValue({
 }) {
   return (
     <Link
-      className="dark-premium-card group block rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-cream-500/70"
+      className="premium-card group block rounded-2xl p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-black-500"
       href={href}
     >
       <div className="gold-gradient-subtle flex h-11 w-11 items-center justify-center rounded-full text-black">
         {icon}
       </div>
       <h3 className="font-premium mt-5 text-2xl font-semibold">{title}</h3>
-      <p className="mt-3 text-sm leading-6 text-white/72">{copy}</p>
-      <p className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-cream-300">
+      <p className="mt-3 text-sm leading-6 text-neutral-700">{copy}</p>
+      <p className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-black-500">
         Learn more <ArrowRight aria-hidden="true" className="h-4 w-4 transition group-hover:translate-x-0.5" />
       </p>
     </Link>

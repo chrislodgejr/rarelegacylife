@@ -60,15 +60,15 @@ export function LessonPlayer({
 
   const slide = slides[index];
   return (
-    <div className="overflow-hidden rounded-2xl bg-[#0c0b09] text-white shadow-lg ring-1 ring-black/10">
-      <div className="black-hero-bg relative flex min-h-[18rem] flex-col justify-center px-6 pb-20 pt-8 sm:aspect-video sm:px-12 sm:pb-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-cream-500">
+    <div className="overflow-hidden rounded-2xl bg-white text-[#050505] shadow-lg ring-1 ring-black/10">
+      <div className="light-hero-bg relative flex min-h-[18rem] flex-col justify-center px-6 pb-20 pt-8 sm:aspect-video sm:px-12 sm:pb-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-black-500">
           {lessonLabel} · Slide {index + 1} of {slides.length}
         </p>
         <h2 className="font-premium mt-3 text-2xl font-semibold leading-tight sm:text-4xl" aria-live="polite">
           {slide.heading}
         </h2>
-        <ul className="mt-4 space-y-2 text-base leading-snug text-white/90 sm:mt-6 sm:text-xl">
+        <ul className="mt-4 space-y-2 text-base leading-snug text-neutral-800 sm:mt-6 sm:text-xl">
           {slide.points.map((point) => (
             <li key={point} className="flex gap-3">
               <span aria-hidden="true" className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-cream-500" />
@@ -86,14 +86,14 @@ export function LessonPlayer({
           </button>
         ) : null}
       </div>
-      <div className="flex items-center gap-2 border-t border-white/10 px-3 py-3 sm:px-4">
-        <button type="button" onClick={() => goTo(index - 1)} disabled={index === 0} className="rounded-full p-2 hover:bg-white/10 disabled:opacity-40" aria-label="Previous slide">
+      <div className="flex items-center gap-2 border-t border-neutral-200 px-3 py-3 sm:px-4">
+        <button type="button" onClick={() => goTo(index - 1)} disabled={index === 0} className="rounded-full p-2 hover:bg-neutral-100 disabled:opacity-40" aria-label="Previous slide">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button type="button" onClick={toggle} className="rounded-full p-2 hover:bg-white/10" aria-label={playing ? "Pause" : "Play"}>
+        <button type="button" onClick={toggle} className="rounded-full p-2 hover:bg-neutral-100" aria-label={playing ? "Pause" : "Play"}>
           {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
         </button>
-        <button type="button" onClick={() => goTo(index + 1)} disabled={index === slides.length - 1} className="rounded-full p-2 hover:bg-white/10 disabled:opacity-40" aria-label="Next slide">
+        <button type="button" onClick={() => goTo(index + 1)} disabled={index === slides.length - 1} className="rounded-full p-2 hover:bg-neutral-100 disabled:opacity-40" aria-label="Next slide">
           <ChevronRight className="h-5 w-5" />
         </button>
         <audio ref={audioRef} src={audio} controls preload="metadata" className="ml-1 h-9 min-w-0 flex-1" />

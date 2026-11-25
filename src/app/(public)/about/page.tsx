@@ -28,13 +28,13 @@ export default function AboutPage() {
         ]}
       />
       <main>
-        <Section className="black-hero-bg text-white">
+        <Section className="light-hero-bg text-[#050505]">
           <div className="max-w-3xl">
             <Eyebrow>About Rare Legacy Life</Eyebrow>
             <h1 className="font-premium mt-4 text-4xl font-semibold sm:text-5xl">
               Life insurance without confusion or pressure.
             </h1>
-            <p className="mt-6 text-lg leading-8 text-white/78">
+            <p className="mt-6 text-lg leading-8 text-neutral-700">
               Rare Legacy Life Group is a licensed life insurance and annuity agency in East Norriton,
               Pennsylvania. We help families, business owners, and pre-retirees protect the people
               who depend on them and make confident decisions about coverage and retirement income.
@@ -97,16 +97,16 @@ export default function AboutPage() {
         </Section>
 
         <Section>
-          <div className="black-section grid gap-6 rounded-2xl p-7 text-white md:grid-cols-[1fr_auto] md:items-center md:p-9">
+          <div className="light-section grid gap-6 rounded-2xl p-7 text-[#050505] md:grid-cols-[1fr_auto] md:items-center md:p-9">
             <div>
               <h2 className="font-premium text-3xl font-semibold">Visit, call, or meet virtually.</h2>
-              <p className="mt-3 flex items-center gap-2 text-sm text-white/75">
-                <MapPin aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+              <p className="mt-3 flex items-center gap-2 text-sm text-neutral-700">
+                <MapPin aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
                 {SITE.address.street}, {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}
               </p>
-              <p className="mt-2 flex items-center gap-2 text-sm text-white/75">
-                <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
-                <a className="font-semibold text-white hover:text-brand-cream-300" href={SITE.phone.href} data-track="phone_click">
+              <p className="mt-2 flex items-center gap-2 text-sm text-neutral-700">
+                <Phone aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
+                <a className="font-semibold text-[#050505] hover:text-brand-black-500" href={SITE.phone.href} data-track="phone_click">
                   {SITE.phone.display}
                 </a>
               </p>

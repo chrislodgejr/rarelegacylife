@@ -13,40 +13,40 @@ export function LandingShell({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <JsonLd data={organizationSchema()} />
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-black-950/92 text-white backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/92 text-[#050505] backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
-          <BrandLogo className="h-12 w-auto sm:h-14" lockup="horizontal" priority variant="dark" />
+          <BrandLogo className="h-12 w-auto sm:h-14" lockup="horizontal" priority variant="light" />
           <a
             aria-label={`Call ${SITE.phone.display}`}
-            className="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border border-white/15 bg-white/[0.055] px-4 text-sm font-semibold text-white/90 transition hover:border-brand-cream-500/70 hover:text-brand-cream-300"
+            className="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border border-neutral-200 bg-neutral-50 px-4 text-sm font-semibold text-neutral-800 transition hover:border-brand-black-500 hover:text-brand-black-500"
             href={SITE.phone.href}
             data-track="phone_click"
           >
-            <Phone aria-hidden="true" className="h-4 w-4 text-brand-cream-500" />
+            <Phone aria-hidden="true" className="h-4 w-4 text-brand-black-500" />
             <span>{SITE.phone.display}</span>
           </a>
         </div>
       </header>
       {children}
-      <footer className="border-t border-white/10 bg-brand-black-950 text-white">
+      <footer className="border-t border-neutral-200 bg-white text-[#050505]">
         <div className="gold-divider" />
-        <div className="mx-auto max-w-7xl px-4 py-8 text-xs leading-5 text-white/50 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-3 text-sm text-white/65 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto max-w-7xl px-4 py-8 text-xs leading-5 text-neutral-500 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 text-sm text-neutral-600 sm:flex-row sm:items-center sm:justify-between">
             <address className="not-italic">
-              <span className="font-semibold text-white">{SITE.name}</span> · {SITE.address.street}, {SITE.address.city},{" "}
+              <span className="font-semibold text-[#050505]">{SITE.name}</span> · {SITE.address.street}, {SITE.address.city},{" "}
               {SITE.address.region} {SITE.address.postalCode} ·{" "}
-              <a className="font-semibold text-brand-cream-300 hover:underline" href={SITE.phone.href} data-track="phone_click">
+              <a className="font-semibold text-brand-black-500 hover:underline" href={SITE.phone.href} data-track="phone_click">
                 {SITE.phone.display}
               </a>
             </address>
             <nav aria-label="Legal" className="flex gap-4">
-              <Link className="hover:text-brand-cream-300" href="/privacy">
+              <Link className="hover:text-brand-black-500" href="/privacy">
                 Privacy
               </Link>
-              <Link className="hover:text-brand-cream-300" href="/terms">
+              <Link className="hover:text-brand-black-500" href="/terms">
                 Terms
               </Link>
-              <Link className="hover:text-brand-cream-300" href="/disclosures">
+              <Link className="hover:text-brand-black-500" href="/disclosures">
                 Disclosures
               </Link>
             </nav>

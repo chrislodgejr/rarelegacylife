@@ -78,9 +78,9 @@ export default async function LessonPage({ params }: LessonPageProps) {
             </details>
 
           {/* Every lesson ends on the two ways to go further: the quiz (a phone number for the estimate by text) and an advisor. */}
-          <div className="black-hero-bg mt-10 rounded-2xl p-6 text-white sm:p-8">
+          <div className="light-hero-bg mt-10 rounded-2xl p-6 text-[#050505] sm:p-8">
             <h2 className="font-premium text-2xl font-semibold">Want to know what this means for you?</h2>
-            <p className="mt-2 text-white/80">
+            <p className="mt-2 text-neutral-700">
               Answer a few quick questions and a licensed advisor will text you a personal estimate. Free, no obligation.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -90,7 +90,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
               <a
                 href={SITE.phone.href}
                 data-track="phone_click"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/25 px-5 text-sm font-semibold hover:border-brand-cream-500"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-neutral-300 px-5 text-sm font-semibold hover:border-brand-black-500"
               >
                 <Phone aria-hidden="true" className="h-5 w-5" /> Talk to an advisor: {SITE.phone.display}
               </a>

@@ -64,29 +64,38 @@ export default async function AnnuityCalculatorPage({ searchParams }: PageProps)
         ]}
       />
       <main>
-        <section className="black-hero-bg px-4 pb-14 pt-10 text-white sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-12">
+        {/* The first question on a phone's first screen (2026-11-25 audit): below lg the hero is the label and headline only. */}
+        <section className="light-hero-bg px-4 pb-14 pt-5 text-[#050505] sm:px-6 sm:pt-10 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-12">
             <div className="flex flex-col justify-center">
               <Eyebrow>Free annuity calculator</Eyebrow>
-              <h1 className="font-premium mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
+              <h1 className="font-premium mt-2 text-3xl font-semibold leading-tight sm:mt-3 sm:text-5xl">
                 What could your savings pay you?
               </h1>
-              <p className="mt-4 text-lg leading-8 text-white/80">
-                Answer a few questions about guaranteed lifetime income, or what your money could grow to, and get your estimate by text.
-                A licensed advisor then texts you your estimate.
-              </p>
-              <p className="mt-3 text-sm leading-6 text-white/60">
-                Estimates are illustrations, not quotes or guarantees. Real figures depend on the carrier, the product, your
-                age and state, and the day you apply.
+              <div className="hidden lg:block">
+                <p className="mt-4 text-lg leading-8 text-neutral-700">
+                  Answer a few questions about guaranteed lifetime income, or what your money could grow to. A licensed advisor
+                  texts you your estimate.
+                </p>
+                <p className="mt-3 text-sm leading-6 text-neutral-600">
+                  Estimates are illustrations, not quotes or guarantees. Real figures depend on the carrier, the product, your
+                  age and state, and the day you apply.
+                </p>
+              </div>
+            </div>
+            <div>
+              <RetirementQuiz
+                page="calculator"
+                tracking={tracking}
+                title="Start your estimate."
+                intro="Tap an answer to move on. It takes about two minutes."
+                advisor={RETIREMENT_ADVISOR}
+              />
+              <p className="mt-4 text-sm leading-6 text-neutral-600 lg:hidden">
+                A licensed advisor texts you your estimate. Estimates are illustrations, not quotes or guarantees. Real figures
+                depend on the carrier, the product, your age and state, and the day you apply.
               </p>
             </div>
-            <RetirementQuiz
-              page="calculator"
-              tracking={tracking}
-              title="Start your estimate."
-              intro="Tap an answer to move on. It takes about two minutes."
-              advisor={RETIREMENT_ADVISOR}
-            />
           </div>
         </section>
 
