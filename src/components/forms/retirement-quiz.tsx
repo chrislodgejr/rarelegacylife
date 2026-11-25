@@ -52,11 +52,13 @@ function schedulerUrl(requestId: string | undefined, page: QuizPage) {
 function logScheduleClick(requestId: string | undefined, page: QuizPage) {
   if (!requestId) return;
   const body = JSON.stringify({
-    event_name: "schedule_click",
+    // The table's event_name check constraint has no schedule event, so a calendar click is
+    // logged as meeting_option_click with action "schedule" (no schema change needed).
+    event_name: "meeting_option_click",
     request_id: requestId,
     session_id: `quiz:${requestId}`,
     page_url: window.location.href.slice(0, 500),
-    metadata: { page },
+    metadata: { page, action: "schedule" },
   });
   try {
     if (navigator.sendBeacon?.("/api/retirement/events", new Blob([body], { type: "application/json" }))) return;

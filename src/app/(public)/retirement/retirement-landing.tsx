@@ -139,7 +139,7 @@ export function RetirementLanding({ tracking }: { tracking: ProtectTracking }) {
         {quizOpen ? (
           <section
             aria-label="Retirement quiz"
-            className="black-hero-bg scroll-mt-20 px-4 py-12 text-white sm:px-6 lg:px-8"
+            className="light-hero-bg scroll-mt-20 px-4 py-12 text-[#050505] sm:px-6 lg:px-8"
             id="quiz"
             ref={quizSectionRef}
           >

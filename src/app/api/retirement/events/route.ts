@@ -14,7 +14,6 @@ const eventSchema = z.object({
     "form_validation_error",
     "form_submission_error",
     "successful_appointment",
-    "schedule_click",
   ]),
   request_id: z.string().uuid().nullish(),
   session_id: z.string().min(8).max(160),

@@ -15,7 +15,7 @@ page), `/retirement/quiz`, `/annuity-calculator` and `/annuity-rates` (`src/comp
    (`src/lib/quiz.ts` `QUIZ_PAGES`), and reported to Google Ads as RL Form Submit (`src/lib/google-ads.ts`).
 4. On `/protect`, each step of the visit is sent to Endless One's form-step report (`src/lib/form-steps.ts`).
 5. The thank-you screen links to Christian's Zoom Scheduler. The link carries the request id in `utm_content`, and the tap is
-   logged as `schedule_click` in `retirement_landing_events` with the request id, so a booking can be tied to its lead.
+   logged in `retirement_landing_events` as `meeting_option_click` with `metadata.action = "schedule"` and the request id (the table's event-name constraint allows no other name for it), so a booking can be tied to its lead.
 
 ## Appointment confirmation
 
